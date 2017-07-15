@@ -9,7 +9,6 @@ const store = new Vuex.Store({
     state:{
          //保存用户信息
         userInfo:{
-
         uid:null,
         accout:null,
         password:null,

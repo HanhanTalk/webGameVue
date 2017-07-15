@@ -23,7 +23,7 @@
 </template>
 <style>
     .login{
-        padding: 62% 0;
+        margin-top: 45%;
     }
     .input-head h1{
         font-size:1.5em;
@@ -37,10 +37,14 @@
     margin: 0 auto;
     }
     .left{
-    float: left;
+    position: absolute;
+    left: 0;
+    top: 0;
     }
     .right{
-    float: right;
+    position: absolute;
+    right:0;
+    top:0;
     }
     .input{
     border-radius: 0 4px 4px 0;
@@ -57,7 +61,7 @@
     border: none;
     border-radius: 4px;
     color: #ffffff;
-    margin-top: 22px;
+    margin-top: 20px;
     font-size:1em;
     }
     .btn-red{
@@ -66,7 +70,6 @@
     .input-link{
     position: absolute;
     bottom: 50px;
-    width: 150px;
     right: 0;
     }
     .input-box{

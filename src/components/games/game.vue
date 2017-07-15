@@ -4,7 +4,7 @@
     <carouselAd></carouselAd>
     <div class="game-list">
         <ul>
-            <li class="bg-langren"><a href="javascript:;">
+            <li class="bg-langren"><a href="javascript:;" @click="goWolfKill">
                 <div class="caption">
                     <h1>狼人杀</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
@@ -77,6 +77,7 @@
     }
     .game-view{
         margin-top:132px;
+        margin-bottom:60px;
     }
     .caption{
         text-align: right;
@@ -116,6 +117,7 @@
         background: url(./bg-img/langrensha.jpg) no-repeat;
         background-size:150px;
         background-color:rgba(31,28,45,1);
+        background-position: 20px;
     }
     .bg-huahua{
         background: url(./bg-img/nihuawocai.jpeg) no-repeat;
@@ -146,6 +148,7 @@
         background: url(./bg-img/killer.jpeg) no-repeat;
         background-size:auto 150px;
         background-color:rgba(238,6,87,1);
+        background-position: 20px;
     }
      .bg-she{
         background: url(./bg-img/she.jpeg) no-repeat;
@@ -160,7 +163,7 @@
     .game-list li{
         height: 150px;
         width:100%;
-        margin:0;
+        margin:2px 0;
     }
     .game-list a{
         color:#ffffff;
@@ -173,7 +176,7 @@
         color: #000000;
     }
 </style>
- <script type='ecmascript6'>
+ <script type='text/ecmascript6'>
     import banner from './banner.vue'
     import carouselAd from './carousel.vue'
 
@@ -182,6 +185,11 @@
         components:{
             carouselAd,
             banner
+        },
+        methods:{
+            goWolfKill(){
+                this.$router.push('/gowolf');
+            }
         }
         
     }

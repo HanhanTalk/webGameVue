@@ -1,8 +1,8 @@
 <template>
 <div class="fiexd">
   <div class="user-info">
-    <div class="user-pic left">
-        <img class="user-img circle" src="../assets/logo.png">
+    <div class="user-pic">
+        <img class="user-img circle" src="../assets/user.jpeg">
     </div>
     <div class="user-item">
         <p class="user-name">{{$store.state.userInfo.nick}}</p>
@@ -23,8 +23,9 @@
 <style>
     .fiexd{
         position: fixed;
-        top: 0;
+        top: 60px;
         width: 100%;
+        z-index: 100;
     }
     .user-info{
         width: 100%;
@@ -48,6 +49,7 @@
         height: 80px;
         box-sizing: border-box;
         padding: 15px 0;
+        float:left;
     }
     .circle{
         border-radius: 50%;
@@ -68,7 +70,7 @@
         margin-top: 13px;
     }
     .user-btn{
-        width:50px;
+        width:45px;
         border:none;
         border-radius: 2px;
         color: #ffffff;
@@ -93,7 +95,7 @@
         text-decoration: none;
     }
 </style>
- <script type='ecmascript6'>
+ <script type='text/ecmascript6'>
     export default {
         name:'userinfo',
         data(){

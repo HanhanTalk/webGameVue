@@ -1,24 +1,27 @@
 <template>
-    <div>
+    <div class="box">
+        <!-- <myhead></myhead> -->
         <userinfo></userinfo>
         <game></game>
+        <foot></foot>
     </div>
 </template>
 <style>
-    /* header{
-        height:50px;
-        background:rgba(35,44,56,1);
-    } */
+   .box{
+       position: relative;
+   }
 </style>
-<script type='ecmascript6'>
+<script type='text/ecmascript6'>
 import userinfo from './userinfo.vue'
 import game from './games/game.vue'
+import foot from './foot.vue'
 export default {
   name:'home',
 
   components:{ 
       userinfo,
-      game
+      game,
+      foot
   }
 }
 
