@@ -3,16 +3,16 @@
       <div class="self-info">
           <img src="../assets/user.jpeg">
           <div class="self-info-middle">
-            <p>昵称</p>
-            <span>账号：123456</span>
-            <div class="self-level"><p>LV5<span>136/230</span></p></div>
+            <p>{{$store.state.userInfo.nick}}</p>
+            <span>{{$store.state.userInfo.accout}}</span>
+            <div class="self-level"><p>LV{{$store.state.userInfo.ulevel}}<span>136/230</span></p></div>
           </div>
           <div class="qr-code"><a href="javascript:;"><span class="fa fa-qrcode"></span></a></div>
       </div>
       <hr>
       <div class="res">
          <ul>
-             <li><img src="../assets/gold.jpeg" alt="gold"><span>1341</span></li>
+             <li><img src="../assets/gold.jpeg" alt="gold"><span>{{$store.state.userInfo.gold}}</span></li>
              <li><img src=""><span>1</span></li>
              <li><img src="../assets/10.png" alt="diamond"><span>0</span></li>
         </ul>
@@ -25,7 +25,9 @@
             </li>
              <li class="self-li-last li-boder"><a href="javascript:;"></a>退出手机登录</li> 
         </ul>
-        
+      </div>
+      <div class="qr-code-window">
+
       </div>
       <foot></foot>
   </div>
@@ -39,6 +41,7 @@
         height:100%;
         padding-bottom: 100px;
         background: #f3f3f3;
+        position: relative;
      }
      .self-info{
         position: relative;
@@ -65,6 +68,10 @@
      .self-level{
         margin-top: 10px;
      }
+     .self-level span{
+         margin-left:15px;
+     }
+
      .qr-code{
          height:30px;
          font-size:30px;
@@ -100,8 +107,8 @@
         position: relative;
     }
     .self-li-last{
+        height: 44px;
         text-align: center;
-
     }
     .li-boder{
          border-top:4px solid #dddddd;
@@ -114,6 +121,9 @@
     .self-list-prompt span{
         margin-left:20px;
         color:#727272;
+    }
+    .qr-code-window{
+
     }
   </style>
  <script type="text/javascript6">

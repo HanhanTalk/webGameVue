@@ -7,15 +7,15 @@
             <div class="left">
                 <div class="input-box">
                     <span class="fa fa-user"></span>
-                    <input type="text" placeholder="用户名" class="input"  v-model="accout">
+                    <input type="text" class="input"  v-model="accout">
                 </div>
                 <div class="input-box">
                     <span class="fa fa-lock"></span>
-                    <input type="password" placeholder="密码" class="input" v-model="password">
+                    <input type="password" class="input" v-model="password">
                 </div>
             </div>
             <div class="right">
-                <button type="button" class="input-btn btn-red" @click="loginBtn">确认</button>
+                <button type="button" class="input-btn btn-red" @click="loginBtn"><span class="fa fa-unlock"></span></button>
             </div>
             <a href="javascript:;" class="input-link">忘记了密码？</a>
         </div>
