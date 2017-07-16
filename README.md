@@ -1,18 +1,7 @@
-# webgame
+# 小游戏平台前端静态页面
 
-> A Vue.js project
+基于Vue....
 
-## Build Setup
+# 功能概括
 
-``` bash
-# install dependencies
-npm install
-
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-```
-
-For detailed explanation on how things work, consult the [docs for vue-loader](http://vuejs.github.io/vue-loader).
+注册、登录、游戏类型展示、进入房间、游戏介绍
