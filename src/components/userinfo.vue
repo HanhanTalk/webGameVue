@@ -2,7 +2,7 @@
 <div class="fiexd">
   <div class="user-info">
     <div class="user-pic">
-        <img class="user-img circle" src="../assets/user.jpeg">
+        <img class="user-img circle" :src="$store.state.userInfo.portrait">
     </div>
     <div class="user-item">
         <p class="user-name">{{$store.state.userInfo.nick}}</p>

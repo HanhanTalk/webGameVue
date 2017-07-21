@@ -6,19 +6,19 @@
             <div class="user-menu-head">Game</div>
             <div class="menu-userinfo">
                 <img src="../assets/user.jpeg">
-                <div class="niki">超人</div>
+                <div class="niki">{{$store.state.userInfo.nick}}</div>
                 <div class ="user-item-info">
-                     <div class="user-gold circle"></div><span>金币:1081</span>
-                     <div class="user-flower"></div><span>鲜花:1</span>
+                     <div class="user-gold circle"></div><span>金币:{{$store.state.userInfo.gold}}</span>
+                     <div class="user-flower"></div><span>鲜花:{{$store.state.userInfo.flower}}</span>
                 </div>
             </div>
             <div class="user-menu-list">
                 <ul>
-                    <li><span class="fa fa-comments-o"></span>交朋友<span class="fa fa-angle-right float-right"></span></li>
-                    <li><span class="fa fa-gamepad"></span>玩游戏<span class="fa fa-angle-right float-right"></span></li>
-                    <li><span class="fa fa-commenting-o"></span>意见反馈<span class="fa fa-angle-right float-right"></span></li>
-                    <li><span class="user-gold circle"></span>签到领金币<span class="fa fa-angle-right float-right"></span></li>
-                    <li><span class="fa fa-rocket"></span>关于Game<span class="fa fa-angle-right float-right"></span></li>
+                    <li @click="friend"><span class="fa fa-comments-o"></span>交朋友<span class="fa fa-angle-right float-right"></span></li>
+                    <li @click="play"><span class="fa fa-gamepad"></span>玩游戏<span class="fa fa-angle-right float-right"></span></li>
+                    <li @click="feedback"><span class="fa fa-commenting-o"></span>意见反馈<span class="fa fa-angle-right float-right"></span></li>
+                    <li @click="sign"><span class="user-gold circle"></span>签到领金币<span class="fa fa-angle-right float-right"></span></li>
+                    <li @click="about"><span class="fa fa-rocket"></span>关于Game<span class="fa fa-angle-right float-right"></span></li>
                 </ul>
             </div>
         </div>
@@ -125,8 +125,30 @@ export default {
   },
   methods:{
       shadeClick(){
-        this.$emit('transferEvent',this.isHide)
+        this.$emit('transferEvent',this.isHide);
+      },
+      friend(){
+          this.shadeClick();
+          this.$router.push('/friend');
+
+      },
+      play(){
+        this.shadeClick();
+        this.$router.push('/home');
+      },
+      feedback(){
+        this.shadeClick();
+        this.$router.push('/feedback');
+      },
+      sign(){
+        this.shadeClick();  
+        this.$router.push('/sign');
+      },
+      about(){
+        this.shadeClick();  
+        this.$router.push('/about');
       }
+
   }
 }
 </script>

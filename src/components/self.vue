@@ -1,5 +1,5 @@
 <template>
-  <div class="self-page">
+  <div class="page">
       <div class="self-info">
           <img src="../assets/user.jpeg">
           <div class="self-info-middle">
@@ -13,7 +13,7 @@
       <div class="res">
          <ul>
              <li><img src="../assets/gold.jpeg" alt="gold"><span>{{$store.state.userInfo.gold}}</span></li>
-             <li><img src=""><span>1</span></li>
+             <li><img src="../assets/hua.jpg"><span>1</span></li>
              <li><img src="../assets/10.png" alt="diamond"><span>0</span></li>
         </ul>
       </div>
@@ -23,11 +23,8 @@
                 {{item.title}}
                 <span class="self-list-prompt">{{item.prompt}}<span class="fa fa-angle-right"></span></span>
             </li>
-             <li class="self-li-last li-boder"><a href="javascript:;"></a>退出手机登录</li> 
+             <li class="self-li-last li-boder"><a href="javascript:;" @click="toLoginOut"></a>退出手机登录</li> 
         </ul>
-      </div>
-      <div class="qr-code-window">
-
       </div>
       <foot></foot>
   </div>
@@ -36,7 +33,7 @@
     hr{
         border: 1px solid #dddddd;
     }
-     .self-page{
+     .page{
         width:100%;
         height:100%;
         padding-bottom: 100px;
@@ -170,6 +167,12 @@
                 title:'绑定手机登录'
             }
             ]
+        }
+    },
+    methods:{
+        toLoginOut(){
+            //删除cookie并跳到登录页
+
         }
     }
 }

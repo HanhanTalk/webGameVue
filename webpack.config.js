@@ -29,7 +29,7 @@ module.exports = {
         loader:'style-loader!css-loader'
       },
       {
-        test: /\.(eot|ttf|woff|otf|woff2|png|jpg|gif|svg|jpeg)\w*/,
+        test: /\.(eot|ttf|woff|otf|woff2|png|jpg|gif|svg|jpeg|psd)\w*/,
         loader: 'file-loader',
         options: {
           name: '[name].[ext]?[hash]'

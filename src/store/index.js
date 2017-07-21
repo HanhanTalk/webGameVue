@@ -1,12 +1,12 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
-
+//状态管理，Vuex配置
 Vue.use(Vuex)
 
-//Vuex配置
-const store = new Vuex.Store({
-    state:{
+//声明一个状态state
+const state = {
+      //  domain:'http://127.0.0.1/' 保存后台请求地址，方便修改
          //保存用户信息
         userInfo:{
         uid:null,
@@ -15,16 +15,22 @@ const store = new Vuex.Store({
         nick:null,
         ulevel:null,
         gold:null,
+        flower:null,
         portrait:null
-
         }
-    },
-    mutations:{
+    }
+    //更新状态
+const mutations = {
+        //更新用户信息
         updateUserInfo(state,newUserInfo){
             state.userInfo = newUserInfo;
         }
     }
+
+//注册所有模块
+export default new Vuex.Store({
+    state,
+    mutations
 })
 
-export default store
 

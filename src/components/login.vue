@@ -19,6 +19,7 @@
             </div>
             <a href="javascript:;" class="input-link">忘记了密码？</a>
         </div>
+        <!-- <loading v-if="isLoging"></loading> -->
     </div>
 </template>
 <style>
@@ -92,6 +93,9 @@
 </style>
 <script type = "text/ecmascript6">
     import userinfoData from '../data/userinfo'
+    // import loading from './loading.vue'
+    //引入mapGtters
+    // import { mapGetters } from 'vuex'
     var userinfo = userinfoData;
     export default {
         name:'login',
@@ -113,6 +117,7 @@
                 }
             },
             loginIn(){
+                //本地数据测试代码段
                 var _this = this;
                 var _element = {};
                 var _ele = document.getElementsByTagName('input');
@@ -139,11 +144,17 @@
                 }
                 _ele[0].value = '';
                 _ele[1].value = '';
+
+
+
             },
+            //获取登录用户的数据
             getUserInfo(element){
                 var currentUser = element;
                 this.$store.commit('updateUserInfo',currentUser);
-            }
+            
+            },
+            
 
         }
     }

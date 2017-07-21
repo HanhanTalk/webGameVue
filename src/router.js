@@ -10,8 +10,17 @@ import friend from './components/friend.vue'
 import find from './components/find.vue'
 import self from './components/self.vue'
 import rank from './components/rank.vue'
-Vue.use(VueRouter)
+import chat from './components/friends/chat.vue'
+import chatRoom from './components/friends/chatRoom.vue'
+import createChat from './components/friends/createChat.vue'
+import friendAdd from './components/friends/friendAdd.vue'
+import myFriend from './components/friends/myFriend.vue'
+import waitRoom from './components/waitRoom.vue'
+import wolfRoom from './components/wolfRoom.vue'
 
+Vue.use(VueRouter)
+//路由配置
+//如果需要添加页面，就在这里添加路由
 const router = new VueRouter({
     routes:[
         {
@@ -37,7 +46,18 @@ const router = new VueRouter({
         {
             path:'/friend',
             name:'friend',
-            component:friend
+            component:friend,
+            children:[
+                {path:'chat',name:'chat',component:chat},
+                {path:'createChat',name:'createChat',component:createChat},
+                {path:'myFriend',name:'myFriend',component:myFriend},
+                {path:'friendAdd',name:'friendAdd',component:friendAdd}
+            ]
+        },
+        {
+            path:'/chatRoom',
+            name:'chatRoom',
+            component:chatRoom
         },
          {
             path:'/find',
@@ -66,6 +86,16 @@ const router = new VueRouter({
             path:'/gowolf/gameinfo',
             name:'gameinfo',
             component:gameinfo
+        },
+        {
+            path:'/waitRoom',
+            name:'waitRoom',
+            component:waitRoom
+        },
+        {
+            path:'/wolfRoom',
+            name:'wolfRoom',
+            component:wolfRoom
         }
     ]
 })
