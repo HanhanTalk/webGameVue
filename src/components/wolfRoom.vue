@@ -23,9 +23,14 @@
         </li>
       </ul>
       <div class="game-sys-tips">
-        <h1><span class="fa fa-sun-o"></span>天亮了</h1>
-        <p>昨晚[5]号玩家死亡,[6]号玩家开始发言</p>
-        <span class="time">44s</span>
+        <h1><span class="fa" :class="{'fa-sun-o':onday,'fa-moon-o':!onday}"></span>{{wolf.msgObj.title}}</h1>
+        <p>{{wolf.msgObj.content}}</p>
+        <span class="time">{{wolf.msgObj.time}}</span>
+      </div>
+      <div class="btn-group">
+        <button @click="inputBtn" class="text-input" type="button"><span class="fa" :class="{'fa-pencil-square-o':!onInput,'fa-microphone':onInput}"></span></button>
+        <button class="microphone" type="button" ><span class="fa fa-microphone"></span>按住说话</button>
+        <input :class="{'input-hide':!onInput}" type="text">
       </div>
   </div>
 </template>
@@ -154,20 +159,69 @@
       background-size:100%;
       opacity: 0.6;
    }
+   .btn-group{
+     position: absolute;
+     left:50%;
+     bottom:20px;
+     width:276px;
+     margin-left:-138px;
+
+   }
+   .btn-group button{
+      border: none;
+      border-radius: 10px;
+      color:#ffffff;
+      font-size:18px;
+      outline: none;
+      background:linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
+      background:-webkit-linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
+      background:-o-linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
+      background:-moz-linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
+   }
+   .btn-group input{
+     position: absolute;
+     top:0;
+     right:0;
+     width:215px;
+     height:35px;
+     border-radius: 10px;
+     outline: none;
+     font-size:1em;
+     transition: width 1s;
+   }
+   .input-hide{
+     width:0 !important;
+     opacity: 0;
+   }
+   .text-input{
+     width:50px;
+     height:40px;
+   }
+   .microphone{
+     width:220px;
+     height:40px;
+   }
+   .microphone span{
+     margin-right:5px;
+   }
 </style>
  <script type="text/ecmascript6">
  import client from '../api/client'
+ import wolf from '../api/game/wolf'
 export default {
   name:'wolfRoom',
   data(){
     return{
       client,
+      wolf,
       game_id:'',
       userlist_1:[],
       userlist_2:[],
       game_img_url:'',
       upperShow:false,
-      toMove:false
+      toMove:false,
+      onInput:false,
+      onday:true
     }
   },
   methods:{
@@ -179,6 +233,13 @@ export default {
       setTimeout(function(){
         _this.toMove = true;
       },2009);
+    },
+    inputBtn(){
+      if(this.onInput){
+        this.onInput = false;
+      } else{
+        this.onInput = true;
+      }
     }
   },
   mounted:function(){
@@ -189,6 +250,7 @@ export default {
     setTimeout(function(){
         _this.getGame_id();
     },1000);
+  this.wolf.countDown();
   },
 }
 </script>
