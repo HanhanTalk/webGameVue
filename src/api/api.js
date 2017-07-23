@@ -49,9 +49,12 @@ const signIn = (param) => {
 const signOut = (param) => {
   return _post('/users/signout', param);
 }
-
+const info = (param) => {
+   return _get('/users/info',param);
+}
 export default {
   signUp,
   signIn,
-  signOut
+  signOut,
+  info
 }

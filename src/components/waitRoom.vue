@@ -108,7 +108,6 @@ export default {
     },
   methods:{
     readyClick(){
-      //遍历userlist，找到当前用户
       var _this = this;
         this.btnText = '已准备';
         this.onReady = true;
