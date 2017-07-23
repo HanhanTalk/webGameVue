@@ -94,7 +94,7 @@
 <script type = "text/ecmascript6">
     import userinfoData from '../data/userinfo'
     import '../script/sha1.min.js'
-    import axios from 'axios'
+    import api from '../api/api'
     // import loading from './loading.vue'
     //引入mapGtters
     // import { mapGetters } from 'vuex'
@@ -112,40 +112,49 @@
         methods:{
             loginBtn(){
                 //判断是否输入
-                if(this.username != '' && this.password != ''){
+                if(this.accout != '' && this.password != ''){
                    this.loginIn(); 
                 } else{
                     alert("用户名或密码不能为空！");
                 }
             },
             loginIn(){
+                api.signIn({
+                    name: this.accout,
+                    password: this.password
+                }).then((response) => {
+                    // 登陆成功
+                    this.getUserInfo(response);
+                    this.$router.push('./home/game/');
+                    this.password = '';
+                })
                 //本地数据测试代码段
-                var _this = this;
-                var _element = {};
-                var _ele = document.getElementsByTagName('input');
-                let hasUser = false;
+                // var _this = this;
+                // var _element = {};
+                // var _ele = document.getElementsByTagName('input');
+                // let hasUser = false;
 
-             for(var i = 0;i<_this.userinfo.length;i++){
-                    if(_this.userinfo[i].accout === _this.accout){
-                        if(_this.userinfo[i].password === _this.password){
-                            _element = userinfo[i];
-                            _this.getUserInfo(_element);
-                            alert('登录成功！');
-                            this.$router.push('./home/game/');
-                            hasUser = true;
-                            break;
-                        } else {
-                                _ele[1].value ='';
-                                alert('密码错误');
-                        }
-                        hasUser = true;
-                    }
-                }
-                if(!hasUser){
-                    alert('用户名不存在');
-                }
-                _ele[0].value = '';
-                _ele[1].value = '';
+                // for(var i = 0;i<_this.userinfo.length;i++){
+                //     if(_this.userinfo[i].accout === _this.accout){
+                //         if(_this.userinfo[i].password === _this.password){
+                //             _element = userinfo[i];
+                //             _this.getUserInfo(_element);
+                //             alert('登录成功！');
+                //             this.$router.push('./home/game/');
+                //             hasUser = true;
+                //             break;
+                //         } else {
+                //                 _ele[1].value ='';
+                //                 alert('密码错误');
+                //         }
+                //         hasUser = true;
+                //     }
+                // }
+                // if(!hasUser){
+                //     alert('用户名不存在');
+                // }
+                // _ele[0].value = '';
+                // _ele[1].value = '';
 
             //     //将密码进行hash加密
             //         let password_sha = hex_sha1(hex_sha1( this.password ));

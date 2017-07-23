@@ -88,6 +88,7 @@
     }
 </style>
 <script type = "text/ecmascript6">
+    import api from '../api/api'
     export default {
         name:'reg',
         data(){
@@ -98,10 +99,21 @@
         },
         methods:{
             regBtn(){
-                
+              if (!this.accout || !this.password) {
+                  return alert("请输入用户名和密码");
+              }
+              api.signUp({
+                  name: this.accout,
+                  password: this.password
+              }).then((response) => {
+                  if (response) {
+                      alert("注册成功");
+                      this.regLink();
+                  }
+              })
             },
             regLink(){
-                this.$router.push('/login');
+              this.$router.push('/login');
             }
         }
     }
