@@ -1,5 +1,5 @@
 <template>
-   <div class="main-box" >
+   <div class="main-box fixed-box" >
       <img src="../assets/logo.jpeg" alt="logo">
       <h1 class="title">Game</h1>
       <button type="button" class="btn btn-circle color" v-on:click="toLogin">

@@ -1,5 +1,5 @@
 <template>
-  <div class="head">
+  <div class="head" :class="{'head-hidden':$store.state.userInfo.uid == null}">
     <div class="head-bars ib"><a href="javascript:;" v-on:click="menuClick"><span class="fa fa-bars"></span></a></div>
     <div class="head-logo ib">Game</div>
     <div class="head-share ib"><span class="fa fa-share-alt"></span></div>
@@ -34,7 +34,9 @@
     .head-share{
         float:right;
     }
- 
+    .head-hidden{
+        display: none;
+    }
 </style>
 <script type='text/ecmascript6'>
 import userMenu from './usermenu.vue'

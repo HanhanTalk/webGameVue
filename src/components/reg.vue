@@ -24,9 +24,9 @@
 </template>
 <style>
     .reg{
-        margin-top: 45%;
+       padding-top: 200px;
     }
-    /* .input-head h1{
+     .input-head h1{
         font-size:1.5em;
         color:#ffffff;
         margin-left:15%;
@@ -82,7 +82,7 @@
         font-size: 1.5em;
         text-align: center;
         line-height: 40px;
-    } */
+    } 
     .btn-blue{
         background: #2196F3;
     }

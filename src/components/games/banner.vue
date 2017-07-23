@@ -26,7 +26,7 @@
         background:rgba(65,170,28,1);
     }
     .banner-txt{
-        width:320px;
+        width: 90%;
     }
 </style>
 <script>

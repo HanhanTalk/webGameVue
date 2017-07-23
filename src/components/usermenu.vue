@@ -5,7 +5,7 @@
         <div class="user-menu" v-bind:class="{ hidden : isHidden}">
             <div class="user-menu-head">Game</div>
             <div class="menu-userinfo">
-                <img src="../assets/user.jpeg">
+                <img :src="$store.state.userInfo.portrait">
                 <div class="niki">{{$store.state.userInfo.nick}}</div>
                 <div class ="user-item-info">
                      <div class="user-gold circle"></div><span>金币:{{$store.state.userInfo.gold}}</span>
@@ -45,10 +45,10 @@
         position:fixed;
         left:0;
         top:0;
-        transition: left 0.5s;
-        -moz-transition: left 0.5s;
-        -webkit-transition: left 0.5s;
-        -o-transition: left 0.5s;
+        transition: left 1s;
+        -moz-transition: left 1s;
+        -webkit-transition: left 1s;
+        -o-transition: left 1s;
 
     }
     .hidden{

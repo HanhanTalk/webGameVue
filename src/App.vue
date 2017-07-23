@@ -53,7 +53,7 @@ body{
 .container{
     width: 100%;
     height: 100%;
-    padding-top: 60px;
+    /* padding-top: 60px; */
     background: #2c3e50;
     box-sizing: border-box;
 }
@@ -100,5 +100,9 @@ a {
 p{
   margin:0;
   padding:0;
+}
+.fixed-box{
+    padding-top:60px;
+    box-sizing: border-box;
 }
 </style>

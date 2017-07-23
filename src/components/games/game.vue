@@ -1,5 +1,6 @@
 <template>
    <div class="game-view">
+    <userinfo></userinfo>
     <banner></banner> 
     <carouselAd></carouselAd>
     <div class="game-list">
@@ -76,7 +77,7 @@
         overflow-y:scroll; 
     }
     .game-view{
-        margin-top:132px;
+        margin-top:192px;
         margin-bottom:60px;
     }
     .caption{
@@ -179,12 +180,14 @@
  <script type='text/ecmascript6'>
     import banner from './banner.vue'
     import carouselAd from './carousel.vue'
+    import userinfo from './userinfo.vue'
 
     export default{
         name:'game',
         components:{
             carouselAd,
-            banner
+            banner,
+            userinfo
         },
         methods:{
             goWolfKill(){

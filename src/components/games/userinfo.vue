@@ -59,7 +59,7 @@
         height:20px;
         float: left;
         margin-right:50px;
-        background-image: url('../assets/gold.jpg');
+        background-image: url('../../assets/gold.jpg');
         background-size:20px 20px;
         background-position:top left;
     }
@@ -71,6 +71,7 @@
     }
     .user-btn{
         width:45px;
+        height:25px;
         border:none;
         border-radius: 2px;
         color: #ffffff;

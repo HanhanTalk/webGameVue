@@ -17,6 +17,7 @@ import friendAdd from './components/friends/friendAdd.vue'
 import myFriend from './components/friends/myFriend.vue'
 import waitRoom from './components/waitRoom.vue'
 import wolfRoom from './components/wolfRoom.vue'
+import game from './components/games/game.vue'
 
 Vue.use(VueRouter)
 //路由配置
@@ -41,39 +42,53 @@ const router = new VueRouter({
         {
             path:'/home',
             name:'home',
-            component:home
-        },
-        {
-            path:'/friend',
-            name:'friend',
-            component:friend,
+            component:home,
             children:[
-                {path:'chat',name:'chat',component:chat},
-                {path:'createChat',name:'createChat',component:createChat},
-                {path:'myFriend',name:'myFriend',component:myFriend},
-                {path:'friendAdd',name:'friendAdd',component:friendAdd}
+                {path:'game',name:'game',component:game},
+                {path:'find',name:'find',component:find},
+                {path:'self',name:'self',component:self},
+                {path:'rank',name:'rank',component:rank},
+                {path:'friend',name:'friend',component:friend,
+                children:[
+                    {path:'chat',name:'chat',component:chat},
+                    {path:'createChat',name:'createChat',component:createChat},
+                    {path:'myFriend',name:'myFriend',component:myFriend},
+                    {path:'friendAdd',name:'friendAdd',component:friendAdd}
+                ]
+            }
             ]
         },
+        // {
+        //     path:'/friend',
+        //     name:'friend',
+        //     component:friend,
+        //     children:[
+        //         {path:'chat',name:'chat',component:chat},
+        //         {path:'createChat',name:'createChat',component:createChat},
+        //         {path:'myFriend',name:'myFriend',component:myFriend},
+        //         {path:'friendAdd',name:'friendAdd',component:friendAdd}
+        //     ]
+        // },
         {
             path:'/chatRoom',
             name:'chatRoom',
             component:chatRoom
         },
-         {
-            path:'/find',
-            name:'find',
-            component:find
-        },
-         {
-            path:'/self',
-            name:'self',
-            component:self
-        },
-         {
-            path:'/rank',
-            name:'rank',
-            component:rank
-        },
+        //  {
+        //     path:'/find',
+        //     name:'find',
+        //     component:find
+        // },
+        //  {
+        //     path:'/self',
+        //     name:'self',
+        //     component:self
+        // },
+        //  {
+        //     path:'/rank',
+        //     name:'rank',
+        //     component:rank
+        // },
         {
             path:'/gowolf',
             name:'gowolf',

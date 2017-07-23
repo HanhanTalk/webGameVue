@@ -1,6 +1,6 @@
 <template>
   <div class="wolfroom">
-     <div class="chooselist">
+     <div class="chooselist fixed-box">
          <div class = "game-info">
              <p>萌新玩家可以先查看规则<a href="javascript:;" @click="gameInfo">了解狼人杀</a></p>
         </div>
@@ -37,8 +37,7 @@
     }
     .chooselist{
         position: relative;
-        overflow: hidden;
-        padding-top: 10px;
+        /* overflow: hidden; */
     }
     .game-info{
         width: 90%;
@@ -56,7 +55,6 @@
         margin-bottom:2px; 
     }
     .list-caption{
-        width: 40%;
         float: right;
         padding: 30px;
         text-align: center;

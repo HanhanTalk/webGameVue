@@ -1,8 +1,8 @@
 <template>
     <div class="box">
         <!-- <myhead></myhead> -->
-        <userinfo></userinfo>
-        <game></game>
+        <router-view></router-view>
+        <!-- <game></game> -->
         <foot></foot>
     </div>
 </template>
@@ -12,15 +12,13 @@
    }
 </style>
 <script type='text/ecmascript6'>
-import userinfo from './userinfo.vue'
+// import userinfo from './userinfo.vue'
 import game from './games/game.vue'
 import foot from './foot.vue'
 export default {
   name:'home',
 
   components:{ 
-      userinfo,
-      game,
       foot
   }
 }
