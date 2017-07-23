@@ -1,5 +1,5 @@
 <template>
-  <div class="page">
+  <div class="page fixed-box">
       <div class="self-info">
           <img src="../assets/user.jpeg">
           <div class="self-info-middle">
@@ -36,9 +36,9 @@
      .page{
         width:100%;
         height:100%;
-        padding-bottom: 100px;
         background: #f3f3f3;
         position: relative;
+        margin-bottom: 75px;
      }
      .self-info{
         position: relative;
@@ -104,8 +104,9 @@
         position: relative;
     }
     .self-li-last{
-        height: 44px;
+        height: 44px !important;
         text-align: center;
+        background:#f3f3f3;
     }
     .li-boder{
          border-top:4px solid #dddddd;

@@ -1,6 +1,6 @@
 <template>
   <div>
-      <div class="page">
+      <div class="page fixed-box">
           <div class="page-nav">
               <div class="nav-left">
                   <a href="javascript:;" @click="friendAdd"><span class="fa fa-user-plus"></span></a>
@@ -88,16 +88,16 @@ export default {
   components:{ foot },
   methods:{
     friendAdd(){
-        this.$router.push('/friend/friendAdd');
+        this.$router.push('/home/friend/friendAdd');
     },
     chat(){
-        this.$router.push('/friend/chat');
+        this.$router.push('/home/friend/chat');
     },
     createChat(){
-        this.$router.push('/friend/createChat');
+        this.$router.push('/home/friend/createChat');
     },
     myFriend(){
-        this.$router.push('/friend/myFriend');
+        this.$router.push('/home/friend/myFriend');
     }
   },
   mounted:function(){

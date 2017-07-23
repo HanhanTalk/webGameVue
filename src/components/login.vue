@@ -24,7 +24,7 @@
 </template>
 <style>
     .login{
-        margin-top: 45%;
+        padding-top: 200px;
     }
     .input-head h1{
         font-size:1.5em;
@@ -93,6 +93,8 @@
 </style>
 <script type = "text/ecmascript6">
     import userinfoData from '../data/userinfo'
+    import '../script/sha1.min.js'
+    import axios from 'axios'
     // import loading from './loading.vue'
     //引入mapGtters
     // import { mapGetters } from 'vuex'
@@ -129,7 +131,7 @@
                             _element = userinfo[i];
                             _this.getUserInfo(_element);
                             alert('登录成功！');
-                            this.$router.push('./home');
+                            this.$router.push('./home/game/');
                             hasUser = true;
                             break;
                         } else {
@@ -145,9 +147,19 @@
                 _ele[0].value = '';
                 _ele[1].value = '';
 
+            //     //将密码进行hash加密
+            //         let password_sha = hex_sha1(hex_sha1( this.password ));
+            //     //需要向后端发送的登录参数
+            //         let loginParam = {
+            //             accout:this.accout,
+            //             password_sha
+            //         }
+            //     //请求后端
+            //   axios.get()
 
 
-            },
+
+             },
             //获取登录用户的数据
             getUserInfo(element){
                 var currentUser = element;
