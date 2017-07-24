@@ -7,6 +7,14 @@ function resJson(res, err, data) {
 }
 
 
+function needAuth(req, res, next) {
+  if (req.session.name) {
+    next();
+  }
+  resJson(res, '请登陆后再执行此操作');
+}
+
+
 module.exports = {
   resJson: resJson
 }
