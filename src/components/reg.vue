@@ -8,15 +8,15 @@
             <div class="left">
                 <div class="input-box">
                     <span class="fa fa-user"></span>
-                    <input type="text" placeholder="用户名" class="input" v-model="accout">
+                    <input type="text" placeholder="请输入你的账号" class="input" v-model="accout">
                 </div>
                 <div class="input-box">
                     <span class="fa fa-lock"></span>
-                    <input type="text" placeholder="密码" class="input" v-model="password">
+                    <input type="password" placeholder="请输入1-6位密码" class="input" v-model="password">
                 </div>
             </div>
             <div class="right">
-                <button type="button" class="input-btn btn-blue" v-on:click="regBtn">注册</button>
+                <button type="button" class="input-btn btn-blue" v-on:click="regBtn"><span class="fa fa-hand-pointer-o"></span></button>
             </div>
             <a href="javascript:;" class="input-link" v-on:click="regLink">已有账号，立即登录</a>
         </div>
@@ -24,67 +24,74 @@
 </template>
 <style>
     .reg{
-       padding-top: 200px;
+       padding-top: 400px;
     }
-     .input-head h1{
-        font-size:1.5em;
+    .btn-blue{
+        background: #2196F3;
+    }
+    .input-head h1{
+        font-size:48px;
         color:#ffffff;
         margin-left:15%;
     }
     .input-user{
     width: 80%;
-    height: 200px;
+    height: 400px;
     position: relative;
     margin: 0 auto;
     }
     .left{
-    float: left;
+    position: absolute;
+    left: 0;
+    top: 0;
     }
     .right{
-    float: right;
+    position: absolute;
+    right:0;
+    top:0;
     }
     .input{
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 8px 8px 0;
     border: none;
-    height: 40px;
-    width: 165px;
+    height: 80px;
+    width: 330px;
     box-sizing: border-box;
-    padding-left:5px;
-    font-size:1em;
+    padding-left: 20px;
+    font-size: 40px;
     }
     .input-btn{
-    width:60px;
-    height: 100px;
+    width:120px;
+    height: 200px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     color: #ffffff;
-    margin-top: 22px;
-    font-size:1em;
+    margin-top: 40px;
+    font-size:40px;
+    }
+    .btn-red{
+        background:#F44336;
     }
     .input-link{
+    font-size: 36px;
     position: absolute;
     bottom: 50px;
-    width: 150px;
     right: 0;
     }
     .input-box{
-        height:40px;
-        margin:20px auto;
+        height:80px;
+        margin:40px auto;
     }
     .input-box span{
+        width: 80px;
+        height: 80px;
         display: block;
-        float:left;
-        width: 40px;
-        background:#cccccc;
-        height:40px;
-        border-radius: 4px 0 0 4px;
-        color:#ffffff;
-        font-size: 1.5em;
+        float: left;
+        border-radius: 8px 0 0 8px;
+        color: #ffffff;
+        font-size: 40px;
         text-align: center;
-        line-height: 40px;
-    } 
-    .btn-blue{
-        background: #2196F3;
+        line-height: 80px;
+        background: #cccccc;
     }
 </style>
 <script type = "text/ecmascript6">

@@ -17,17 +17,17 @@
   background: rgba(2,39,59,1);
 }
 .main-box img{
-  width:250px;
+  width:500px;
   height:auto;
   }
 .btn{
-  margin:15px 0;
-  border:none;
-  height:50px;
-  width:200px;
-  color:#ffffff;
-  font-size:1em;
-  outline:none;
+    margin: 30px 0;
+    border: none;
+    height: 100px;
+    width: 400px;
+    color: #ffffff;
+    font-size: 30px;
+    outline: none;
 }
 .btn-circle{
   border-radius:10em; 
@@ -40,6 +40,7 @@
   background:transparent;
 }
 .title{
+  font-size: 60px;
   color:#ffffff;
 }
 </style>

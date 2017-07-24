@@ -5,6 +5,7 @@ const msgObj={
 }
 function countDown(){
     if(msgObj.time == 0){
+        
         return
     }
     setTimeout(function(){

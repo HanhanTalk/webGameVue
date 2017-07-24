@@ -1,8 +1,8 @@
 <template>
     <div class="box">
-        <!-- <myhead></myhead> -->
+        <myhead @transferEvent="setHide"></myhead>
         <router-view></router-view>
-        <!-- <game></game> -->
+        <userMenu :isHidden="isHide" @transferEvent="setHide"></userMenu>
         <foot></foot>
     </div>
 </template>
@@ -12,14 +12,25 @@
    }
 </style>
 <script type='text/ecmascript6'>
-// import userinfo from './userinfo.vue'
-import game from './games/game.vue'
+import myhead from './head.vue'
+import userMenu from './usermenu.vue'
 import foot from './foot.vue'
 export default {
   name:'home',
-
   components:{ 
-      foot
+      foot,
+      myhead,
+      userMenu
+  },
+  data(){
+      return{
+          isHide:true
+      }
+  },
+  methods:{
+      setHide(e){
+      this.isHide = e;
+    }
   }
 }
 

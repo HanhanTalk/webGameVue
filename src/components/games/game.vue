@@ -5,68 +5,59 @@
     <carouselAd></carouselAd>
     <div class="game-list">
         <ul>
-            <li class="bg-langren"><a href="javascript:;" @click="goWolfKill">
-                <div class="caption">
+            <li class="bg-langren" @click="goWolfKill">
+                <div class="caption font-white">
                     <h1>狼人杀</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-            <li class="bg-huahua"><a href="javascript:;">
+            <li class="bg-huahua">
                 <div class="caption">
-                    <h1 class="font-black">你画我猜</h1>
-                    <p class="font-black">开始游戏<span class="fa fa-angle-right"></span></p>
+                    <h1>你画我猜</h1>
+                    <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-             <li class="bg-wodi"><a href="javascript:;">
+             <li class="bg-wodi">
                 <div class="caption">
-                    <h1 class="font-black">谁是卧底</h1>
-                    <p class="font-black">开始游戏<span class="fa fa-angle-right"></span></p>
+                    <h1>谁是卧底</h1>
+                    <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-            <li class="bg-shaizi"><a href="javascript:;">
-                <div class="caption">
+            <li class="bg-shaizi">
+                <div class="caption font-white">
                     <h1>骰子德州</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-            <li class="bg-killer"><a href="javascript:;">
-                <div class="caption">
+            <li class="bg-killer">
+                <div class="caption font-white">
                     <h1>杀人游戏</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-             <li class="bg-ox"><a href="javascript:;">
+             <li class="bg-ox">
                 <div class="caption">
                     <h1>骰子牛牛</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-             <li class="bg-nishuo"><a href="javascript:;">
-                <div class="caption">
+             <li class="bg-nishuo">
+                <div class="caption font-white">
                     <h1>你说我猜</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-             <li class="bg-she"><a href="javascript:;">
-                <div class="caption">
+             <li class="bg-she">
+                <div class="caption font-white">
                     <h1>贪吃蛇大作战</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
-            <li class="bg-date"><a href="javascript:;">
-                <div class="caption">
+            <li class="bg-date">
+                <div class="caption font-white">
                     <h1>6分钟约会</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
-                </a>
             </li>
         </ul>
     </div>
@@ -77,18 +68,18 @@
         overflow-y:scroll; 
     }
     .game-view{
-        margin-top:192px;
-        margin-bottom:60px;
+        margin-top: 360px;
+        margin-bottom:120px;
     }
     .caption{
         text-align: right;
-        margin: 55px 35px 0 0;
+        margin: 60px 40px 0 0;
     }
     .caption h1{
-        font-size:1.5em;
+        font-size:46px;
     }
     .caption p{
-        font-size: 1em;
+        font-size: 30px;
         margin-right:0;
         animation:Shake 0.5s linear 0.5s infinite alternate;
         -moz-animation: Shake 0.5s linear 0.5s infinite alternate;
@@ -115,56 +106,56 @@
         100%{margin-right:0 }
     }
     .bg-langren{
-        background: url(./bg-img/langrensha.jpg) no-repeat;
-        background-size:150px;
+        background: url(../../assets/bg-img/langrensha.jpg) no-repeat;
+        background-size:250px;
         background-color:rgba(31,28,45,1);
         background-position: 20px;
     }
     .bg-huahua{
-        background: url(./bg-img/nihuawocai.jpeg) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/nihuawocai.jpeg) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(255,255,255,1);
     }
     .bg-wodi{
-        background: url(./bg-img/wodi.jpeg) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/wodi.jpeg) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(248,115,117,1);
     }
     .bg-shaizi{
-        background: url(./bg-img/shaizi.png) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/shaizi.png) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(23,0,36,1);
     }
     .bg-nishuo{
-        background: url(./bg-img/nishuowocai.jpeg) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/nishuowocai.jpeg) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(211,226,132,1);
     }
     .bg-ox{
-        background: url(./bg-img/ox.jpeg) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/ox.jpeg) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(224,227,205,1);
     }
      .bg-killer{
-        background: url(./bg-img/killer.jpeg) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/killer.jpeg) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(238,6,87,1);
         background-position: 20px;
     }
      .bg-she{
-        background: url(./bg-img/she.jpeg) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/she.jpeg) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(194,204,173,1);
     }
     .bg-date{
-        background: url(./bg-img/date.jpeg) no-repeat;
-        background-size:auto 150px;
+        background: url(../../assets/bg-img/date.jpeg) no-repeat;
+        background-size:auto 250px;
         background-color:rgba(9,78,103,1);
     }
     .game-list li{
-        height: 150px;
+        height: 250px;
         width:100%;
-        margin:2px 0;
+        margin:4px 0;
     }
     .game-list a{
         color:#ffffff;
@@ -175,6 +166,9 @@
     }
     .font-black{
         color: #000000;
+    }
+    .font-white{
+        color:#ffffff;
     }
 </style>
  <script type='text/ecmascript6'>
@@ -189,10 +183,21 @@
             banner,
             userinfo
         },
+        data(){
+            return{
+                title:'Game'
+            }
+        },
         methods:{
             goWolfKill(){
                 this.$router.push('/gowolf');
+            },
+            setTitle(){
+                this.$store.commit('updateTitle',this.title);
             }
+        },
+        mounted(){
+            this.setTitle();
         }
         
     }

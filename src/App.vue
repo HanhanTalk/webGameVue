@@ -1,32 +1,17 @@
 
 <template>
   <div class="container">
-    <myhead @transferEvent="setHide"></myhead>
     <router-view></router-view>
-    <userMenu :isHidden="isHide" @transferEvent="setHide"></userMenu>
   </div>
 </template>
 
 
  <script type='text/ecmascript6'>
- 
-import myhead from './components/head.vue'
-import userMenu from './components/usermenu.vue'
+
 export default {
   name:'App',
-  components:{
-    myhead,
-    userMenu
-  },
-  data(){
-    return {
-      isHide:true
-    }
-  },
-  methods:{
-    setHide(e){
-      this.isHide = e;
-    }
+  mounted(){
+    this.$store.commit('updateTitle','Game');
   }
 }
 </script>
@@ -57,28 +42,6 @@ body{
     background: #2c3e50;
     box-sizing: border-box;
 }
-/* .main-box{
-  text-align: center;
-}
-.btn{
-  margin:15px 0;
-  border:none;
-  height:50px;
-  width:200px;
-  color:#ffffff;
-  font-size:1em;
-  outline:none;
-}
-.btn-circle{
-  border-radius:10em; 
-}
-.color{
-  background:#42b983;
-}
-.bg{
-  border:2px solid #ffffff;
-  background:transparent;
-} */
 h1, h2 {
   font-weight: normal;
   margin: 0;
@@ -101,8 +64,15 @@ p{
   margin:0;
   padding:0;
 }
+.txt{
+    font-size: 40px;
+}
+.txt-2{
+    font-size: 30px;
+    color:#dddddd;
+}
 .fixed-box{
-    padding-top:60px;
+    padding-top:120px;
     box-sizing: border-box;
 }
 </style>

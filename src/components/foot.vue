@@ -20,28 +20,28 @@
         position: fixed;
         bottom: 0;
         width:100%;
-        height:60px;
+        height:120px;
         background:rgba(47,59,73,1);
     }
     .foot ul{
-        width: 300px;
-        height:60px;
+        width: 600px;
+        height:120px;
         margin:0 auto;
         box-sizing: border-box;
     }
     .foot li{
-        width:60px;
-        height: 60px;
+        width:120px;
+        height: 120px;
         text-align: center;
         margin:0;
-        padding:5px 0;
+        padding:10px 0;
         color:#ffffff;
     }
     .foot li span{
-        font-size:1.8em;
+        font-size:50px;
     }
     .foot li p{
-        font-size:0.5em ;
+        font-size:26px ;
     }
     .foot-btn-list li:nth-child(1)>span::before {
         content: '\f11b';

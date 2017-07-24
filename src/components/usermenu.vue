@@ -2,7 +2,7 @@
     <div class="side">
         <div class="user-menu-shade" v-if="!isHidden" v-on:click="shadeClick">
         </div>
-        <div class="user-menu" v-bind:class="{ hidden : isHidden}">
+        <div class="user-menu txt" v-bind:class="{ hidden : isHidden}">
             <div class="user-menu-head">Game</div>
             <div class="menu-userinfo">
                 <img :src="$store.state.userInfo.portrait">
@@ -40,7 +40,6 @@
         width:70%;
         background:rgba(46,72,86,1);
         color:#cccccc;
-        font-size:20px;
          z-index:10002;
         position:fixed;
         left:0;
@@ -55,19 +54,19 @@
         left:-100%;
     }
     .user-menu-head{
-    font-size: 1.5em;
+    font-size:60px;
     text-align: center;
     color: #ffffff;
     border-bottom: 2px solid rgba(62, 91, 105, 1);
     }
     .menu-userinfo{
-        margin-top:20px; 
+        margin-top:60px; 
         text-align: center;
     }
     .menu-userinfo img{
-        height:120px;
-        width: 120px;
-        border-radius: 5px;
+        height:240px;
+        width: 240px;
+        border-radius: 10px;
     }
     .user-menu-list{
         position: absolute;
@@ -77,34 +76,34 @@
     .user-menu-list li{
         display: block;
         width:100%;
-        height:50px;
+        height:100px;
         background:rgba(62,91,105,1);
-        margin:2px 0; 
+        margin:4px 0; 
         box-sizing: border-box;
-        padding:12px 15px;
+        padding:24px 30px;
         
     }
     .user-menu-list span{
-        margin-right:5px;
+        margin-right:10px;
     }
     .user-gold{
-        width:20px;
-        height:20px;
+        width:40px;
+        height:40px;
         display: inline-block;
         background-image: url('../assets/gold.jpg');
-        background-size:20px 20px;
+        background-size:40px 40px;
         /* background-position:top left; */
     }
     .user-item-info{
         width:50%;
         margin: 0 auto;
-        padding: 10px 0;
+        padding: 20px 0;
         position: relative;
     }
     .user-item-info span{
          position: relative;
-         top:-3px;
-         left:5px;
+         top:-6px;
+         left:10px;
     }
     .circle{
         border-radius: 50%;

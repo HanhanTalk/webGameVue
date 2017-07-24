@@ -23,7 +23,7 @@ router.post('/signup', function(req, res) {
     return util.resJson(res, '账号或密码不能为空');
   }
 
-  if (password.length < 4) {
+  if (password.length < 6) {
     return util.resJson(res, '密码不能少于6位');
   }
   

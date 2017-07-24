@@ -4,20 +4,21 @@ import landing from './components/landing.vue'
 import login from './components/login.vue'
 import reg from './components/reg.vue'
 import home from './components/home.vue'
-import gowolf from './components/goWolfKill.vue'
-import gameinfo from './components/gameinfo.vue'
-import friend from './components/friend.vue'
-import find from './components/find.vue'
-import self from './components/self.vue'
-import rank from './components/rank.vue'
+import gowolf from './components/games/wolfkill/goWolfKill.vue'
+import gameinfo from './components/games/wolfkill/gameinfo.vue'
+import friend from './components/friends/friend.vue'
+import find from './components/find/find.vue'
+import self from './components/self/self.vue'
+import rank from './components/rank/rank.vue'
 import chat from './components/friends/chat.vue'
 import chatRoom from './components/friends/chatRoom.vue'
 import createChat from './components/friends/createChat.vue'
 import friendAdd from './components/friends/friendAdd.vue'
 import myFriend from './components/friends/myFriend.vue'
-import waitRoom from './components/waitRoom.vue'
-import wolfRoom from './components/wolfRoom.vue'
+import waitRoom from './components/games/gameroom/waitRoom.vue'
+import wolfRoom from './components/games/gameroom/wolfRoom.vue'
 import game from './components/games/game.vue'
+import huacaiRoom from './components/games/gameroom/huacaiRoom.vue'
 
 Vue.use(VueRouter)
 //路由配置
@@ -44,7 +45,12 @@ const router = new VueRouter({
             name:'home',
             component:home,
             children:[
-                {path:'game',name:'game',component:game},
+                {path:'game',name:'game',component:game,
+                children:[
+                    {path:'wolfRoom',name:'wolfRoom',component:wolfRoom},
+                    {path:'huacaiRoom',name:'huacaiRoom',component:huacaiRoom}
+            ]
+            },
                 {path:'find',name:'find',component:find},
                 {path:'self',name:'self',component:self},
                 {path:'rank',name:'rank',component:rank},
@@ -53,7 +59,8 @@ const router = new VueRouter({
                     {path:'chat',name:'chat',component:chat},
                     {path:'createChat',name:'createChat',component:createChat},
                     {path:'myFriend',name:'myFriend',component:myFriend},
-                    {path:'friendAdd',name:'friendAdd',component:friendAdd}
+                    {path:'friendAdd',name:'friendAdd',component:friendAdd},
+                    {path:'chatRoom',name:'chatroom',component:chatRoom}
                 ]
             }
             ]
@@ -106,11 +113,6 @@ const router = new VueRouter({
             path:'/waitRoom',
             name:'waitRoom',
             component:waitRoom
-        },
-        {
-            path:'/wolfRoom',
-            name:'wolfRoom',
-            component:wolfRoom
         }
     ]
 })

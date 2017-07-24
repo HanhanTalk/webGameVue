@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://192.168.1.12:3000';
+axios.defaults.baseURL = 'http://localhost:3000';
 axios.defaults.withCredentials = true;
 axios.defaults.crossDomain = true;
 
@@ -49,9 +49,12 @@ const signIn = (param) => {
 const signOut = (param) => {
   return _post('/users/signout', param);
 }
-
+const info = (param) => {
+   return _get('/users/info',param);
+}
 export default {
   signUp,
   signIn,
-  signOut
+  signOut,
+  info
 }
