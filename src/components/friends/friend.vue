@@ -6,8 +6,8 @@
                   <a href="javascript:;" @click="friendAdd"><span class="fa fa-user-plus"></span></a>
               </div>
               <div class="nav-btns">
-                <button type="button" class="nav-btn active" @click="chat">聊天</button>
-                <button type="button" class="nav-btn" @click="myFriend">好友</button>
+                <button type="button" class="nav-btn" :class="{'active':isActive}" @click="chat">聊天</button>
+                <button type="button" class="nav-btn" :class="{'active':!isActive}" @click="myFriend">好友</button>
               </div>
               <div class="nav-right">
                 <a href="javascript:;" @click="createChat"><span class="fa fa-commenting-o"></span></a>
@@ -15,7 +15,6 @@
           </div>
           <router-view></router-view>
       </div>
-      <foot></foot>
   </div>
 </template>
  <style>
@@ -27,35 +26,35 @@
         position: relative;
      }
      .page-nav{
-       height: 50px;
-       background:url('./games/bg-img/nav.jpg') no-repeat;
+       height: 100px;
+       background:url('../../assets/bg-img/nav.jpg') no-repeat;
        background-size:100%;
        box-sizing: border-box;
-       padding:0 15px;
+       padding:0 20px;
        position: relative;
-       line-height: 50px;
      }
      .page-nav a{
        color:#727272;
      }
      .page-nav span{
-       font-size:22px;
+       font-size:50px;
      }
      .nav-left{
         float:left;
      }
      .nav-left,.nav-right{
-        width: 50px;
+        width: 100px;
        text-align: center;
+       line-height: 100px;
      }
      .nav-btns{
-    width: 140px;
-    height: 50px;
-    padding: 10px 0;
-    box-sizing: border-box;
-     position: absolute;
-      left: 50%;
-       margin-left: -70px;
+        width: 300px;
+        height: 100px;
+        padding: 20px 0;
+        box-sizing: border-box;
+        position: absolute;
+        left: 50%;
+        margin-left: -150px;
      }
      .nav-btns button:nth-child(1){
        border-radius: 4px 0 0 4px;
@@ -65,12 +64,14 @@
      }
 
      .nav-btn{
-       height:30px;
-       width:70px;
-       float:left;
-       border: 1px solid #dddddd;
-       margin: 0;
-       background:transparent; 
+      height: 60px;
+      width: 150px;
+      float: left;
+      border: 1px solid #dddddd;
+      margin: 0;
+      background: transparent;
+      font-size:30px;
+      outline: none;
      }
 
      .nav-right{
@@ -82,22 +83,33 @@
      }
     </style>
  <script type="text/javascript6">
- import foot from './foot.vue'
 export default {
   name:'friend',
-  components:{ foot },
+  data(){
+    return{
+      isActive:true,
+      title:'我的好友'
+    }
+  },
   methods:{
     friendAdd(){
         this.$router.push('/home/friend/friendAdd');
     },
     chat(){
+        this.isActive = true;
         this.$router.push('/home/friend/chat');
+        this.setTitle();
+        
     },
     createChat(){
         this.$router.push('/home/friend/createChat');
     },
     myFriend(){
+        this.isActive = false;
         this.$router.push('/home/friend/myFriend');
+    },
+    setTitle(){
+       this.$store.commit('updateTitle',this.title)
     }
   },
   mounted:function(){

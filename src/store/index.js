@@ -17,13 +17,18 @@ const state = {
         gold:null,
         flower:null,
         portrait:null
-        }
+        },
+        //title
+        title:null
     }
     //更新状态
 const mutations = {
         //更新用户信息
         updateUserInfo(state,newUserInfo){
             state.userInfo = newUserInfo;
+        },
+        updateTitle(state,newTitle){
+            state.title = newTitle;
         }
     }
 

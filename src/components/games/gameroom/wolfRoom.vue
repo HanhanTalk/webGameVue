@@ -97,7 +97,7 @@
       padding:50px 0;
       width:100%;
       box-sizing: border-box;
-      background:url(../assets/game-bg/langrensha-bg.jpeg);
+      background:url(../../../assets/game-bg/langrensha-bg.jpeg);
     }
     .wolfRoom ul{
       margin:30px 5px 0 5px;
@@ -155,7 +155,7 @@
     }
    .wolfRoom .death{
       border:2px solid #727272;
-      background:url(../assets/game-bg/death_meitu_1.jpg) no-repeat;
+      background:url(../../../assets/game-bg/death_meitu_1.jpg) no-repeat;
       background-size:100%;
       opacity: 0.6;
    }
@@ -206,8 +206,8 @@
    }
 </style>
  <script type="text/ecmascript6">
- import client from '../api/client'
- import wolf from '../api/game/wolf'
+ import client from '../../../api/client'
+ import wolf from '../../../api/game/wolf'
 export default {
   name:'wolfRoom',
   data(){

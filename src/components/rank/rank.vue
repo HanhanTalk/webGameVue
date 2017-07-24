@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <button @click="test">test</button>
+    
   </div>
 </template>
 <style>
@@ -11,22 +11,19 @@
     }
 </style>
  <script type="text/javascript6">
-  import foot from './foot.vue'
-  import client from '../api/client'
 export default {
   name:'rank',
   data(){
     return{
-      client
+      title:'游戏排行榜'
     }
   },
-  components:{
-      foot
+  mounted(){
+    this.setTitle();
   },
   methods:{
-    test(){
-      var msg = 'hello';
-      client.test2(msg);
+    setTitle(){
+       this.$store.commit('updateTitle',this.title);
     }
   }
 }

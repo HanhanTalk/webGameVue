@@ -49,9 +49,8 @@ var app = new Vue({
             //检查是否存在session
             api.info().then((response) => {
                 if(!response){
-                    if(window.location.hash == '#/'){
-                        alert('请你先登录');
-                        this.$router.push('/login');
+                    if(window.location.hash !== '#/login'){
+                        this.$router.push('/');
                     }
                 } else{
                     this.getUserInfo(response);

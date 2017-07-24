@@ -90,8 +90,8 @@
   }
 </style>
  <script type="text/ecmascript6">
- import loading from './loading.vue'
- import client from '../api/client'
+ import loading from '../../loading.vue'
+ import client from '../../../api/api'
 export default {
   name:'waitRoom',
   data(){
@@ -113,7 +113,7 @@ export default {
         this.onReady = true;
         document.getElementById('btn').disabled = true;
         setTimeout(function(){
-             _this.$router.push('/wolfRoom');
+             _this.$router.push('/game/wolfRoom');
         },3000)
     }
   },

@@ -76,25 +76,25 @@
         color:#cccccc;
     } */
     .chooselist div:nth-child(2){
-        background:url('./games/game-img/basic.jpeg') no-repeat;
+        background:url('../../../assets/game-img/basic.jpeg') no-repeat;
         background-size:150px auto; 
         background-color:#ffffff;
         color:#2b2b2b;
     }
     .chooselist div:nth-child(3){
-        background:url('./games/game-img/normal.jpeg') no-repeat;
+        background:url('../../../assets/game-img/normal.jpeg') no-repeat;
         background-size:100% 100%;
         color:#ffffff;
     }
     .chooselist div:nth-child(4){
-        background:url('./games/game-img/master.jpeg') no-repeat;
+        background:url('../../../assets/game-img/master.jpeg') no-repeat;
         background-size:100% 100%;
         color:#cccccc;
      }
   </style>
  <script type="text/ecmascript6">
 //  import backBtn from './backbtn.vue'
- import client from '../api/client'
+ import client from '../../../api/client'
 export default {
     name:'gowolf',
     data(){

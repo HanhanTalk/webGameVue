@@ -6,11 +6,11 @@
 </template>
 <style>
     .banner{
-        height:40px;
+        height:80px;
         background:rgba(19,22,29,1);
         position: relative;
         box-sizing: border-box;
-        padding: 7px;
+        padding: 20px;
         color:#ffffff;
         z-index:10;
 
@@ -18,15 +18,17 @@
     .banner-icon{
         display: block;
         float: left;
-        width:25px;
-        height:25px;
+        width:40px;
+        height:40px;
         text-align: center;
-        line-height: 25px;
+        line-height: 40px;
         border-radius:20px; 
         background:rgba(65,170,28,1);
+        font-size: 30px;
     }
     .banner-txt{
         width: 90%;
+        font-size: 30px;
     }
 </style>
 <script>

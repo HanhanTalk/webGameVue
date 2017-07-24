@@ -1,12 +1,11 @@
 <template>
     <div class="page-list">
         <ul>
-            <li>
-                <div class="floatL"><img src="../games/game-info-img/001.jpeg"></div>
-                <div class="page-color-line floatL"></div>
+            <li v-for="user in userlist" :key="user.id">
+                <div class="floatL"><img :src="user.portrait"></div>
                 <div class="page-list-item">
-                    <div class="page-list-user">Hansir</div>
-                    <span class="friend-state state-offline">离线</span>
+                    <div class="page-list-user txt">{{user.nick}}</div>
+                    <span class="friend-state state-online">{{user.state}}</span>
                 </div>
             </li>
         </ul>
@@ -19,10 +18,13 @@ export default {
       name:'myFriend',
       data(){
           return {
-              friendList:[
+              userlist:[
                   {
-                      username:'Hansir',
-                      comment:['今天好热啊']
+                      nick:'Hansir',
+                      portrait:'./src/assets/userpic/user-02.jpg',
+                      state:'在线',
+                      comment:['今天好热啊'],
+
                   }
               ]
           }
@@ -32,13 +34,14 @@ export default {
       
 <style>
     .friend-state{
-        display: inline-block;
-        width:50px;
-        height:20px;
+        width:100px;
+        height:40px;
         text-align: center;
-        line-height: 20px;
-        border-radius: 4px;
+        line-height: 40px;
+        border-radius: 6px;
         color:#ffffff;
+        font-size:26px;
+        display: inline-block;
     } 
     .state-online{
         background:rgba(40,202,66,1);

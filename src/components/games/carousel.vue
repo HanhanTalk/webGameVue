@@ -17,7 +17,7 @@
 </template>
  <style>
   .carousel{
-       height:200px;
+         height:340px;
          width:100%;
          position: relative;
          margin:5px 0;
@@ -26,15 +26,15 @@
      .carousel-ctrl{
          position: absolute;
          bottom:0;
-         right:20px;
+         right:40px;
          z-index:11;
      }
      .carousel-ctrl li{
-        margin:0 2px;
+        margin:0 6px;
      }
      .carousel-content{
          width: 500%;
-         height: 200px;
+         height: 340px;
          position: absolute;
          top: 0;
          left: 0;
@@ -62,12 +62,12 @@
          height:100%;
      }
      .dot{
-         display: inline-block;
-         width:6px;
-         height:6px;
-         margin:0 2px;
-         background: #ffffff;
-         border-radius: 2px;
+        width: 10px;
+        height: 10px;
+        margin: 0 2px;
+        background: #ffffff;
+        border-radius: 2px;
+        display: inline-block;
      }
      .active{
        background:#545454;
@@ -79,11 +79,11 @@ export default {
   data(){
     return {
         imgdata:[
-            {imageSrc:'./src/components/games/carousel-img/001.png'},
-            {imageSrc:'./src/components/games/carousel-img/002.png'},
-            {imageSrc:'./src/components/games/carousel-img/003.png'},
-            {imageSrc:'./src/components/games/carousel-img/004.png'},
-            {imageSrc:'./src/components/games/carousel-img/005.png'}
+            {imageSrc:'./src/assets/carousel-img/001.png'},
+            {imageSrc:'./src/assets/carousel-img/002.png'},
+            {imageSrc:'./src/assets/carousel-img/003.png'},
+            {imageSrc:'./src/assets/carousel-img/004.png'},
+            {imageSrc:'./src/assets/carousel-img/005.png'}
         ],
         location:0,
         isActive:0

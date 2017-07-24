@@ -24,16 +24,16 @@
 </template>
 <style>
     .login{
-        padding-top: 200px;
+        padding-top: 400px;
     }
     .input-head h1{
-        font-size:1.5em;
+        font-size:48px;
         color:#ffffff;
         margin-left:15%;
     }
     .input-user{
     width: 80%;
-    height: 200px;
+    height: 400px;
     position: relative;
     margin: 0 auto;
     }
@@ -48,64 +48,59 @@
     top:0;
     }
     .input{
-    border-radius: 0 4px 4px 0;
+    border-radius: 0 8px 8px 0;
     border: none;
-    height: 40px;
-    width: 165px;
+    height: 80px;
+    width: 330px;
     box-sizing: border-box;
-    padding-left:5px;
-    font-size:1em;
+    padding-left: 20px;
+    font-size: 40px;
     }
     .input-btn{
-    width:60px;
-    height: 100px;
+    width:120px;
+    height: 200px;
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     color: #ffffff;
-    margin-top: 20px;
-    font-size:1em;
+    margin-top: 40px;
+    font-size:40px;
     }
     .btn-red{
         background:#F44336;
     }
     .input-link{
+    font-size: 36px;
     position: absolute;
     bottom: 50px;
     right: 0;
     }
     .input-box{
-        height:40px;
-        margin:20px auto;
+        height:80px;
+        margin:40px auto;
     }
     .input-box span{
+        width: 80px;
+        height: 80px;
         display: block;
-        float:left;
-        width: 40px;
-        background:#cccccc;
-        height:40px;
-        border-radius: 4px 0 0 4px;
-        color:#ffffff;
-        font-size: 1.5em;
+        float: left;
+        border-radius: 8px 0 0 8px;
+        color: #ffffff;
+        font-size: 40px;
         text-align: center;
-        line-height: 40px;
-
+        line-height: 80px;
+        background: #cccccc;
     }
 </style>
 <script type = "text/ecmascript6">
     import userinfoData from '../data/userinfo'
-    import '../script/sha1.min.js'
     import api from '../api/api'
-    // import loading from './loading.vue'
-    //引入mapGtters
-    // import { mapGetters } from 'vuex'
-    var userinfo = userinfoData;
+    // var userinfo = userinfoData;
     export default {
         name:'login',
         data(){
             return{
                 accout:'',
-                password:'',
-                userinfo
+                password:''
             }
 
         },
@@ -119,6 +114,7 @@
                 }
             },
             loginIn(){
+                //调用api登录接口
                 api.signIn({
                     name: this.accout,
                     password: this.password
