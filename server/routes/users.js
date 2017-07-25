@@ -1,6 +1,7 @@
 var express = require('express');
 
 var util = require('../util');
+var _response = require('../util/response');
 var db = require('../data/db');
 
 var router = express.Router();
@@ -73,15 +74,7 @@ router.post('/signin', function(req, res) {
       throw '账号或密码错误'; 
     }
     req.session.userName = name;
-    return util.resJson(res, null, {
-        uid: response._id,
-        accout: name,
-        nick: name,
-        ulevel: 1,
-        gold: 0,
-        flower: 0,
-        portrait:'./src/assets/userpic/anonym.jpg'
-    });
+    return util.resJson(res, null, _response.userInfo(response));
   })
   .catch(function(err) {
     if (typeof err === 'string') {
@@ -98,16 +91,20 @@ router.post('/signin', function(req, res) {
  */
 router.get('/info', function(req, res) {
   if (req.session.userName) {
-    return util.resJson(res, null, {
-        uid: '00023203',
-        accout: req.session.userName,
-        nick: req.session.userName,
-        ulevel: '18',
-        gold: '1000',
-        flower: '2',
-        portrait:'./src/assets/userpic/user-01.jpg'});
+    db.User.findOne({
+      name: req.session.name
+    }).then(function(response) {
+      util.resJson(res, null, _response.userInfo(response));
+    }).catch(function(err) {
+      if (typeof err === 'string') {
+        util.resJson(res, err);
+      } else {
+        util.resJson(res, JSON.stringify(err));
+      }
+    });
+  } else {
+    util.resJson(res, null, '');
   }
-  return util.resJson(res, null, null);
 })
 
 
