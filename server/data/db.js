@@ -20,7 +20,7 @@ var User = mongoose.model('user', {
 });
 
 
-var Firend = mongoose.model('firend', {
+var Friend = mongoose.model('friend', {
   myId: String,
   friendId: String
 });
@@ -28,5 +28,5 @@ var Firend = mongoose.model('firend', {
 
 module.exports = {
   User: User,
-  Firend: Firend
+  Friend: Friend
 }

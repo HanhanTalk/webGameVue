@@ -17,9 +17,9 @@ router.use('/', util.needAuth);
  * 添加好友
  */
 router.post('/add', function(req, res) {
-  var userId = req.body._id;
+  var userId = req.body.friendId;
   if (!userId) {
-    return util.resJson(req, '添加的好友不存在');
+    return util.resJson(res, '添加的好友不存在');
   }
 
   var friendDoc = {};
@@ -31,13 +31,13 @@ router.post('/add', function(req, res) {
       throw '添加的好友不存在';
     }
     friendDoc = response;
-    return db.findOne({
-      name: req.session.name
+    return db.User.findOne({
+      _id: req.session.userId
     });
   }).then(function(response) {
     myDoc = response;
     var myId = response._id;
-    return db.Firend.findOne({
+    return db.Friend.findOne({
       myId: myId,
       friendId: friendDoc._id
     });
@@ -45,9 +45,9 @@ router.post('/add', function(req, res) {
     if (response) {
       throw '您已经添加过该好友';
     }
-    var _doc = new db.Firend({
-      myId: myDoc.myId,
-      friendId: friendDoc
+    var _doc = new db.Friend({
+      myId: myDoc._id,
+      friendId: friendDoc._id
     });
     return _doc.save();
   }).then(function() {
@@ -66,11 +66,11 @@ router.post('/add', function(req, res) {
  * 删除好友
  */
 router.post('/remove', function(req, res) {
-  var usreId = req.body._id;
+  var usreId = req.body.friendId;
   if (!userId) {
     return util.resJson(res, '删除的好友id不存在');
   }
-  db.Firend.remove({
+  db.Friend.remove({
     myId: req.session.userId,
     friendId: userId
   }).then(function(response) {
@@ -95,8 +95,9 @@ router.get('/all', function(req, res) {
   }).then(function(docs) {
     var _ids = [];
     docs.forEach(function(item) {
-      _ids.push(item._id);
+      _ids.push(String(item.friendId));
     });
+    console.log(_ids);
     return db.User.find({
       _id: {$in: _ids}
     }, { 

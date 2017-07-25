@@ -8,10 +8,11 @@ function resJson(res, err, data) {
 
 
 function needAuth(req, res, next) {
-  if (req.session.name) {
+  if (req.session.userName) {
     next();
+  } else {
+    resJson(res, '请登陆后再执行此操作');
   }
-  resJson(res, '请登陆后再执行此操作');
 }
 
 

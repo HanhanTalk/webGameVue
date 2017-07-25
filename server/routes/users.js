@@ -93,7 +93,7 @@ router.post('/signin', function(req, res) {
 router.get('/info', function(req, res) {
   if (req.session.userName) {
     db.User.findOne({
-      name: req.session.name
+      name: req.session.userName
     }).then(function(response) {
       util.resJson(res, null, _response.userInfo(response));
     }).catch(function(err) {
