@@ -49,7 +49,19 @@ var app = new Vue({
             //检查是否存在session
             api.info().then((response) => {
                 if(!response){
-                    if(window.location.hash !== '#/login'){
+                    //不需要跳转的页面
+                    var _notNeedAuthlist = [
+                        '#/login',
+                        '#/reg'
+                    ];
+                    var needAuth = true;
+                    //遍历页面列表，如果当前页面存在于列表中，不执行跳转
+                    _notNeedAuthlist.forEach(function(item) {
+                      if (window.location.hash === item) {  
+                        needAuth = false;      
+                      }
+                    });
+                    if (needAuth) {
                         this.$router.push('/');
                     }
                 } else{

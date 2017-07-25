@@ -1,8 +1,8 @@
 <template>
     <div class="box">
         <myhead @transferEvent="setHide"></myhead>
-        <router-view></router-view>
         <userMenu :isHidden="isHide" @transferEvent="setHide"></userMenu>
+         <router-view></router-view>
         <foot></foot>
     </div>
 </template>

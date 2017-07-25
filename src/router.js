@@ -19,7 +19,8 @@ import waitRoom from './components/games/gameroom/waitRoom.vue'
 import wolfRoom from './components/games/gameroom/wolfRoom.vue'
 import game from './components/games/game.vue'
 import huacaiRoom from './components/games/gameroom/huacaiRoom.vue'
-
+import gameroom from './components/games/gameroom/gameroom.vue'
+import test from './components/games/gameroom/test.vue'
 Vue.use(VueRouter)
 //路由配置
 //如果需要添加页面，就在这里添加路由
@@ -45,12 +46,7 @@ const router = new VueRouter({
             name:'home',
             component:home,
             children:[
-                {path:'game',name:'game',component:game,
-                children:[
-                    {path:'wolfRoom',name:'wolfRoom',component:wolfRoom},
-                    {path:'huacaiRoom',name:'huacaiRoom',component:huacaiRoom}
-            ]
-            },
+                {path:'game',name:'game',component:game},
                 {path:'find',name:'find',component:find},
                 {path:'self',name:'self',component:self},
                 {path:'rank',name:'rank',component:rank},
@@ -65,54 +61,31 @@ const router = new VueRouter({
             }
             ]
         },
-        // {
-        //     path:'/friend',
-        //     name:'friend',
-        //     component:friend,
-        //     children:[
-        //         {path:'chat',name:'chat',component:chat},
-        //         {path:'createChat',name:'createChat',component:createChat},
-        //         {path:'myFriend',name:'myFriend',component:myFriend},
-        //         {path:'friendAdd',name:'friendAdd',component:friendAdd}
-        //     ]
-        // },
+        {   
+            path:'/gameroom',
+            name:'gameroom',
+            component:gameroom,
+            children:[
+                {path:'test/:id',name:'test',component:test},
+                {path:'waitRoom/:id',name:'waitRoom',component:waitRoom},
+                {path:'huacaiRoom/:id',name:'huacaiRoom',component:huacaiRoom},
+                {path:'wolfRoom/:id',name:'wolfRoom',component:wolfRoom}
+            ]
+        },
         {
             path:'/chatRoom',
             name:'chatRoom',
             component:chatRoom
         },
-        //  {
-        //     path:'/find',
-        //     name:'find',
-        //     component:find
-        // },
-        //  {
-        //     path:'/self',
-        //     name:'self',
-        //     component:self
-        // },
-        //  {
-        //     path:'/rank',
-        //     name:'rank',
-        //     component:rank
-        // },
         {
             path:'/gowolf',
             name:'gowolf',
             component:gowolf
-            // children:[
-            //     {path:'gameinfo', name: 'gameinfo', component:gameinfo}
-            // ]
         },
         {
             path:'/gowolf/gameinfo',
             name:'gameinfo',
             component:gameinfo
-        },
-        {
-            path:'/waitRoom',
-            name:'waitRoom',
-            component:waitRoom
         }
     ]
 })
