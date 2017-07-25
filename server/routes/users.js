@@ -74,6 +74,7 @@ router.post('/signin', function(req, res) {
       throw '账号或密码错误'; 
     }
     req.session.userName = name;
+    req.session.userId = response._id;
     return util.resJson(res, null, _response.userInfo(response));
   })
   .catch(function(err) {

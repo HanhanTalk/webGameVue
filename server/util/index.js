@@ -16,5 +16,6 @@ function needAuth(req, res, next) {
 
 
 module.exports = {
-  resJson: resJson
+  resJson: resJson,
+  needAuth: needAuth
 }
