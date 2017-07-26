@@ -13,7 +13,28 @@ router.get('/', function(req, res, next) {
 
 
 /**
- * 注册用户
+ * @api {get} /users/signup 注册用户
+ * @apiName userSignup
+ * @apiGroup Users
+ *
+ * @apiParam {String} name 用户名.
+ * @apiParam {String} password 密码
+ *
+ * @apiSuccess {Boolean} data 注册成功.
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": true,
+ *       "data": true
+ *     }
+ * 
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": false,
+ *       "desc": "what error is happend"
+ *     }
  */
 router.post('/signup', function(req, res) {
   var name = req.body.name;
@@ -47,14 +68,35 @@ router.post('/signup', function(req, res) {
       if (typeof err === 'string') {
         util.resJson(res, err);
       } else {
-        util.resJson(res, JSON.stringify(err));
+        util.resJson(res, err.toString());
       }
     })
 });
 
 
 /**
- * 用户登陆
+ * @api {get} /users/signin 用户登陆
+ * @apiName userSignin
+ * @apiGroup Users
+ *
+ * @apiParam {String} name 用户名
+ * @apiParam {String} password 密码
+ *
+ * @apiSuccess {Boolean} data 登陆成功
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": true,
+ *       "data": true
+ *     }
+ * 
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": false,
+ *       "desc": "what error is happend"
+ *     }
  */
 router.post('/signin', function(req, res) {
   var name = req.body.name;
@@ -81,14 +123,42 @@ router.post('/signin', function(req, res) {
     if (typeof err === 'string') {
       util.resJson(res, err);
     } else {
-      util.resJson(res, JSON.stringify(err));
+      util.resJson(res, err.toString());
     }
   });
 });
 
 
 /**
- * 返回用户基本信息
+ * @api {get} /users/info   获得用户信息
+ * @apiName userInfo
+ * @apiGroup Users
+ *
+ *
+ * @apiSuccess {Object} data 登陆信息
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": true,
+ *       "data": {
+ *         uid: '23482342492312'                      // 用户id
+ *         name: 'Tony',                              // 用户名   
+ *         nick: '卖火财的小男生',                     // 昵称 
+ *         ulevel: 0,                                 // 等级
+ *         gold: 0,                                   // 金币
+ *         flower: 0,                                 // 鲜花
+ *         portrait: '',                              // 头像地址
+ *         onlineStatus: true                         // 在线状态
+ *       }
+ *     }
+ * 
+ * @apiErrorExample {json} Error-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": false,
+ *       "desc": "what error is happend"
+ *     }
  */
 router.get('/info', function(req, res) {
   if (req.session.userName) {
@@ -97,10 +167,11 @@ router.get('/info', function(req, res) {
     }).then(function(response) {
       util.resJson(res, null, _response.userInfo(response));
     }).catch(function(err) {
+      console.dir(err);
       if (typeof err === 'string') {
         util.resJson(res, err);
       } else {
-        util.resJson(res, JSON.stringify(err));
+        util.resJson(res, err.toString());
       }
     });
   } else {

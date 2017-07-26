@@ -56,7 +56,7 @@ router.post('/add', function(req, res) {
     if (typeof err === 'string') {
       util.resJson(res, err);
     } else {
-      util.resJson(res, JSON.stringify(err));
+      util.resJson(res, err.toString());
     }
   });
 });
@@ -79,7 +79,7 @@ router.post('/remove', function(req, res) {
     if (typeof err === 'string') {
       util.resJson(res, err);
     } else {
-      util.resJson(res, JSON.stringify(err));
+      util.resJson(res, err.toString());
     }
   })
 });
@@ -113,7 +113,7 @@ router.get('/all', function(req, res) {
     if (typeof err === 'string') {
       util.resJson(res, err);
     } else {
-      util.resJson(res, JSON.stringify(err));
+      util.resJson(res, err.toString());
     }
   })
 });
