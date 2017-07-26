@@ -13,7 +13,7 @@ router.get('/', function(req, res, next) {
 
 
 /**
- * @api {get} /users/signup 注册用户
+ * @api {post} /users/signup 注册用户
  * @apiName userSignup
  * @apiGroup Users
  *
@@ -75,7 +75,7 @@ router.post('/signup', function(req, res) {
 
 
 /**
- * @api {get} /users/signin 用户登陆
+ * @api {post} /users/signin 用户登陆
  * @apiName userSignin
  * @apiGroup Users
  *
@@ -142,14 +142,14 @@ router.post('/signin', function(req, res) {
  *     {
  *       "status": true,
  *       "data": {
- *         uid: '23482342492312'                      // 用户id
- *         name: 'Tony',                              // 用户名   
- *         nick: '卖火财的小男生',                     // 昵称 
- *         ulevel: 0,                                 // 等级
- *         gold: 0,                                   // 金币
- *         flower: 0,                                 // 鲜花
- *         portrait: '',                              // 头像地址
- *         onlineStatus: true                         // 在线状态
+ *         "uid": "23482342492312"                      // 用户id
+ *         "name": "Tony",                              // 用户名   
+ *         "nick": "卖火财的小男生",                     // 昵称 
+ *         "ulevel": 0,                                 // 等级
+ *         "gold": 0,                                   // 金币
+ *         "flower": 0,                                 // 鲜花
+ *         "portrait": "",                              // 头像地址
+ *         "onlineStatus": true                         // 在线状态
  *       }
  *     }
  * 
@@ -181,7 +181,18 @@ router.get('/info', function(req, res) {
 
 
 /**
- * 退出登陆
+ * @api {post} /users/signout 用户退出登陆
+ * @apiName userSignout
+ * @apiGroup Users
+ *
+ * @apiSuccess {Boolean} data 退出成功
+ * 
+ * @apiSuccessExample {json} Success-Response:
+ *     HTTP/1.1 200 OK
+ *     {
+ *       "status": true,
+ *       "data": true
+ *     }
  */
 router.post('/signout', function(req, res) {
   // 清空session
