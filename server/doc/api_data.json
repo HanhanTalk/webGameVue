@@ -144,7 +144,7 @@
   },
   {
     "type": "post",
-    "url": "/drawguess/join",
+    "url": "/room/drawguess/join",
     "title": "加入一个房间返回房间信息",
     "name": "drawguessJoin",
     "group": "Room",

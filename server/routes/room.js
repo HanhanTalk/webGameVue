@@ -15,7 +15,7 @@ var router = express.Router();
 router.use('/', util.needAuth);
 
 /**
- * @api {post} /drawguess/join 加入一个房间返回房间信息
+ * @api {post} /room/drawguess/join 加入一个房间返回房间信息
  * @apiName drawguessJoin
  * @apiGroup Room
  *
