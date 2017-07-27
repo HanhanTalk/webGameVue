@@ -143,6 +143,45 @@ define({ "api": [
     "groupTitle": "Friend"
   },
   {
+    "type": "post",
+    "url": "/drawguess/join",
+    "title": "加入一个房间返回房间信息",
+    "name": "drawguessJoin",
+    "group": "Room",
+    "success": {
+      "fields": {
+        "Success 200": [
+          {
+            "group": "Success 200",
+            "type": "Object",
+            "optional": false,
+            "field": "data",
+            "description": "<p>一个房间的信息</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "Success-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\": true,\n  \"data\": {\n    \"_id\": \"597a01e615296134a4385d2f\",       \n    \"roomId\": \"597a01e615296134a4385d2e\",          // 房间号\n    \"type\": \"drawGuess\",                           // 房间类型 'drawGuess'  'wolfKill'\n    \"status\": 1,\n    \"drawPlayerUid\": \"5974495ec17c35226882d3db\",   // 画画玩家的uid\n    \"__v\": 1,\n    \"drawData\": null,                              // 玩家选的词对象，包含词，词提示，和长度\n    \"drawWord\": null,                              // 画的数据\n    \"player\": [\n      \"5974495ec17c35226882d3db\",\n      \"dfio33452342342342342343\"\n     ]\n   }\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "examples": [
+        {
+          "title": "Error-Response:",
+          "content": "HTTP/1.1 200 OK\n{\n  \"status\": false,\n  \"desc\": \"what error is happend\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "version": "0.0.0",
+    "filename": "routes/room.js",
+    "groupTitle": "Room"
+  },
+  {
     "type": "get",
     "url": "/users/info",
     "title": "获得用户信息",
