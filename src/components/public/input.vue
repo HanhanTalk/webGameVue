@@ -4,17 +4,17 @@
         <button @click="clickInput" type="button" class="input-ctrl-btn circle retato">
             <span class="fa" :class="[manner ? 'fa-rss' : 'fa-pencil']"></span>
         </button>
-        <input class="input-middle-style" type="text" v-if="manner">
+        <input class="input-middle-style" type="text" v-if="manner" v-model="answerValue" placeholder="请输入你的答案">
         <button class="input-middle-style input-speak" type="button" v-if="!manner">按住说话</button>
-        <button @click="clickMore" type="button" class="input-ctrl-btn circle">
-            <span class="fa fa-plus"></span>
+        <button @click="clickSend" type="button" class="input-ctrl-btn circle">
+            OK
         </button>
       </div>
-        <div class="moreMenu" :class="{ 'moreMenu-hide':menuHide }">
+        <!-- <div class="moreMenu" :class="{ 'moreMenu-hide':menuHide }">
             <ul>
                 <li v-for="item in btnList" :key="item.id"><img :src="item.imgurl" alt="发图片"><span>{{item.name}}</span></li>
             </ul>
-        </div>  
+        </div>   -->
   </div>    
 </template>
 <script type="text/ecmascript6">
@@ -23,26 +23,30 @@ export default {
     data(){
         return{
             manner:false,
-            menuHide:true,
-            btnList:[
-                {
-                    imgurl:'./src/assets/input-img/img.png',
-                    name:'发图片'
-                },
-                 {
-                    imgurl:'./src/assets/input-img/egg.png',
-                    name:'扔鸡蛋'
-                },
-                 {
-                    imgurl:'./src/assets/input-img/rose.png',
-                    name:'送鲜花'
-                },
-                 {
-                    imgurl:'./src/assets/input-img/sign_out.png',
-                    name:'退出'
-                },
-            ]
+            answerValue:''
+            // menuHide:true,
+            // btnList:[
+            //     {
+            //         imgurl:'./src/assets/input-img/img.png',
+            //         name:'发图片'
+            //     },
+            //      {
+            //         imgurl:'./src/assets/input-img/egg.png',
+            //         name:'扔鸡蛋'
+            //     },
+            //      {
+            //         imgurl:'./src/assets/input-img/rose.png',
+            //         name:'送鲜花'
+            //     },
+            //      {
+            //         imgurl:'./src/assets/input-img/sign_out.png',
+            //         name:'退出'
+            //     },
+            // ]
+
         }
+    },
+    mounted(){
     },
     methods:{
         clickInput(){
@@ -52,12 +56,14 @@ export default {
                 this.manner = true;
             }
         },
-        clickMore(){
-            if(this.menuHide){
-                this.menuHide = false;
-            } else{
-                this.menuHide = true;
-            }
+        clickSend(){
+            this.$emit('answerEvent',this.answerValue);
+            this.answerValue = "";
+            // if(this.menuHide){
+            //     this.menuHide = false;
+            // } else{
+            //     this.menuHide = true;
+            // }
         }
     }
 
@@ -113,7 +119,7 @@ export default {
         height: 80px;
         width: 506px;
     }
-    .moreMenu{
+    /* .moreMenu{
         height:150px;
         border-top: 2px solid #727272;
         transition: height 0.5s;
@@ -137,6 +143,6 @@ export default {
     }
     .moreMenu-hide{
         height: 0px;
-    }
+    } */
 </style>
 
