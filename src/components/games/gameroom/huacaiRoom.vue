@@ -208,25 +208,17 @@ export default {
     methods:{
         gameStart(){
             var _this = this;
-            // this.sysInfo = {
-            //     title:'游戏提示',
-            //     content:'马上开始',
-            //     time:3
-            // };
-            // var _time = 3;
-            // var int = setInterval(function(){
-            //     _time --;
-            //     if(_time == 0){
-            //         clearInterval(int);
-            //     }
-            //      _this.sysInfo.time = _time;
-            // },1000);
-             this.chooseTime=5;
-             this.tipsTime=80;
+            //初始化一些游戏数据
+             this.chooseTime = 5;
+             this.tipsTime = 80;
+             this.Answer ={
+                    content:'',
+                    word:null,
+                    keyword:''
+                };
            setTimeout(function(){
              _this.chooseTimer();
              _this.onChooseWord();
-            //  _this.sysInfoShow = false;
            },3000);
         },
         //选词倒计时
@@ -253,14 +245,15 @@ export default {
                      _time --;
                      console.log(_time);
                 if(_time == 0){
-                    _this.tipsShow = false;
                     clearInterval(_this.drawTime);
+                     _this.tipsShow = false;
+                     _this.painerEnd();
                 }
                 _this.tipsTime = _time;
             },1000);
         },
-        //画画的玩家选择词
-
+    
+        //选词阶段
         onChooseWord(){
             var _this = this;
             setTimeout(function(){
@@ -270,69 +263,65 @@ export default {
             }
             },5000)
         },
+          //画画的玩家选择词
         playerChooseWord(word){
               this.Answer = word;
               this.chooseWordShow = false;
               this.OnDraw();
               clearInterval(this.chooseWordTime);
         },
+          //如果玩家没有选词，系统5秒后自动帮玩家随机选择
         sysChooseWord(){
-             //如果玩家没有选词，系统5秒后自动帮玩家随机选择
+              clearInterval(this.chooseWordTime);
               this.Answer = this.words[parseInt(4*Math.random())];
               this.chooseWordShow = false;
               this.OnDraw();
             },
-           //正在作画
+           //作画阶段
            OnDraw(){
             //显示提示
             //作画倒计时
             var _this = this;
             this.drawTimer();
-            setTimeout(function(){
-                _this.painerEnd();
-            },80000)
            },
-           //结束作画按钮
+           //结束作画
            painerEnd(){
-               clearInterval(this.drawTime);
-               var _index = 0;
+             clearInterval(this.drawTime);
                var _this = this;
-               var _round = 1 ;
-               this.userlist.forEach(function(item,index){
-                if(item.painer){
-                    if(_index < _this.userlist.length - 1){
-                        _index ++;
+               var _index = 0;  //几号玩家
+               var _round = 1 ; //回合数
+                this.userlist.forEach(function(item,index){
+                    if(item.painer){
+                        _index = index;
+                        item.painer = false;
                     }
-                    else{
-                        _index = 0;
-                        _round = 2;
+                })
+                //判断当前回合
+              if(_round == 1 ){
+                  if(_index < _this.userlist.length - 1){
+                          _index ++;
+                    }else{
+                         _index = 0;
+                          _round = 2;
+                        }
+                       _this.gameStart(); //跳到下一个人
+                    }else{
+                        _this.finish();
                     }
-                    item.painer = false;
-                }
-              });
+        
                 this.currentId = _index;
                 this.userlist[_index].painer = true;
-                this.Answer ={
-                    content:'',
-                    word:null,
-                    keyword:''
-                };
                 this.tipsShow = false;
-                if(_index == _this.userlist.length -1 && _round == 2){
-                    this.finish();
-                } else{
-                    this.gameStart();
-                }
            },
            //游戏结束
            finish(){
-
+             alert(游戏结束);
            },
         //遍历玩家列表
         playerEach(){ 
             this.userlist.forEach(function(item){
                 //当前用户this.$store.state.userInfo.uid
-                if(item.uid  == 2 ){
+                if(item.uid  == 1 ){
                     this.currentUser = item;
                 }
             }.bind(this));
