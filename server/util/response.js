@@ -12,6 +12,11 @@ function userInfo(userInfo) {
   return userInfo;
 }
 
+
+function roomInfo(roomStatus, usrInfo) {
+  
+}
+
 module.exports = {
   userInfo: userInfo
 }

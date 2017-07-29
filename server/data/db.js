@@ -31,11 +31,12 @@ var Room = mongoose.model('Room', {
   // _id为房间号
   roomId: Schema.Types.ObjectId,                        // 房间号
   type: String,                                         // 房间类型 'drawGuess'  'wolfKill'
-  status: Number,                                       // 1 为等待其他玩家加入  2 为正在游戏  3 游戏结束
+  status: Number,                                       // 0 为等待  1 选题状态 2 正在游戏  3 游戏结束
   player: Array,                                        // 所有本房间的玩家
   drawPlayerUid: String,                                // 画画玩家的uid
   drawWord: {type: Schema.Types.Mixed, default: null},  // 玩家选的词对象，包含词，词提示，和长度
-  drawData: {type: Schema.Types.Mixed, default: null}   // 画的数据
+  drawData: {type: Schema.Types.Mixed, default: null},  // 画的数据
+  winPlayerUid: String,                                 // 猜对玩家的uid
 });
 
 
