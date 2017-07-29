@@ -76,11 +76,10 @@
             </ul>
         </div>
         <!--系统提示-->
-        <!-- <div class="game-sys-info" v-if="sysInfoShow">
-                <h1>{{sysInfo.title}}</h1>
-                <p>{{sysInfo.content}}</p>
-                <span class="txt">{{sysInfo.time}}S</span>
-            </div>  -->
+         <div class="game-sys-info" v-if="sysInfoShow">
+            <h1>{{sysInfo.title}}</h1>
+            <p>{{sysInfo.content}}</p>
+         </div>  
         <!--input组件 -->
         <textInput @answerEvent="receiveInfo"></textInput>
         <!--选词-->
@@ -135,7 +134,10 @@ export default {
                 word: null,
                 keyword: ''
             },
-            sysInfo: {},
+            sysInfo: {
+                title: '提示',
+                content: '队友正在赶来'
+            },
             chooseWordShow: false,
             chooseTime: 5,
             tipsTime: 80,
@@ -172,51 +174,65 @@ export default {
         // TODO 如果store里没有房间信息，就提示开房不成功
 
         // 开房成功 就开始拉去信息
-        this.playerEach();
         // this.gameStart();
-        var self = this;
-
-        // 这里进行循环获得房间信息
-        function _loopGetRoomInfo() {
-            api.getDrawguessRoomInfo({
-                roomId: self.$route.params.id
-            }).then((response) => {
-                self.$store.commit('updateDrawGuessRoom', response);
-                self.loopTimer = setTimeout(() => {
-                    _loopGetRoomInfo()
-                }, 1000);
-            }).catch((err) => {
-                alert('请求出错' + err);
-            });
-        }
-        _loopGetRoomInfo();
+        this.startFetchRoomInfo();
     },
     unmounted() {
 
     },
     methods: {
+        startFetchRoomInfo() {
+            var self = this;
+            // 这里进行循环获得房间信息
+            function _loopGetRoomInfo() {
+                api.getDrawguessRoomInfo({
+                    roomId: self.$route.params.id
+                }).then((response) => {
+                    self.$store.commit('updateDrawGuessRoom', response);
+                    self.loopTimer = setTimeout(() => {
+                        _loopGetRoomInfo()
+                    }, 1000);
+                    self.playerEach();
+                    self.dispatchRoomStatus(response);
+                }).catch((err) => {
+                    alert('请求出错' + err);
+                });
+            }
+            _loopGetRoomInfo();
+        },
+        stopFetchRoomInfo() {
+            if (this.loopTimer) {
+                clearTimeout(this.loopTimer);
+            }
+        },
+        dispatchRoomStatus(response) {
+            this.sysInfoShow = false;
+            switch(response.status) {
+                case 0: {
+                    this.sysInfoShow = true;
+                    break;
+                }
+                case 1: {
+                    this.stopFetchRoomInfo();
+                    this.gameStart();
+                    break;
+                }
+            }
+        },
         gameStart() {
             var _this = this;
-            // this.sysInfo = {
-            //     title:'游戏提示',
-            //     content:'马上开始',
-            //     time:3
-            // };
-            // var _time = 3;
-            // var int = setInterval(function(){
-            //     _time --;
-            //     if(_time == 0){
-            //         clearInterval(int);
-            //     }
-            //      _this.sysInfo.time = _time;
-            // },1000);
+            //初始化一些游戏数据
             this.chooseTime = 5;
             this.tipsTime = 80;
-            // setTimeout(function () {
-            //     _this.chooseTimer();
-            //     _this.onChooseWord();
-            //     //  _this.sysInfoShow = false;
-            // }, 3000);
+            this.Answer = {
+                content: '',
+                word: null,
+                keyword: ''
+            };
+            setTimeout(function () {
+                _this.chooseTimer();
+                _this.onChooseWord();
+            }, 3000);
         },
         //选词倒计时
         chooseTimer() {
@@ -233,23 +249,7 @@ export default {
                 _this.chooseTime = _time;
             }, 1000);
         },
-        //画画倒计时
-        drawTimer() {
-            var _this = this;
-            var _time = 80;
-            this.tipsShow = true;
-            this.drawTime = setInterval(function () {
-                _time--;
-                console.log(_time);
-                if (_time == 0) {
-                    _this.tipsShow = false;
-                    clearInterval(_this.drawTime);
-                }
-                _this.tipsTime = _time;
-            }, 1000);
-        },
-        //画画的玩家选择词
-
+        // 选词阶段
         onChooseWord() {
             var _this = this;
             setTimeout(function () {
@@ -259,63 +259,75 @@ export default {
                 }
             }, 5000)
         },
+        // 画画的玩家选择词
         playerChooseWord(word) {
             this.Answer = word;
             this.chooseWordShow = false;
             this.OnDraw();
             clearInterval(this.chooseWordTime);
         },
+        // 画画倒计时
+        drawTimer() {
+            var _this = this;
+            var _time = 80;
+            this.tipsShow = true;
+            this.drawTime = setInterval(function () {
+                _time--;
+                console.log(_time);
+                if (_time == 0) {
+                    clearInterval(_this.drawTime);
+                    _this.tipsShow = false;
+                    _this.painerEnd();
+                }
+                _this.tipsTime = _time;
+            }, 1000);
+        },
+        //如果玩家没有选词，系统5秒后自动帮玩家随机选择
         sysChooseWord() {
-            //如果玩家没有选词，系统5秒后自动帮玩家随机选择
+            clearInterval(this.chooseWordTime);
             this.Answer = this.words[parseInt(4 * Math.random())];
             this.chooseWordShow = false;
             this.OnDraw();
         },
-        //正在作画
+        //作画阶段
         OnDraw() {
             //显示提示
             //作画倒计时
             var _this = this;
             this.drawTimer();
-            setTimeout(function () {
-                _this.painerEnd();
-            }, 80000)
         },
-        //结束作画按钮
+        //结束作画
         painerEnd() {
             clearInterval(this.drawTime);
-            var _index = 0;
             var _this = this;
-            var _round = 1;
+            var _index = 0;  //几号玩家
+            var _round = 1; //回合数
             this.$store.state.drawGuessRoom.player.forEach(function (item, index) {
                 if (item.painer) {
-                    if (_index < _this.userlist.length - 1) {
-                        _index++;
-                    }
-                    else {
-                        _index = 0;
-                        _round = 2;
-                    }
+                    _index = index;
                     item.painer = false;
                 }
-            });
+            })
+            //判断当前回合
+            if (_round == 1) {
+                if (_index < _this.userlist.length - 1) {
+                    _index++;
+                } else {
+                    _index = 0;
+                    _round = 2;
+                }
+                _this.gameStart(); //跳到下一个人
+            } else {
+                _this.finish();
+            }
+
             this.currentId = _index;
             this.userlist[_index].painer = true;
-            this.Answer = {
-                content: '',
-                word: null,
-                keyword: ''
-            };
             this.tipsShow = false;
-            if (_index == _this.userlist.length - 1 && _round == 2) {
-                this.finish();
-            } else {
-                this.gameStart();
-            }
         },
         //游戏结束
         finish() {
-
+            alert(游戏结束);
         },
         //遍历玩家列表
         playerEach() {
@@ -323,6 +335,7 @@ export default {
                 //当前用户this.$store.state.userInfo.uid
                 if (index == 0) {
                     this.currentUser = item;
+                    this.currentUser.painer = true;
                 }
             }.bind(this));
         },
@@ -690,6 +703,8 @@ export default {
     -o-animation: 'score-mask-show' 2s infinite;
     -moz-animation: 'score-mask-show' 2s infinite;
 }
+
+
 
 
 /* .animateUp{
