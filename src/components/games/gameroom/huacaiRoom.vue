@@ -1,18 +1,22 @@
 <template>
-    <div class="game-page">
-        <div class="game-tips">
+    <div class="game-page game-page-warp">
+        <!--提示-->
+        <div class="game-tips" v-if="tipsShow">
             <div class="tips-triangle"></div>
-            <div class="text-margin game-tips-text">
-                <div v-if="currentUser.painer"><p>提示:{{Answer.content}}<span class="tips-timer">12</span></p></div>
-                <div v-if="!currentUser.painer"><p>提示：{{Answer.word}}<span class="tips-timer">12</span></p></div>
+            <div class="text-margin game-tips-text"  v-if="currentUser.painer">
+                <p>提示:{{Answer.content}}<span class="tips-timer">{{tipsTime}}</span></p>
+                <button v-if="currentUser.painer" @click="painerEnd" type="button" value="结束" class="position-right game-tips-text">结束</button>
             </div>
-            <button @click="painerEnd" type="button" value="结束" class="position-right game-tips-text">结束</button>
+            <div class="text-margin game-tips-text" v-if="!currentUser.painer">
+                <p>提示：{{Answer.word}}个字  {{Answer.keyword}}</span><span class="tips-timer-o">{{tipsTime}}</span></p>
+            </div>
         </div>
+        <!--canvas组件 -->
          <gameCanvas id="gameCanvas" class="canvas-ex" :paintSize="paint_Size" :paintCol="paint_Col" ref="myCanvas">
         </gameCanvas> 
         <div class="canvas-mask"  v-if="!currentUser.painer">
         </div>
-        <div class="canvas-ctrl" v-if="currentUser.painer">
+         <div class="canvas-ctrl" v-if="currentUser.painer">
             <div class="canvas-ctrl-first" v-if="chooseShow">
                 <ul v-if="!color">
                     <li @click="choosePot(n)" v-for="(n,index) in 5" :key="n.id">
@@ -40,7 +44,7 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </div> 
         <div class="player-list-six">
             <ul>
                 <li v-for="(item,index) in userlist" :key="item.id">
@@ -56,12 +60,32 @@
                 </li>
             </ul>
         </div>
-        <div class="game-sys-info">
+        <!--系统提示-->
+         <!-- <div class="game-sys-info" v-if="sysInfoShow">
             <h1>{{sysInfo.title}}</h1>
             <p>{{sysInfo.content}}</p>
             <span class="txt">{{sysInfo.time}}S</span>
-        </div>
+        </div>  -->
+        <!--input组件 -->
         <textInput @answerEvent = "receiveInfo"></textInput>
+        <!--选词-->
+        <div class="choose-word game-page-warp" v-if="currentUser.painer && chooseWordShow">
+            <div class="choose-word-box">
+                <div class="choose-word-head">
+                    <img src="../../../assets/game-img/huacai.jpeg">
+                    <h1 class="txt">哇哦～快选择你要画的词</h1>
+                    <p class="content-txt"><span>{{chooseTime}}</span>秒后系统自动帮你做出选择</p>
+                </div>
+                <div class="choose-word-content">
+                    <ul>
+                        <li @click="playerChooseWord(word)" v-for ="word in words" :key="word.id">{{word.content}}</li>
+                    </ul>
+                    <p class="content-txt">每有1人答对你<span class="col-green">+15分</span><br>
+                    <span class="col-red">6人局中</span>词被所有人猜到你得<span class="col-red">0分</span>
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
 </template>
 <script type="text/ecmascript6">
@@ -130,6 +154,8 @@ export default {
                 }
             ],
             chooseShow:false,
+            tipsShow:false,
+            sysInfoShow:true,
             color:true,
             paintSize:'size_0', //画笔初始大小
             paintCol:'col_0',    //画笔初始颜色
@@ -139,59 +165,174 @@ export default {
             deactive_2:true,
             currentId:0,
             currentUser:{},
-            Answer:{},
-            sysInfo:{}
+            Answer:{
+                content:'',
+                word:null,
+                keyword:''
+            },
+            sysInfo:{},
+            chooseWordShow:false,
+            chooseTime:5,
+            tipsTime:80,
+            //模拟数据 单词
+            words:[
+                {
+                    content:'垃圾桶',
+                    word:3,
+                    keyword:'生活用品'
+                },
+                {
+                    content:'篮子',
+                    word:2,
+                    keyword:'生活用品'
+                },
+                {
+                    content:'堆雪人',
+                    word:3,
+                    keyword:'娱乐方式'
+                },
+                {
+                    content:'沙漠之鹰',
+                    word:4,
+                    keyword:'武器'
+                },
+            ],
+            chooseWordTime:'',
+            drawTime:''
         }
     },
     mounted(){
         this.playerEach();
-        this.getAnswer();
-        this.gamePlay();
+        this.gameStart();
     },
     methods:{
-        //拿到Answer数据
-        getAnswer(){
-            //模拟数据
-          this.Answer = {
-            content:'垃圾桶',
-            word:3,
-            keyword:'生活用品'
-          };
-        },
-        //游戏流程
-        gamePlay(){
+        gameStart(){
             var _this = this;
-            this.sysInfo={
-                title:'游戏开始',
-                content:'由1号玩家开始选词',
-                time:5
-            };
-            this.timeOut(this.sysInfo.time);
-            
-            
+            // this.sysInfo = {
+            //     title:'游戏提示',
+            //     content:'马上开始',
+            //     time:3
+            // };
+            // var _time = 3;
+            // var int = setInterval(function(){
+            //     _time --;
+            //     if(_time == 0){
+            //         clearInterval(int);
+            //     }
+            //      _this.sysInfo.time = _time;
+            // },1000);
+             this.chooseTime=5;
+             this.tipsTime=80;
+           setTimeout(function(){
+             _this.chooseTimer();
+             _this.onChooseWord();
+            //  _this.sysInfoShow = false;
+           },3000);
         },
-        //计时函数
-        timeOut(_time){
+        //选词倒计时
+        chooseTimer(){
             var _this = this;
+            var _time = 5;
+            this.chooseWordShow = true;
+                 this.chooseWordTime = setInterval(function(){
+                     _time --;
+                     console.log(_time);
+                if(_time == 0){
+                    clearInterval(_this.chooseWordTime);
+                    _this.chooseWordShow = false;
+                }
+                _this.chooseTime = _time;
+            },1000);
+        },
+        //画画倒计时
+        drawTimer(){
+        var _this = this;
+        var _time = 80;
+        this.tipsShow = true;
+         this.drawTime = setInterval(function(){
+                     _time --;
+                     console.log(_time);
+                if(_time == 0){
+                    _this.tipsShow = false;
+                    clearInterval(_this.drawTime);
+                }
+                _this.tipsTime = _time;
+            },1000);
+        },
+        //画画的玩家选择词
 
-             setTimeout(function(){
-                if(_time ==0){
-                    return;
-                    }
-                    _time --;
-                    _this.sysInfo.time = _time;
-                    _this.timeOut(_time);
-           },1000)
+        onChooseWord(){
+            var _this = this;
+            setTimeout(function(){
+            if(_this.Answer.content === ''){
+                 _this.sysChooseWord();
+                 _this.chooseWordShow = false;
+            }
+            },5000)
+        },
+        playerChooseWord(word){
+              this.Answer = word;
+              this.chooseWordShow = false;
+              this.OnDraw();
+              clearInterval(this.chooseWordTime);
+        },
+        sysChooseWord(){
+             //如果玩家没有选词，系统5秒后自动帮玩家随机选择
+              this.Answer = this.words[parseInt(4*Math.random())];
+              this.chooseWordShow = false;
+              this.OnDraw();
+            },
+           //正在作画
+           OnDraw(){
+            //显示提示
+            //作画倒计时
+            var _this = this;
+            this.drawTimer();
+            setTimeout(function(){
+                _this.painerEnd();
+            },80000)
            },
            //结束作画按钮
            painerEnd(){
-              
+               clearInterval(this.drawTime);
+               var _index = 0;
+               var _this = this;
+               var _round = 1 ;
+               this.userlist.forEach(function(item,index){
+                if(item.painer){
+                    if(_index < _this.userlist.length - 1){
+                        _index ++;
+                    }
+                    else{
+                        _index = 0;
+                        _round = 2;
+                    }
+                    item.painer = false;
+                }
+              });
+                this.currentId = _index;
+                this.userlist[_index].painer = true;
+                this.Answer ={
+                    content:'',
+                    word:null,
+                    keyword:''
+                };
+                this.tipsShow = false;
+                if(_index == _this.userlist.length -1 && _round == 2){
+                    this.finish();
+                } else{
+                    this.gameStart();
+                }
+           },
+           //游戏结束
+           finish(){
+
            },
         //遍历玩家列表
         playerEach(){ 
             this.userlist.forEach(function(item){
                 //当前用户this.$store.state.userInfo.uid
-                if(item.uid  == 1 ){
+                if(item.uid  == 2 ){
                     this.currentUser = item;
                 }
             }.bind(this));
@@ -223,7 +364,6 @@ export default {
         forwardClick(){
 
         },
-        
         //清空画布
         trash(){
             var child = this.$refs.myCanvas
@@ -289,13 +429,20 @@ export default {
       //验证玩家提交答案是否正确
       provingAnswer(){
           var _this =this;
-        if (this.currentUser.inputText == this.Answer.content){
-            alert("恭喜回答正确！");
-            this.currentUser.bingo = true;
-            this.currentUser.addscore = true;
-            setTimeout(function(){
-                _this.currentUser.addscore = false;
-            },2000)
+          if(!this.currentUser.painer){
+             if (this.currentUser.inputText == this.Answer.content){
+                     if(!this.currentUser.bingo){
+                        alert("恭喜回答正确！");
+                        this.currentUser.bingo = true;
+                        this.currentUser.addscore = true;
+                        //加分
+                     }else{
+                         alert("你已提交正确答案!")
+                     }
+               setTimeout(function(){
+                 _this.currentUser.addscore = false;
+                },2000)
+            }     
         }
       }
     }
@@ -303,13 +450,16 @@ export default {
 </script>
 <style>
     .game-page{
+        background: #ffffff;
+        overflow: hidden;
+        top:120px !important;
+    }
+    .game-page-warp{
         position: absolute;
         left: 0;
         right: 0;
         bottom: 0;
-        top: 120px;
-        background: #ffffff;
-        overflow: hidden;
+        top: 0;
     }
     .game-tips{
         min-width: 350px;
@@ -332,6 +482,10 @@ export default {
     .tips-timer{
         position: absolute;
         right:160px;
+    }
+    .tips-timer-o{
+        position: absolute;
+        right:60px;
     }
     .tips-triangle{
         width:0;
@@ -382,6 +536,44 @@ export default {
         border:none;
         background:#000000;
         
+    }
+    .choose-word{
+        background:rgba(0,0,0,.2);
+        z-index:1000;
+    }
+    .choose-word-box{
+        width: 600px;
+        height: 700px;
+        position: absolute;
+        top: 200px;
+        left: 50%;
+        background: #ffffff;
+        margin-left: -300px;
+        border-radius: 20px;
+        text-align: center;
+    }
+    .choose-word-box img{
+        width:300px;
+        height:auto;
+    }
+    .choose-word-head{
+        margin-bottom:40px; 
+    }
+    .choose-word-content{
+        width: 480px;
+        margin: 0 auto;
+    }
+    .choose-word-content ul{
+        padding: 20px 0;
+    }
+    .choose-word-content li{
+        width:200px;
+        height:80px;
+        border-radius: 40px;
+        border:4px solid #000000;
+        margin:10px;
+        line-height: 80px;
+        font-size:30px;
     }
     .canvas-ctrl-first li{
         margin:0 38px;
@@ -562,6 +754,12 @@ export default {
     .game-sys-info p{
         font-size:30px;
         margin-bottom: 40px;
+    }
+    .col-green{
+        color:rgba(0,180,114,1);
+    }
+    .col-red{
+        color:rgba(222,82,69,1);
     }
 </style>
 

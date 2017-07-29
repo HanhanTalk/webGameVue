@@ -11,7 +11,7 @@
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
                 </div>
             </li>
-            <li class="bg-huahua">
+            <li class="bg-huahua" @click="goHuaCai">
                 <div class="caption">
                     <h1>你画我猜</h1>
                     <p>开始游戏<span class="fa fa-angle-right"></span></p>
@@ -175,6 +175,7 @@
     import banner from './banner.vue'
     import carouselAd from './carousel.vue'
     import userinfo from './userinfo.vue'
+    import api from '../../api/api'
 
     export default{
         name:'game',
@@ -191,6 +192,12 @@
         methods:{
             goWolfKill(){
                 this.$router.push('/gowolf');
+            },
+            //去你画我猜
+            goHuaCai(){
+                api.joinRoom().then((response) =>{
+                    this.$router.push({name:'huacaiRoom',params:{id:response.roomId}})
+                })
             },
             setTitle(){
                 this.$store.commit('updateTitle',this.title);
