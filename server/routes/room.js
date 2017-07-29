@@ -65,12 +65,13 @@ router.post('/drawguess/join', function(req, res, next) {
       }
     })
     .then((room) => {
+      gRoom = room;
       // 把房间表里的player字段换成用户信息
       return getUserInfoByUids(room.player);
     })
     .then((userInfos) => {
-      room.player = userInfos;
-      util.resJson(res, null, room);
+      gRoom.player = userInfos;
+      util.resJson(res, null, gRoom);
     })
     .catch((err) => {
       console.dir(err);
@@ -86,7 +87,7 @@ router.post('/drawguess/join', function(req, res, next) {
 /**
  * 前端会轮询这个接口，然后根据返回的信息，显示前端状态
  */
-router.get('/drawguess/room/info',  function(req, res, next) {
+router.get('/drawguess/info',  function(req, res, next) {
   var roomId = req.query.roomId;
   var _gRoomInfo = {};
   findRoomInfoByRoomId('drawGuess', roomId)
@@ -96,7 +97,7 @@ router.get('/drawguess/room/info',  function(req, res, next) {
     })
     .then((userInfos) => {
       _gRoomInfo.player = userInfos;
-      return _gRoomInfo;
+      return util.resJson(res, null, _gRoomInfo);
     })
     .catch((err) => {
       console.dir(err);
@@ -204,7 +205,7 @@ router.post('/drawguess/drawdata', function(req, res) {
  */
 function getUserInfoByUids(uidArray) {
   return db.User.find({
-      _id: {$in: _ids}
+      _id: {$in: uidArray}
     }, { 
       password: 0
     });
@@ -232,7 +233,8 @@ function findCanJoinRoom(type, userId) {
   return new Promise((resolve, reject) => {
     db.Room.findOne({
       type: type,
-      status: 1
+      status: 0,
+      drawPlayerUid: {$ne: userId}
     }).then((doc) => {
       resolve(doc ? doc : null);
     }).catch((err) => {
@@ -252,7 +254,7 @@ function createJoinRoom(type, userId) {
     var _room = new db.Room({
       roomId: new mongoose.Types.ObjectId,
       type: type,
-      status: 1,
+      status: 0,
       player: [userId],
       drawPlayerUid: userId
     });

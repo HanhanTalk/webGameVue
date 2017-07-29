@@ -2,7 +2,8 @@
 <div class="fiexd">
   <div class="user-info">
     <div class="user-pic">
-        <img class="user-img circle" :src="$store.state.userInfo.portrait">
+        <img v-if="$store.state.userInfo.portrait" class="user-img circle" :src="$store.state.userInfo.portrait">
+        <img v-else class="user-img circle" src="../../assets/userpic/user-11.jpg">
     </div>
     <div class="user-item">
         <p class="user-name txt">{{$store.state.userInfo.nick}}</p>

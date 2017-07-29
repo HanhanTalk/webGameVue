@@ -195,8 +195,9 @@
             },
             //去你画我猜
             goHuaCai(){
-                api.joinRoom().then((response) =>{
+                api.joinDrawguessRoom().then((response) =>{
                     this.$router.push({name:'huacaiRoom',params:{id:response.roomId}})
+                    this.$store.commit('updateDrawGuessRoom', response);
                 })
             },
             setTitle(){

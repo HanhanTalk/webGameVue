@@ -9,12 +9,14 @@ function userInfo(userInfo) {
     userInfo.nick = userInfo.name;
   }
   userInfo.accout = userInfo.name;
-  return userInfo;
+  var _userInfo = _.assign({}, userInfo);
+  _userInfo.uid = userInfo._id;
+  return _userInfo;
 }
 
 
 function roomInfo(roomStatus, usrInfo) {
-  
+
 }
 
 module.exports = {

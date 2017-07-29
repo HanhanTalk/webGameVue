@@ -52,8 +52,12 @@ const signOut = (param) => {
 const info = (param) => {
    return _get('/users/info',param);
 }
-const joinRoom = (param) =>{
+const joinDrawguessRoom = (param) =>{
     return _post('/room/drawguess/join',param);
+}
+
+const getDrawguessRoomInfo = (param) => {
+  return _get('/room/drawguess/info', param);
 }
 
 export default {
@@ -61,5 +65,6 @@ export default {
   signIn,
   signOut,
   info,
-  joinRoom
+  joinDrawguessRoom,
+  getDrawguessRoomInfo
 }

@@ -37,18 +37,18 @@ var app = new Vue({
     store,
     components: { App },
     //监听路由检查登录
-    watch:{
-        "$route":'checkLogin'
+    watch: {
+        "$route": 'checkLogin'
     },
     //进入页面时
-    mounted(){
+    mounted() {
         this.checkLogin();
     },
-    methods:{
-        checkLogin(){
+    methods: {
+        checkLogin() {
             //检查是否存在session
             api.info().then((response) => {
-                if(!response){
+                if (!response) {
                     //不需要跳转的页面
                     var _notNeedAuthlist = [
                         '#/login',
@@ -56,31 +56,34 @@ var app = new Vue({
                     ];
                     var needAuth = true;
                     //遍历页面列表，如果当前页面存在于列表中，不执行跳转
-                    _notNeedAuthlist.forEach(function(item) {
-                      if (window.location.hash === item) {  
-                        needAuth = false;      
-                      }
+                    _notNeedAuthlist.forEach(function (item) {
+                        if (window.location.hash === item) {
+                            needAuth = false;
+                        }
                     });
                     if (needAuth) {
                         this.$router.push('/');
                     }
-                } else{
+                } else {
                     this.getUserInfo(response);
                 }
             })
 
-        //     if(!this.getCookie('session')){
-        //         this.$router.push('/login');
-        //     } else{
-        //         this.$router.push('/home');
-        //     }
-         },
-          getUserInfo(element){
-                var currentUser = element;
-                this.$store.commit('updateUserInfo',currentUser);
-            
-            },
-        }
+            //     if(!this.getCookie('session')){
+            //         this.$router.push('/login');
+            //     } else{
+            //         this.$router.push('/home');
+            //     }
+        },
+        getUserInfo(element) {
+            var currentUser = element;
+            this.$store.commit('updateUserInfo', currentUser);
+                    // 如果用户已经登陆，就跳转到主页
+            if (this.$store.state.userInfo.uid && this.$router.fullPath === '/login') {
+                this.$router.push('/home/game/');
+            }
+        },
+    }
 })
 // Vue.use(VueTouch,{name:'v-touch'});
 app.$mount('#app');

@@ -5,7 +5,8 @@
         <div class="user-menu txt" v-bind:class="{ hidden : isHidden}">
             <div class="user-menu-head">Game</div>
             <div class="menu-userinfo">
-                <img :src="$store.state.userInfo.portrait">
+                <img v-if="$store.state.userInfo.portrait" :src="$store.state.userInfo.portrait">
+                <img v-else src="../assets/userpic/user-11.jpg">
                 <div class="niki">{{$store.state.userInfo.nick}}</div>
                 <div class ="user-item-info">
                      <div class="user-gold circle"></div><span>金币:{{$store.state.userInfo.gold}}</span>
