@@ -67,10 +67,16 @@ router.post('/drawguess/join', function(req, res, next) {
     .then((room) => {
       gRoom = room;
       // 把房间表里的player字段换成用户信息
-      return getUserInfoByUids(room.player);
+      var allUids = [];
+      room.player.forEach(function(item) {
+        allUids.push(item.uid);
+      });
+      return getUserInfoByUids(allUids);
     })
     .then((userInfos) => {
-      gRoom.player = userInfos;
+      gRoom.player.forEach(function(item, index) {
+        gRoom.player[index].portrait = userInfos[index].portrait;
+      });
       util.resJson(res, null, gRoom);
     })
     .catch((err) => {
@@ -93,10 +99,17 @@ router.get('/drawguess/info',  function(req, res, next) {
   findRoomInfoByRoomId('drawGuess', roomId)
     .then((roomInfo) => {
       _gRoomInfo = roomInfo;
-      return getUserInfoByUids(roomInfo.player);
+      var allUids = [];
+      _gRoomInfo.player.forEach(function(item) {
+        allUids.push(item.uid);
+      });
+      return getUserInfoByUids(allUids);
     })
     .then((userInfos) => {
-      _gRoomInfo.player = userInfos;
+      // _gRoomInfo.player = userInfos;
+      _gRoomInfo.player.forEach(function(item, index) {
+        _gRoomInfo.player[index].portrait = userInfos[index].portrait;
+      });
       return util.resJson(res, null, _gRoomInfo);
     })
     .catch((err) => {
@@ -255,7 +268,14 @@ function createJoinRoom(type, userId) {
       roomId: new mongoose.Types.ObjectId,
       type: type,
       status: 0,
-      player: [userId],
+      player: [{
+        uid: userId,
+        score: 0,
+        painer: true,
+        inputText: '',
+        bingo: false,
+        addscore: false,
+      }],
       drawPlayerUid: userId
     });
     _room.save().then((doc)=> {
@@ -274,7 +294,14 @@ function createJoinRoom(type, userId) {
  */
 function joinOneExistRoom(room, userId) {
   // return new Promise((resolve, reject) => {
-  room.player.push(userId);
+  room.player.push({
+    uid: userId,
+    score: 0,
+    painer: false,
+    inputText: '',
+    bingo: false,
+    addscore: false,
+  });
   
   // 这里有一个开始逻辑，如果玩家数大于等于3，就更改status
   if (room.player.length > 2) {
