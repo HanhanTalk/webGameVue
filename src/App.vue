@@ -71,6 +71,10 @@ p{
     font-size: 30px;
     color:#dddddd;
 }
+.content-txt{
+  font-size:28px;
+  color:#727272;
+}
 .fixed-box{
     padding-top:120px;
     box-sizing: border-box;

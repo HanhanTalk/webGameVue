@@ -6,11 +6,11 @@
         </div>
         <div class="input-user">
             <div class="left">
-                <div class="input-box">
+                <div class="input-user-box">
                     <span class="fa fa-user"></span>
                     <input type="text" placeholder="请输入你的账号" class="input" v-model="accout">
                 </div>
-                <div class="input-box">
+                <div class="input-user-box">
                     <span class="fa fa-lock"></span>
                     <input type="password" placeholder="请输入1-6位密码" class="input" v-model="password">
                 </div>
@@ -77,11 +77,11 @@
     bottom: 50px;
     right: 0;
     }
-    .input-box{
+    .input-user-box{
         height:80px;
         margin:40px auto;
     }
-    .input-box span{
+    .input-user-box span{
         width: 80px;
         height: 80px;
         display: block;
