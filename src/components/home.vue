@@ -1,5 +1,5 @@
 <template>
-    <div class="box">
+    <div class="page-warp">
         <myhead @transferEvent="setHide"></myhead>
         <userMenu :isHidden="isHide" @transferEvent="setHide"></userMenu>
          <router-view></router-view>
@@ -7,9 +7,6 @@
     </div>
 </template>
 <style>
-   .box{
-       position: relative;
-   }
 </style>
 <script type='text/ecmascript6'>
 import myhead from './head.vue'
@@ -26,6 +23,9 @@ export default {
       return{
           isHide:true
       }
+  },
+  mounted(){
+    this.$router.push({name:'game'});
   },
   methods:{
       setHide(e){

@@ -129,24 +129,24 @@ export default {
       },
       friend(){
           this.shadeClick();
-          this.$router.push('/friend');
+          this.$router.push({name:'friend'});
 
       },
       play(){
         this.shadeClick();
-        this.$router.push('/home');
+        this.$router.push({name:'game'});
       },
       feedback(){
         this.shadeClick();
-        this.$router.push('/feedback');
+        this.$router.push({name:'feedback'});
       },
       sign(){
         this.shadeClick();  
-        this.$router.push('/sign');
+        this.$router.push({name:'sign'});
       },
       about(){
         this.shadeClick();  
-        this.$router.push('/about');
+        this.$router.push({name:'about'});
       }
 
   }

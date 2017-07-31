@@ -89,7 +89,7 @@ export default {
                 this.$router.push('/home/friend');
                 break;
             case '个人':
-                this.$router.push('/home/self');
+               this.$router.push('/home/self');
                 this.activeNode = 3;
                 break;
             case '排行榜':

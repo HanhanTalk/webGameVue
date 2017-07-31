@@ -1,5 +1,5 @@
 <template>
-   <div class="game-view">
+   <div class="game-view animated fadeIn">
     <userinfo></userinfo>
     <banner></banner> 
     <carouselAd></carouselAd>

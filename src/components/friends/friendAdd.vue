@@ -1,6 +1,6 @@
 
 <template>
-    <div class="warp">
+    <div class="warp animated slideInLeft">
         <div class="page-head page-head-col head-title">
             <h1>添加好友</h1>
         </div>

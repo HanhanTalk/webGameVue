@@ -1,6 +1,6 @@
 <template>
-  <div>
-      <div class="page fixed-box">
+  <div class="animated fadeIn">
+      <div class="page fixed-box ">
           <div class="page-nav">
               <div class="nav-left">
                   <a href="javascript:;" @click="friendAdd"><span class="fa fa-user-plus"></span></a>

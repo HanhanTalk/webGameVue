@@ -1,5 +1,5 @@
 <template>
-    <div class="login" id="login">
+    <div class="login animated fadeIn" id="login">
         <div class="input-head">
             <h1>用户登录</h1>
         </div>

@@ -1,5 +1,5 @@
 <template>
-  <div class="page fixed-box">
+  <div class="page self-page-warp animated fadeIn">
       <div class="self-info">
           <img :src="$store.state.userInfo.portrait">
           <div class="self-info-middle">
@@ -33,11 +33,10 @@
         border: 1px solid #dddddd;
     }
      .page{
-        width:100%;
-        height:100%;
         background: #f3f3f3;
-        position: relative;
-        margin-bottom: 75px;
+     }
+     .self-page-warp{
+        margin:120px 0;
      }
      .self-info{
         position: relative;

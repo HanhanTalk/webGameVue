@@ -1,6 +1,6 @@
 
 <template>
-    <div class="reg" id="reg">
+    <div class="reg animated fadeIn" id="reg">
         <div class="input-head">
             <h1>用户注册</h1>
         </div>

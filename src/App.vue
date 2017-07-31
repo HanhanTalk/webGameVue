@@ -4,10 +4,8 @@
     <router-view></router-view>
   </div>
 </template>
-
-
  <script type='text/ecmascript6'>
-
+import animate from './style/animate.css'
 export default {
   name:'App',
   mounted(){
@@ -79,4 +77,35 @@ p{
     padding-top:120px;
     box-sizing: border-box;
 }
+.page-warp{
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+}
+.rotate{
+  animation: torotate 3s infinite linear;
+  -webkit-animation: torotate 3s infinite linear;
+  -o-animation: torotate 3s infinite linear;
+  -moz-animation: torotate 3s infinite linear;
+}
+
+@keyframes torotate{
+  0%{ transform: rotate(0deg);}
+  100%{ transform: rotate(360deg);}
+}
+@-webkit-keyframes torotate{
+  0%{ transform: rotate(0deg);}
+  100%{ transform: rotate(360deg);}
+}
+@-o-keyframes torotate{
+  0%{ transform: rotate(0deg);}
+  100%{ transform: rotate(360deg);}
+}
+@-moz-keyframes torotate{
+  0%{ transform: rotate(0deg);}
+  100%{ transform: rotate(360deg);}
+}
+
 </style>

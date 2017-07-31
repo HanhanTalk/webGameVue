@@ -1,5 +1,5 @@
 <template>
-    <div class="page-list">
+    <div class="page-list animated slideInLeft">
         <ul>
             <li @click="toChat" v-for="user in userlist" :key="user.id">
                 <div class="floatL"><img :src="user.portrait"></div>
