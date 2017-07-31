@@ -60,11 +60,21 @@ const getDrawguessRoomInfo = (param) => {
   return _get('/room/drawguess/info', param);
 }
 
+const getDrawguessRoomWord = (param) => {
+  return _get('/room/drawguess/words', param);
+}
+
+const postDrawguessRoomWord = (param) => {
+  return _post('/room/drawguess/chooise/words', param);
+}
+
 export default {
   signUp,
   signIn,
   signOut,
   info,
   joinDrawguessRoom,
-  getDrawguessRoomInfo
+  getDrawguessRoomInfo,
+  getDrawguessRoomWord,
+  postDrawguessRoomWord
 }

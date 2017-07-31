@@ -4,13 +4,13 @@
         <div class="game-tips" v-if="gameStatus == 3">
             <div class="tips-triangle"></div>
             <div class="text-margin game-tips-text" v-if="currentUser.painer">
-                <p>提示:{{Answer.content}}
+                <p>提示:{{Answer.name}}
                     <span class="tips-timer">{{time.tipsTime}}</span>
                 </p>
                 <button v-if="currentUser.painer" @click="gameFlowStatus_drawover" type="button" value="结束" class="position-right game-tips-text">结束</button>
             </div>
             <div class="text-margin game-tips-text" v-if="!currentUser.painer">
-                <p>提示：{{Answer.word}}个字 {{Answer.keyword}}</span>
+                <p>提示：{{Answer.length}}个字 {{Answer.type}}</span>
                     <span class="tips-timer-o">{{time.tipsTime}}</span>
                 </p>
             </div>
@@ -96,7 +96,7 @@
                 </div>
                 <div class="choose-word-content">
                     <ul>
-                        <li @click="playerChooseWord(word)" v-for="word in words" :key="word.id">{{word.content}}</li>
+                        <li @click="playerChooseWord(word)" v-for="word in words" :key="word.id">{{word.name}}</li>
                     </ul>
                     <p class="content-txt">每有1人答对你
                         <span class="col-green">+15分</span>
@@ -108,10 +108,12 @@
             </div>
         </div>
         <!--公布答案-->
-         <div class="game-page-warp game-page-mask animated fadeIn" v-if="gameStatus == 5">
+        <div class="game-page-warp game-page-mask animated fadeIn" v-if="gameStatus == 5">
             <div class="page-big-box">
                 <div class="game-box-head">
-                    <div class="game-head-left">答案:{{Answer.content}}<span>{{time.answerTime}}</span></div>
+                    <div class="game-head-left">答案:{{Answer.name}}
+                        <span>{{time.answerTime}}</span>
+                    </div>
                 </div>
                 <div class="game-box-content">
                     <!--暂时随意填充一张图 -->
@@ -122,7 +124,7 @@
                     <button type="button" class="page-btn btn-col2">扔鸡蛋</button>
                 </div>
             </div>
-        </div> 
+        </div>
         <!--回答正确窗口-->
         <div class="game-page-mask game-page-warp animated zoomIn" v-if="gameStatus == 3 && currentUser.bingo" :class="{'hide':close_answer}">
             <div class="page-big-box">
@@ -140,7 +142,7 @@
                 </div>
                 <div class="page-xbig-content">
                     <ul>
-                         <li v-for="(item,index) in $store.state.drawGuessRoom.player" :key="item.uid">
+                        <li v-for="(item,index) in $store.state.drawGuessRoom.player" :key="item.uid">
                             <div class="rank-tag">{{index+1}}</div>
                             <div class="rank-userinfo">
                                 <div class="rank-userinfo-pic">
@@ -175,7 +177,7 @@ export default {
             //显示
             chooseShow: false,
             sysInfoShow: true,
-            close_answer:true,
+            close_answer: true,
 
             //canvas 
             color: true,
@@ -190,18 +192,18 @@ export default {
             currentPainer: 0,
             currentUser: {},
             Answer: {
-                content: '',
-                word: null,
-                keyword: ''
+                name: '',
+                length: 0,
+                type: ''
             },
             sysInfo: {
                 title: '提示',
                 content: '队友正在赶来'
             },
-            time:{
+            time: {
                 chooseTime: 5,
                 tipsTime: 80,
-                answerTime:5
+                answerTime: 5
             },
             //模拟数据 单词
             words: [
@@ -227,13 +229,13 @@ export default {
                 },
             ],
             //计时器
-            chooseWordTime:null,
-            drawTime:null,
-            answerTimer:null,
+            chooseWordTime: null,
+            drawTime: null,
+            answerTimer: null,
             //游戏状态
-            gameStatus:0,
+            gameStatus: 0,
             //1代表游戏开始 2代表玩家选词 3代表画画阶段 4代表结束作画 5公布答案 6代表游戏结束 
-            gameround:1 
+            gameround: 1
             //游戏回合
         }
     },
@@ -248,6 +250,10 @@ export default {
             var self = this;
             // 这里进行循环获得房间信息
             function _loopGetRoomInfo() {
+                // 如果没有id 就不请求
+                if (!self.$route.params.id) {
+                    return;
+                }
                 api.getDrawguessRoomInfo({
                     roomId: self.$route.params.id
                 }).then((response) => {
@@ -255,10 +261,15 @@ export default {
                     self.loopTimer = setTimeout(() => {
                         _loopGetRoomInfo()
                     }, 1000);
+                    // 如果当前词语已经选择好
+                    if (response.drawWord) {
+                        self.Answer = response.drawWord;
+                    }
                     self.playerEach();
                     self.dispatchRoomStatus(response);
                 }).catch((err) => {
                     alert('请求出错' + err);
+                    self.stopFetchRoomInfo();
                 });
             }
             _loopGetRoomInfo();
@@ -277,122 +288,155 @@ export default {
                     this.sysInfoShow = true;
                     break;
                 }
-                //1代表开始游戏
+                //1 进入选题阶段
                 case 1: {
-                    this.stopFetchRoomInfo();
+                    // 当前是画家的玩家在选择词语阶段关闭请求
+                    if (this.currentUser.painer) {
+                        this.stopFetchRoomInfo();
+                    }
                     this.gameFlowStatus(1);
                     break;
                 }
+                case 2: {
+                    this.gameFlowStatus(3);
+                }
             }
         },
-        gameFlowStatus(_status){
-            switch (_status){
+        gameFlowStatus(_status) {
+            switch (_status) {
                 case 1: {
-                //游戏状态为开始游戏
-                this.gameFlowStatus_start();
-                break;
+                    //游戏状态为开始游戏
+                    this.gameFlowStatus_start();
+                    break;
                 }
                 case 2: {
-                //游戏状态为玩家选词
-                this.gameFlowStatus_chooseword();
-                break;
+                    //游戏状态为玩家选词
+                    this.gameFlowStatus_chooseword();
+                    break;
                 }
                 case 3: {
-                //游戏状态为画画阶段
-                this.gameFlowStatus_drawing();
-                break;
+                    //游戏状态为画画阶段
+                    this.gameFlowStatus_drawing();
+                    break;
                 }
                 case 4: {
-                //游戏状态为玩家结束作画
-                this.gameFlowStatus_drawover();
-                break;
+                    //游戏状态为玩家结束作画
+                    this.gameFlowStatus_drawover();
+                    break;
                 }
                 //游戏状态为公布答案
                 case 5: {
-                this.gameFlowStatus_anAnswer();
-                break;
+                    this.gameFlowStatus_anAnswer();
+                    break;
                 }
-                default:{
-                //游戏结束
-                this.gameFlowStatus_end();
+                default: {
+                    //游戏结束
+                    this.gameFlowStatus_end();
                 }
             }
         },
         //开始游戏
-        gameFlowStatus_start(){
+        gameFlowStatus_start() {
             var _this = this;
             this.gameStatus = 1;
             //初始化一些数据
-             this.Answer = {
-                content: '',
-                word: null,
-                keyword: ''
+            this.Answer = {
+                name: '',
+                length: 0,
+                type: ''
             };
             this.sysInfoShow = true;
             this.sysInfo = {
-                title:'提示',
-                content:'游戏即将开始'
+                title: '提示',
+                content: '游戏即将开始'
             }
             //3秒后跳到游戏选词
-            setTimeout(function(){
+            if (!this.currentUser.painer) {
+                return;
+            }
+            // 如果是当前玩家是画家才选词
+            setTimeout(function () {
                 _this.sysInfoShow = false;
                 _this.gameFlowStatus(2);
-            },3000);
+            }, 2000);
         },
         //玩家选词
-        gameFlowStatus_chooseword(){
-            this.time.chooseTime = 5;
-            this.gameStatus = 2 ;
-        // 第二种选词情况:系统选择
-            var _timer = ((_time) => {
-                this.chooseWordTime = setInterval(()=>{
-                    if(_time == 1 ){
-                        clearInterval(this.chooseWordTime);
-                        sysChooseWord();
+        gameFlowStatus_chooseword() {
+            var self = this;
+            if (!this.currentUser.painer) {
+                return;
+            }
+            api.getDrawguessRoomWord({ roomId: self.$route.params.id })
+                .then((response) => {
+                    self.words = response;
+                    self.time.chooseTime = 5;
+                    self.gameStatus = 2;
+
+                    // 第二种选词情况:系统选择
+                    var _timer = (_time) => {
+                        self.chooseWordTime = setInterval(() => {
+                            if (_time == 1) {
+                                clearInterval(self.chooseWordTime);
+                                sysChooseWord();
+                            };
+                            console.log(_time);
+                            _time--;
+                            self.time.chooseTime = _time;
+                        }, 1000);
                     };
-                    console.log(_time);
-                    _time --;
-                    this.time.chooseTime = _time;
-                },1000);
-            });
-            _timer(5);
-            var sysChooseWord = (() => {
-                this.Answer = this.words[parseInt(4 * Math.random())];
-                this.gameFlowStatus(3);
-            })
+                    _timer(5);
+                    var sysChooseWord = (() => {
+                        self.giveWord(self.words[parseInt(4 * Math.random())]);
+                        // self.gameFlowStatus(3);
+                    })
+                }).catch((err) => {
+
+                });
         },
         // 第一种选词情况：玩家选择
         playerChooseWord(word) {
             this.gameStatus = 2;
-            if(word){
+            if (word) {
                 clearInterval(this.chooseWordTime);
-                this.Answer = word;
-                this.gameFlowStatus(3);
+                this.giveWord(word);
+                // this.gameFlowStatus(3);
             }
         },
-        //画画阶段
-        gameFlowStatus_drawing(){
-            this.gameStatus = 3;
-            this.time.tipsTime = 80;
-            //开始倒计时
-            var _timer = ((_time) =>{
-                this.drawTime = setInterval(() =>{
-                    if(_time == 1){
-                        clearInterval(this.drawTime);
-                        this.gameFlowStatus(4);
+        giveWord(word) {
+            this.Answer = word;
+            // 把选好的词语发送到后端
+            api.postDrawguessRoomWord({roomId: this.$route.params.id, word: this.Answer})
+                .then((response) => {
+                    if (this.currentUser.painer) {
+                        this.startFetchRoomInfo();
                     }
-                    console.log(_time);
-                    _time --;
-                    this.time.tipsTime = _time;
-                },1000);
-            });
-            _timer(80);
+                }).catch((err) => {
+
+                });
+        },
+        //画画阶段
+        gameFlowStatus_drawing() {
+            this.gameStatus = 3;
+            // this.time.tipsTime = 80;
+            // //开始倒计时
+            // var _timer = ((_time) => {
+            //     this.drawTime = setInterval(() => {
+            //         if (_time == 1) {
+            //             clearInterval(this.drawTime);
+            //             this.gameFlowStatus(4);
+            //         }
+            //         console.log(_time);
+            //         _time--;
+            //         this.time.tipsTime = _time;
+            //     }, 1000);
+            // });
+            // _timer(80);
         },
         //玩家结束作画
-        gameFlowStatus_drawover(){
-            if(this.time.tipsTime > 50){
+        gameFlowStatus_drawover() {
+            if (this.time.tipsTime > 50) {
                 alert("作画时间没有30秒，不能结束")
-            }else{
+            } else {
                 this.gameStatus = 4;
                 clearInterval(this.drawTime);
                 this.gameFlowStatus(5);
@@ -401,94 +445,96 @@ export default {
         },
 
         //公布答案阶段
-        gameFlowStatus_anAnswer(){
+        gameFlowStatus_anAnswer() {
             this.gameStatus = 5;
             this.currentUser.bingo = false;
             this.time.answerTime = 5;
             var _timer = (_time) => {
-                this.answerTimer = setInterval(()=>{
-                    if(_time == 1){
+                this.answerTimer = setInterval(() => {
+                    if (_time == 1) {
                         clearInterval(this.answerTimer);
-                         this.gameFlowStatus_judge();
+                        this.gameFlowStatus_judge();
                     }
-                    _time --;
+                    _time--;
                     this.time.answerTime = _time;
-                },1000);
+                }, 1000);
             };
-           _timer(5);
+            _timer(5);
         },
 
         //判断是跳向下一个玩家 还是直接结束游戏
-        gameFlowStatus_judge(){
-            var _index,_status;
+        gameFlowStatus_judge() {
+            var _index, _status;
             var userlist = this.$store.state.drawGuessRoom.player;
-             var _next = (_i) =>{
-                    this.$store.state.drawGuessRoom.player[_i].painer = false;
-                 if(_i == userlist.length - 1){
-                     this.$store.state.drawGuessRoom.player[0].painer = true;
-                 }else{
+            var _next = (_i) => {
+                this.$store.state.drawGuessRoom.player[_i].painer = false;
+                if (_i == userlist.length - 1) {
+                    this.$store.state.drawGuessRoom.player[0].painer = true;
+                } else {
                     this.$store.state.drawGuessRoom.player[_i + 1].painer = true;
-                 }
+                }
                 this.gameFlowStatus(2);
             }
-            for(var i = 0;i < userlist.length;i++){
-                if(userlist[i].painer){
-                    if(i == userlist.length - 1){
-                        if(this.gameround == 1){
+            for (var i = 0; i < userlist.length; i++) {
+                if (userlist[i].painer) {
+                    if (i == userlist.length - 1) {
+                        if (this.gameround == 1) {
                             this.currentPainer = 0;
                             this.gameround = 2;
                             _next(i);
                             return;
-                        }else{
+                        } else {
                             this.gameFlowStatus(6);
                             return;
                         }
                     }
                     _next(i);
-                    this.currentPainer = i + 1 ;
+                    this.currentPainer = i + 1;
                     return;
                 }
             }
         },
 
         //游戏结束
-        gameFlowStatus_end(){
+        gameFlowStatus_end() {
             this.gameStatus = 6;
             alert('游戏结束');
         },
         //系统信息
-        gameSysInfo(){
+        gameSysInfo() {
 
         },
         //遍历玩家列表
         playerEach() {
             this.$store.state.drawGuessRoom.player.forEach(function (item, index) {
                 //当前用户this.$store.state.userInfo.uid
-                if (index == 0) {
+                if (item.uid === this.$store.state.userInfo.uid) {
                     this.currentUser = item;
-                    this.currentUser.painer = true;
                 }
             }.bind(this));
+            if (this.$store.state.drawGuessRoom.drawPlayerUid == this.$store.state.userInfo.uid) {
+                this.currentUser.painer = true;
+            }
         },
         //验证玩家提交答案是否正确
         provingAnswer() {
-            if(this.gameStatus == 3){
-            var _this = this;
-            if (!this.currentUser.painer) {
-                if (this.currentUser.inputText == this.Answer.content) {
-                    if (!this.currentUser.bingo) {
-                        this.currentUser.bingo = true;
-                        this.currentUser.addscore = true;
-                        this.close_answer = false;
-                        //加分
-                    } else {
-                        alert("你已提交正确答案!")
+            if (this.gameStatus == 3) {
+                var _this = this;
+                if (!this.currentUser.painer) {
+                    if (this.currentUser.inputText == this.Answer.name) {
+                        if (!this.currentUser.bingo) {
+                            this.currentUser.bingo = true;
+                            this.currentUser.addscore = true;
+                            this.close_answer = false;
+                            //加分
+                        } else {
+                            alert("你已提交正确答案!")
+                        }
+                        setTimeout(function () {
+                            _this.currentUser.addscore = false;
+                        }, 2000)
                     }
-                    setTimeout(function () {
-                        _this.currentUser.addscore = false;
-                    }, 2000)
                 }
-            }
             }
         },
 
@@ -581,17 +627,18 @@ export default {
                     this.paint_Size = 60;
             }
         },
-        closeBtnClick(){
+        closeBtnClick() {
             this.close_answer = true;
         }
-        
+
     }
 }
 </script>
 <style>
-.hide{
+.hide {
     display: none;
 }
+
 .game-page {
     background: #ffffff;
     overflow: hidden;
@@ -650,29 +697,35 @@ export default {
 .text-margin {
     margin-right: 160px;
 }
-.page-btn-groups{
-    margin:25px 0;
+
+.page-btn-groups {
+    margin: 25px 0;
 }
-.page-btn{
+
+.page-btn {
     width: 280px;
     height: 80px;
     border-radius: 20px;
     border: none;
     font-size: 30px;
     color: #ffffff;
-    margin:0 8px; 
+    margin: 0 8px;
 }
-.btn-col1{
-    background:rgba(245,113,116,1);
+
+.btn-col1 {
+    background: rgba(245, 113, 116, 1);
 }
-.btn-col2{
-    background:rgba(251,225,5,1);
+
+.btn-col2 {
+    background: rgba(251, 225, 5, 1);
 }
+
 .game-tips-text {
     color: #ffffff;
     font-size: 28px;
 }
-.rank-userinfo-pic{
+
+.rank-userinfo-pic {
     width: 90px;
     height: 90px;
     margin: 20px 30px 20px 0;
@@ -680,24 +733,29 @@ export default {
     border: 10px solid rgba(244, 67, 54, 0.3);
     border-radius: 10px;
 }
-.rank-userinfo-pic img{
-    width:100%;
-    height:100%;
+
+.rank-userinfo-pic img {
+    width: 100%;
+    height: 100%;
 }
-.rank-userinfo-item{
-    padding:30px 0;
+
+.rank-userinfo-item {
+    padding: 30px 0;
 }
-.rank-userinfo-item p{
-    width:300px;
+
+.rank-userinfo-item p {
+    width: 300px;
     white-space: nowrap;
     overflow: hidden;
-    text-overflow:ellipsis; 
+    text-overflow: ellipsis;
 }
+
 .position-right {
     position: absolute;
     right: 0;
     top: 0;
 }
+
 .vertical-middle {
     vertical-align: middle;
 }
@@ -730,49 +788,56 @@ export default {
     border: none;
     background: #000000;
 }
-.game-box-content{
-    height:550px;
+
+.game-box-content {
+    height: 550px;
 }
-.game-page-mask{
+
+.game-page-mask {
     background: rgba(0, 0, 0, .2);
     z-index: 1000;
 }
-.page-big-box{
-    width:600px;
-    height:800px;
+
+.page-big-box {
+    width: 600px;
+    height: 800px;
     position: absolute;
-    left:50%;
+    left: 50%;
     margin-left: -300px;
-    top:200px;
-    background:#ffffff;
+    top: 200px;
+    background: #ffffff;
     border-radius: 20px;
 }
-.page-xbig-box{
-    width:600px;
-    height:1000px;
+
+.page-xbig-box {
+    width: 600px;
+    height: 1000px;
     position: absolute;
-    left:50%;
-    margin-left:-300px;
-    top:100px;
-    background:url('../../../assets/bg-img/rank.jpeg') no-repeat;
-    background-size:100% 100%; 
+    left: 50%;
+    margin-left: -300px;
+    top: 100px;
+    background: url('../../../assets/bg-img/rank.jpeg') no-repeat;
+    background-size: 100% 100%;
     border-radius: 20px;
 }
-.page-close-btn{
-    height:80px;
-    width:80px;
+
+.page-close-btn {
+    height: 80px;
+    width: 80px;
     border-radius: 50%;
-    background:rgba(0,0,0,.6);
+    background: rgba(0, 0, 0, .6);
     position: absolute;
-    top:-30px;
-    right:-30px;
-    border:none;
+    top: -30px;
+    right: -30px;
+    border: none;
 }
-.page-big-box img{
-    width:100%;
-    height:100%;
+
+.page-big-box img {
+    width: 100%;
+    height: 100%;
     border-radius: 20px;
 }
+
 .page-middle-box {
     width: 600px;
     height: 700px;
@@ -789,75 +854,85 @@ export default {
     width: 300px;
     height: auto;
 }
-.page-small-box{
-    width:600px;
-    height:600px;
+
+.page-small-box {
+    width: 600px;
+    height: 600px;
     position: absolute;
-    left:50%;
-    margin-left:-300px;
-    top:200px;
-    background:#ffffff;
+    left: 50%;
+    margin-left: -300px;
+    top: 200px;
+    background: #ffffff;
     border-radius: 20px;
 }
-.page-small-box img{
-    width:100%;
-    height:100%;
+
+.page-small-box img {
+    width: 100%;
+    height: 100%;
 }
-.page-small-head{
+
+.page-small-head {
     width: 100%;
     text-align: center;
-    margin:30px 0; 
+    margin: 30px 0;
 }
-.game-box-head{
+
+.game-box-head {
     height: 100px;
 }
-.game-head-left{
-    width:330px;
-    height:80px;
-    background:#000000;
+
+.game-head-left {
+    width: 330px;
+    height: 80px;
+    background: #000000;
     border-radius: 20px;
-    margin:15px 20px;
-    color:#ffffff;
+    margin: 15px 20px;
+    color: #ffffff;
     line-height: 80px;
     box-sizing: border-box;
-    padding:0 20px;
-    font-size:30px;
+    padding: 0 20px;
+    font-size: 30px;
     position: relative;
 }
-.game-head-left span{
+
+.game-head-left span {
     position: absolute;
-    right:20px;
+    right: 20px;
 }
-.page-xbig-head{
+
+.page-xbig-head {
     height: 100px;
     text-align: center;
     line-height: 100px;
 }
-.page-xbig-content{
-}
-.page-xbig-content li{
+
+.page-xbig-content {}
+
+.page-xbig-content li {
     width: 100%;
     height: 150px;
-    margin-bottom:10px; 
-    background:rgba(255,255,255,0.6);
-    
+    margin-bottom: 10px;
+    background: rgba(255, 255, 255, 0.6);
 }
-.rank-tag{
-    width:90px;
-    height:90px;
-    background:url('../../../assets/bg-img/rating.svg');
+
+.rank-tag {
+    width: 90px;
+    height: 90px;
+    background: url('../../../assets/bg-img/rating.svg');
     text-align: center;
     line-height: 90px;
-    font-size:32px;
+    font-size: 32px;
     margin: 30px 20px;
     float: left;
-    color:#ffffff;
+    color: #ffffff;
 }
-.rank-userinfo{
-    height:90px;
-    font-size:30px;
+
+.rank-userinfo {
+    height: 90px;
+    font-size: 30px;
     vertical-align: middle;
 }
+
 .choose-word-head {
     margin-bottom: 40px;
 }
@@ -986,6 +1061,7 @@ export default {
     -o-animation: 'score-mask-show' 2s infinite;
     -moz-animation: 'score-mask-show' 2s infinite;
 }
+
 
 
 

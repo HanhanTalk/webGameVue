@@ -96,6 +96,9 @@ router.post('/drawguess/join', function(req, res, next) {
  */
 router.get('/drawguess/info',  function(req, res, next) {
   var roomId = req.query.roomId;
+  if (!roomId) {
+    return util.resJson(res, '找不到房间号');
+  }
   var _gRoomInfo = {};
   findRoomInfoByRoomId('drawGuess', roomId)
     .then((roomInfo) => {
@@ -174,7 +177,7 @@ router.post('/drawguess/chooise/words', function(req, res) {
     roomId: roomId
   }, {
     $set: {
-      drawWord: word,
+      drawWord: wordObject,
       status: 2
     }
   }).then((response) => {
@@ -304,8 +307,8 @@ function joinOneExistRoom(room, userId) {
     addscore: false,
   });
   
-  // 这里有一个开始逻辑，如果玩家数大于等于3，就更改status
-  if (room.player.length > 2) {
+  // 这里有一个开始逻辑，如果玩家数大于等于2，就更改status
+  if (room.player.length > 1) {
     room.status = 1; // 进入选题状态，房主开始选题
   }
 
