@@ -5,12 +5,18 @@ var _ = require('lodash');
  * @param {*} userInfo 
  */
 function userInfo(userInfo) {
-  if (!userInfo.nick) {
-    userInfo.nick = userInfo.name;
+  var _userInfo = {};
+  _userInfo.name = userInfo.name;
+  _userInfo.nick = '';
+  if (!_userInfo.nick) {
+    _userInfo.nick = userInfo.name;
   }
-  userInfo.accout = userInfo.name;
-  var _userInfo = _.assign({}, userInfo);
   _userInfo.uid = userInfo._id;
+  _userInfo.portrait = userInfo.portrait;
+  _userInfo.ulevel = userInfo.ulevel;
+  _userInfo.gold = userInfo.gold;
+  _userInfo.flower = userInfo.flower;
+  _userInfo.onlineStatus = userInfo.onlineStatus;
   return _userInfo;
 }
 

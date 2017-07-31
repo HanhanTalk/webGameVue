@@ -74,6 +74,7 @@ router.post('/drawguess/join', function(req, res, next) {
       return getUserInfoByUids(allUids);
     })
     .then((userInfos) => {
+      console.log(userInfos);
       gRoom.player.forEach(function(item, index) {
         gRoom.player[index].portrait = userInfos[index].portrait;
       });
