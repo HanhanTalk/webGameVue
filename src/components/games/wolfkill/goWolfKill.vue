@@ -1,38 +1,21 @@
 <template>
-  <div class="wolfroom">
+  <div class="page-warp wolfroom">
      <div class="chooselist fixed-box">
-         <div class = "game-info">
+         <div class = "game-info font-middle">
              <p>萌新玩家可以先查看规则<a href="javascript:;" @click="gameInfo">了解狼人杀</a></p>
         </div>
          <div v-for="item in data" :key="item.id" class="list-item" @click="goRoom(item)">
              <div class="list-caption">
-                 <h1>{{item.title}}</h1>
-                 <b>PvP</b>
-                 <p>—— {{item.remark}} ——</p>
+                 <h1 class="font-big">{{item.title}}</h1>
+                 <b class="font-middle">PvP</b>
+                 <p class="font-small">—— {{item.remark}} ——</p>
              </div>
          </div>
-          <!-- <div class="list-item">
-             <div class="list-caption">
-                 <h1>12人局</h1>
-                 <b>PvP</b>
-                 <p>——标准对决——</p>
-             </div>
-         </div>
-         <div class="list-item">
-             <div class="list-caption">
-                 <h1>大师赛</h1>
-                 <b>PvP</b>
-                 <p>——高手竞技——</p>
-             </div>
-         </div>  -->
      </div>
   </div>
 </template>
  <style scoped>
     .wolfroom{
-        padding:0 10px;
-        height: 100%;
-        overflow: hidden;
         background: rgba(70,74,165,1);
     }
     .chooselist{
@@ -41,54 +24,42 @@
     }
     .game-info{
         width: 90%;
-        height:40px;
+        height: 60px;
         background: rgba(0,0,0,0.3);
-        margin: 15px auto;   
-        border-radius: 20px; 
+        margin: 15px auto;
+        margin-bottom: 100px;
+        border-radius: 30px;
         text-align: center;
-        line-height: 40px;
-        color:#ffffff;
+        line-height: 60px;
+        color: #ffffff;
     }
     .list-item{
-        height:150px;
+        height:300px;
         width:100%;
-        margin-bottom:2px; 
+        margin-bottom:5px; 
     }
     .list-caption{
         float: right;
-        padding: 30px;
         text-align: center;
+        height:300px;
+        width:300px;
+        box-sizing: border-box;
+        padding: 70px 0;
     }
-    /* .bg-basic{
-        background:url('./games/game-img/basic.jpeg') no-repeat;
-        background-size:150px auto; 
-        background-color:#ffffff;
-        color:#2b2b2b;
-    }
-    .bg-normal{
-        background:url('./games/game-img/normal.jpeg') no-repeat;
-        background-size:100% 100%;
-        color:#ffffff;
-    }
-    .bg-master{
-         background:url('./games/game-img/master.jpeg') no-repeat;
-        background-size:100% 100%;
-        color:#cccccc;
-    } */
     .chooselist div:nth-child(2){
         background:url('../../../assets/game-img/basic.jpeg') no-repeat;
-        background-size:150px auto; 
+        background-size:300px auto; 
         background-color:#ffffff;
         color:#2b2b2b;
     }
     .chooselist div:nth-child(3){
         background:url('../../../assets/game-img/normal.jpeg') no-repeat;
-        background-size:100% 100%;
+        background-size:100%;
         color:#ffffff;
     }
     .chooselist div:nth-child(4){
         background:url('../../../assets/game-img/master.jpeg') no-repeat;
-        background-size:100% 100%;
+        background-size:100%;
         color:#cccccc;
      }
   </style>
@@ -122,7 +93,7 @@ export default {
                 default:
                     client.peopleNum(12)
             }
-            this.$router.push({path:'/waitRoom'})
+            this.$router.push({name:'wolfRoom',params:{ Id:123}});
         }
     }
 }

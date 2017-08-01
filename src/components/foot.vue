@@ -24,24 +24,31 @@
         background:rgba(47,59,73,1);
     }
     .foot ul{
-        width: 600px;
+        width: 100%;
         height:120px;
         margin:0 auto;
         box-sizing: border-box;
     }
     .foot li{
-        width:120px;
+        width: 150px;
         height: 120px;
         text-align: center;
-        margin:0;
-        padding:10px 0;
-        color:#ffffff;
+        margin: 0;
+        color: #ffffff;
+        line-height: 120px;
+        position: relative;
     }
     .foot li span{
         font-size:50px;
     }
     .foot li p{
-        font-size:26px ;
+        font-size: 26px;
+        position: absolute;
+        top: 40px;
+        left: 50%;
+        width: 100px;
+        margin-left: -50px;
+        text-align: center;
     }
     .foot-btn-list li:nth-child(1)>span::before {
         content: '\f11b';

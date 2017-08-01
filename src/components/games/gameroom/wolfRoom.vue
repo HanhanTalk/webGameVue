@@ -1,258 +1,455 @@
 <template>
-  <div class="wolfRoom wrap">
-    <div class="game-msg-head">
-      <p>你的身份：{{game_id}}</p>
-    </div>
-    <div v-if="upperShow" class="upper" :class="{'upper-top':toMove}">
-        <img :src="game_img_url">
-    </div>
-      <ul class="fLeft">
-        <li v-for="(item,index) in userlist_1" :key="item.id">
-          <img :src="item.portrait">
-          <span>{{index+1}}</span>
-          <div class="pic-mask wrap">
-          </div>
-        </li>
-      </ul>
-      <ul class="fRight">
-        <li v-for="(item,index) in userlist_2" :key="item.id">
-          <img :src="item.portrait">
-          <span>{{index+8}}</span>
-          <div class="pic-mask wrap death">
-          </div>
-        </li>
-      </ul>
+  <div class="page-warp">
+    <div class="room-warp">
+      <!--游戏提示 -->
       <div class="game-sys-tips">
-        <h1><span class="fa" :class="{'fa-sun-o':onday,'fa-moon-o':!onday}"></span>{{wolf.msgObj.title}}</h1>
-        <p>{{wolf.msgObj.content}}</p>
-        <span class="time">{{wolf.msgObj.time}}</span>
+        <h1>
+          <span class="fa fa-sun-o"></span>
+        </h1>
+        <p></p>
+        <span class="time"></span>
       </div>
-      <div class="btn-group">
-        <button @click="inputBtn" class="text-input" type="button"><span class="fa" :class="{'fa-pencil-square-o':!onInput,'fa-microphone':onInput}"></span></button>
-        <button class="microphone" type="button" ><span class="fa fa-microphone"></span>按住说话</button>
-        <input :class="{'input-hide':!onInput}" type="text">
+      <!--身份信息-->
+      <div class="game-msg-head">
+        <p class="font-middle">你的身份：村民</p>
       </div>
+      <!--玩家列表-->
+      <div class="wolfroom-userlist">
+        <ul class="fLeft">
+          <li v-for="(item,index) in playerlist_1" :key="item.id">
+            <img :src="item.portrait">
+            <span>{{index+1}}</span>
+            <div class="pic-mask wrap">
+            </div>
+          </li>
+        </ul>
+        <ul class="fRight">
+          <li v-for="(item,index) in playerlist_2" :key="item.id" v-if="item">
+            <!-- <img src="../../../assets/userpic/anonym.jpg"> -->
+            <div v-if="item.uid">
+              <img :src="item.portrait">
+              <span>{{index+8}}</span>
+              <div class="pic-mask wrap death">
+              </div>
+            </div>
+            <div v-if="item == 'nobody'">
+               <img src="../../../assets/userpic/anonym.jpg">
+            </div>  
+          </li>
+        </ul>
+      </div>
+      <!--游戏中途选项-->
+      <div class="page-warp page-mask">
+         <div class="page-small-box">
+            <div class="page-small-box-head">
+               <h1>请选择你要杀掉的玩家</h1>
+            </div>
+            <div class="page-small-box-content">
+                <ul>
+                  <li class="small-box-userpic" v-for="item in 6" :key="item.id">
+                    <img src="../../../assets/userpic/anonym.jpg">
+                  </li>
+                </ul>
+            </div>
+         </div>
+      </div>
+      <textInput @answerEvent="receiveInfo"></textInput>
+    </div>
   </div>
 </template>
-<style>
-    .wrap{
-      position: absolute;
-      top:0;
-      left:0;
-      width:100%;
-      height:100%;
-    }
-    .upper{
-      width:200px;
-      height:200px;
-      position: absolute;
-      top:30%;
-      left:50%;
-      margin-left:-100px;
-      animation: myMove 2s ease 2s 1 alternate;
-    }
-    .game-sys-tips{
-    width: 230px;
-    position: absolute;
-    left: 50%;
-    top: 100px;
-    margin-left: -115px;
-    color: #dddddd;
-    background: rgba(0,0,0,0.4);
-    text-align: center;
-    box-sizing: border-box;
-    padding: 10px 20px;
-    z-index: 100;
-    }
-    .game-sys-tips h1{
-      font-size:30px;
-      margin-bottom:10px;
-    }
-    .game-sys-tips span{
-      font-size:35px;
-    } 
-    @keyframes myMove{
-      from {
-        top:30%;
-        left:50%;
-         width:200px;
-         height:200px;
-      }
-      to{ top: 65px;
-      left: 100%;
-      width:30px;
-      height:30px;}
-    }
-    .upper-top{
-      top: 65px;
-      left: 100%;
-      width:30px;
-      height:30px;
-    }
-    .upper img{
-      width:100%;
-      height:100%;
-    }
-    .wolfRoom{
-      padding:50px 0;
-      width:100%;
-      box-sizing: border-box;
-      background:url(../../../assets/game-bg/langrensha-bg.jpeg);
-    }
-    .wolfRoom ul{
-      margin:30px 5px 0 5px;
-    }
-    .wolfRoom li{
-      width:60px;
-      height:60px;
-      margin-bottom: 5px;
-      text-align: center;
-      display: block;
-      color:#ffffff;
-      border:2px solid #727272;
-      border-radius: 10px;
-      position: relative;
-    }
-    .wolfRoom li span{
-    position: absolute;
-    top: 0;
-    left: 0;
-    background: rgba(58,185,130,1);
-    width: 25px;
-    border-radius: 5px 5px 5px 0;
-    }
-    .wolfRoom li img{
-      width:60px;
-      height:60px;
-      border-radius: 10px;
-    }
-    .fLeft{
-      float:left;
-    }
-    .fRight{
-      float:right;
-    }
-    .game-msg-head{
-      position: absolute;
-      top:60px;
-      height:40px;
-      width:100%;
-      background:rgba(0,0,0,.6);
-      color:#cccccc;
-      box-sizing: border-box;
-      padding:0 80px;
-      line-height: 40px;
-    }
-    .pic-mask{
-      top:-2px;
-      left:-2px;
-      z-index:100;
-      border-radius: 10px;
-    }
-   .wolfRoom .speak{
-     box-shadow: 0 0 10px #F44336 inset;
-     border:2px solid #F44336;
-    }
-   .wolfRoom .death{
-      border:2px solid #727272;
-      background:url(../../../assets/game-bg/death_meitu_1.jpg) no-repeat;
-      background-size:100%;
-      opacity: 0.6;
-   }
-   .btn-group{
-     position: absolute;
-     left:50%;
-     bottom:20px;
-     width:276px;
-     margin-left:-138px;
-
-   }
-   .btn-group button{
-      border: none;
-      border-radius: 10px;
-      color:#ffffff;
-      font-size:18px;
-      outline: none;
-      background:linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
-      background:-webkit-linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
-      background:-o-linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
-      background:-moz-linear-gradient(top,rgba(29,202,242,1),rgba(28,117,243,1));
-   }
-   .btn-group input{
-     position: absolute;
-     top:0;
-     right:0;
-     width:215px;
-     height:35px;
-     border-radius: 10px;
-     outline: none;
-     font-size:1em;
-     transition: width 1s;
-   }
-   .input-hide{
-     width:0 !important;
-     opacity: 0;
-   }
-   .text-input{
-     width:50px;
-     height:40px;
-   }
-   .microphone{
-     width:220px;
-     height:40px;
-   }
-   .microphone span{
-     margin-right:5px;
-   }
-</style>
  <script type="text/ecmascript6">
- import client from '../../../api/client'
- import wolf from '../../../api/game/wolf'
+import wolf from '../../../api/game/wolf'
+import textInput from '../../public/input.vue'
 export default {
-  name:'wolfRoom',
-  data(){
-    return{
-      client,
-      wolf,
-      game_id:'',
-      userlist_1:[],
-      userlist_2:[],
-      game_img_url:'',
-      upperShow:false,
-      toMove:false,
-      onInput:false,
-      onday:true
+  name: 'wolfRoom',
+  components:{ textInput },
+  data() {
+    return {
+      playerlist:[],
+      playerlist_1:[],
+      playerlist_2:[],
+      flowStatus:0
     }
   },
-  methods:{
-    getGame_id(){
-      var _this = this;
-       this.game_id = '预言家';
-       this.game_img_url = '../src/components/games/game-info-img/001.jpeg';
-       this.upperShow = true;
-      setTimeout(function(){
-        _this.toMove = true;
-      },2009);
+  mounted(){
+    this.getPlayerData();
+    this.setPlayGroup();
+  },
+  methods: {
+    getPlayerData(){
+      //模拟用户数据
+    this.playerlist=[
+      {    
+        uid:'10001',
+        nick:'死侍',
+        portrait:'./src/assets/userpic/user-01.jpg',
+        idCard:'',
+        survival:true
     },
-    inputBtn(){
-      if(this.onInput){
-        this.onInput = false;
-      } else{
-        this.onInput = true;
+    {    
+        uid:'10002',
+        nick:'雷神',
+        portrait:'./src/assets/userpic/user-02.jpg',
+        idCard:'',
+        survival:true
+    },
+    {    
+        uid:'10003',
+        nick:'超人',
+        portrait:'./src/assets/userpic/user-03.jpg',
+        idCard:'',
+        survival:true
+    },
+   {    
+        uid:'10004',
+        nick:'蝙蝠侠',
+        portrait:'./src/assets/userpic/user-04.jpg',
+        idCard:'',
+        survival:true
+    },
+  {    
+        uid:'10005',
+        nick:'钢铁侠',
+        portrait:'./src/assets/userpic/user-05.jpg',
+        idCard:'',
+        survival:true
+    },
+   {    
+        uid:'10006',
+        nick:'蜘蛛侠',
+        portrait:'./src/assets/userpic/user-06.jpg',
+        idCard:'',
+        survival:true
+    },
+     {    
+        uid:'10007',
+        nick:'Rookie',
+        portrait:'./src/assets/userpic/user-07.jpg',
+        idCard:'',
+        survival:true
+    },
+     {   
+        uid:'10008',
+        nick:'Hansir',
+        portrait:'./src/assets/userpic/user-08.jpg',
+        idCard:'',
+        survival:true
+    }]
+    },
+    //给用户分组
+    setPlayGroup(){
+      let len = this.playerlist.length;
+      let subArr = [];
+      for(var i = 0;i< 14-len;i++){
+          subArr[i]= "nobody";
       }
+      let Arr = this.playerlist.concat(subArr);
+
+      this.playerlist_1 = Arr.slice(0,7);
+      this.playerlist_2 = Arr.slice(7,14);
+     },
+
+    receiveInfo(info) {
+      //info 为input组件输入内容
+    },
+    //游戏流程控制
+    gameFlowCtrl(){
+
+    },
+    //游戏流程
+    gameFlowStatus(_status){
+        switch(_status){
+          //天黑时 狼人操作
+          case 0:{
+           
+          }
+          //天黑时 女巫操作
+          case 1:{
+
+          }
+          //天黑时 预言家操作
+          case 2:{
+
+          }
+        }
+        
+    },
+    //游戏开始 分发身份牌
+    gameStart(){
+      //判断有几个玩家
+      var len = this.playerlist.length;
+      switch (len){
+        case 8:{
+          //3神+3平+2狼
+
+        }
+        case 10:{
+          //3神+4平+3狼
+        }
+        default:{
+          //暂时不用12人
+        }
+      }
+
+    },
+    //天黑时 ：
+    //1 狼人操作：选择要杀掉的玩家
+    gameFlowStatus_wolf(){
+
+    },
+    //2 女巫操作：救人／不救 ，毒人／不毒
+    gameFlowStatus_witch(){
+
+    },
+    //3 预言家操作：选择要查看玩家
+    gameFlowStatus_prophesy(){
+
     }
-  },
-  mounted:function(){
-    var _this = this;
-    var userlist = client.arr8;
-    this.userlist_1 = userlist.slice(0,7);
-    this.userlist_2 = userlist.slice(7,userlist.length);
-    setTimeout(function(){
-        _this.getGame_id();
-    },1000);
-  this.wolf.countDown();
-  },
+    //清算结果
+    //天亮时：
+    //1（判断天数）前两天死掉的人有遗言
+
+    //2 从死亡玩家下一位玩家开始发言，每个人有1分半发言时间，可以跳过
+    //3 玩家投票
+
+    
+
+
+
+  }
 }
 </script>
+<style>
+.room-warp {
+  right: 0;
+  left: 0;
+  top: 120px;
+  bottom: 0;
+  position: absolute;
+  background: url(../../../assets/game-bg/langrensha-bg.jpeg) no-repeat;
+  background-size: 100%;
+}
+.page-mask {
+    background: rgba(0, 0, 0, .4);
+    z-index: 1000;
+}
+.page-middle-box {
+    width: 600px;
+    height: 700px;
+    position: absolute;
+    top: 200px;
+    left: 50%;
+    background: #ffffff;
+    margin-left: -300px;
+    border-radius: 20px;
+    text-align: center;
+}
+.page-small-box {
+    width: 600px;
+    height: 600px;
+    position: absolute;
+    left: 50%;
+    margin-left: -300px;
+    top: 200px;
+    background: #ffffff;
+    border-radius: 20px;
+}
+.small-box-userpic{
+  width: 80px;
+  height:80px;
+}
+.small-box-userpic img{
+  width: 100%;
+  height:100%;
+}
+.upper {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  margin-left: -100px;
+  animation: myMove 2s ease 2s 1 alternate;
+}
+
+.game-sys-tips {
+  width: 480px;
+  position: absolute;
+  left: 50%;
+  top: 80px;
+  margin-left: -240px;
+  color: #dddddd;
+  background: rgba(0, 0, 0, 0.4);
+  text-align: center;
+  box-sizing: border-box;
+  padding: 10px 20px;
+  z-index: 100;
+}
+
+.game-sys-tips h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.game-sys-tips span {
+  font-size: 35px;
+}
+
+@keyframes myMove {
+  from {
+    top: 30%;
+    left: 50%;
+    width: 200px;
+    height: 200px;
+  }
+  to {
+    top: 65px;
+    left: 100%;
+    width: 30px;
+    height: 30px;
+  }
+}
+
+.upper-top {
+  top: 65px;
+  left: 100%;
+  width: 30px;
+  height: 30px;
+}
+
+.upper img {
+  width: 100%;
+  height: 100%;
+}
+
+.wolfroom-userlist ul {
+  margin: 30px 5px 0 5px;
+}
+
+.wolfroom-userlist li {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 10px;
+  text-align: center;
+  display: block;
+  color: #ffffff;
+  border: 4px solid #727272;
+  border-radius: 20px;
+  position: relative;
+}
+
+.wolfroom-userlist li span {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: rgba(58, 185, 130, 1);
+  width: 50px;
+  height: 50px;
+  border-radius: 20px 10px 10px 0;
+  line-height: 50px;
+  text-align: center;
+  font-size: 26px;
+}
+
+.wolfroom-userlist li img {
+  width: 120px;
+  height: 120px;
+  border-radius: 20px;
+}
+
+.fLeft {
+  float: left;
+}
+
+.fRight {
+  float: right;
+}
+
+.game-msg-head {
+  position: absolute;
+  top: 0;
+  height: 80px;
+  width: 100%;
+  background: rgba(0, 0, 0, .6);
+  color: #cccccc;
+  box-sizing: border-box;
+  padding: 0 140px;
+  line-height: 80px;
+}
+
+.pic-mask {
+  top: -2px;
+  left: -2px;
+  z-index: 100;
+  border-radius: 10px;
+}
+
+.wolfRoom .speak {
+  box-shadow: 0 0 10px #F44336 inset;
+  border: 2px solid #F44336;
+}
+
+.wolfRoom .death {
+  border: 2px solid #727272;
+  background: url(../../../assets/game-bg/death_meitu_1.jpg) no-repeat;
+  background-size: 100%;
+  opacity: 0.6;
+}
+
+.btn-group {
+  position: absolute;
+  left: 50%;
+  bottom: 20px;
+  width: 276px;
+  margin-left: -138px;
+}
+
+.btn-group button {
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 18px;
+  outline: none;
+  background: linear-gradient(top, rgba(29, 202, 242, 1), rgba(28, 117, 243, 1));
+  background: -webkit-linear-gradient(top, rgba(29, 202, 242, 1), rgba(28, 117, 243, 1));
+  background: -o-linear-gradient(top, rgba(29, 202, 242, 1), rgba(28, 117, 243, 1));
+  background: -moz-linear-gradient(top, rgba(29, 202, 242, 1), rgba(28, 117, 243, 1));
+}
+
+.btn-group input {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 215px;
+  height: 35px;
+  border-radius: 10px;
+  outline: none;
+  font-size: 1em;
+  transition: width 1s;
+}
+
+.input-hide {
+  width: 0 !important;
+  opacity: 0;
+}
+
+.text-input {
+  width: 50px;
+  height: 40px;
+}
+
+.microphone {
+  width: 220px;
+  height: 40px;
+}
+
+.microphone span {
+  margin-right: 5px;
+}
+
+.font-middle {
+  font-size: 36px;
+}
+</style>
 
 
