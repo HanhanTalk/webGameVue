@@ -39,19 +39,59 @@
         </ul>
       </div>
       <!--游戏中途选项-->
+      <!--狼人操作栏-->
       <div class="page-warp page-mask">
-         <div class="page-small-box">
+         <div class="page-small-box " v-if="false">
             <div class="page-small-box-head">
-               <h1>请选择你要杀掉的玩家</h1>
+              <img src="../../../assets/game-img/wolfkill.jpeg">
+               <h1>请选择你要杀掉的玩家,嘿嘿～</h1>
             </div>
             <div class="page-small-box-content">
                 <ul>
-                  <li class="small-box-userpic" v-for="item in 6" :key="item.id">
+                  <li class="small-box-userpic" :class="{'small-box-fix':false}" v-for="item in 6" :key="item.id">
                     <img src="../../../assets/userpic/anonym.jpg">
                   </li>
                 </ul>
             </div>
          </div>
+        <!--女巫操作栏 -->
+           <div class="page-small-box" v-if="false">
+              <div class="page-small-box-head">
+                <img src="../../../assets/game-img/lvwu.jpeg">
+                <!-- <h1>你是否要救他？</h1> -->
+                 <h1>你要对谁使用毒药吗？</h1> 
+              </div>
+              <div class="page-small-box-content">
+                   <!-- <div class="small-box-item">
+                      <img class="small-deach-play" src="../../../assets/userpic/anonym.jpg">
+                      <span>1号玩家</span>
+                   </div>   
+                    <div class="box-btn-group">
+                          <button type="button" class="btn btn-col3">救</button>
+                          <button type="button" class="btn btn-col4">不救</button>
+                    </div> -->
+                   <ul>
+                    <li class="small-box-userpic" v-for="item in 7" :key="item.id">
+                      <img src="../../../assets/userpic/anonym.jpg">
+                    </li>
+                  </ul> 
+              </div>
+           </div>
+           <div class="page-small-box" v-if="true">
+              <div class="page-small-box-head">
+                  <img src="../../../assets/game-img/yuyan.jpeg">
+                  <h1>你要查看谁的身份？</h1>
+              </div>
+              <div class="page-small-box-content">
+                  <ul>
+                    <li class="small-box-userpic" v-for="item in 7" :key="item.id">
+                      <img src="../../../assets/userpic/anonym.jpg">
+                    </li>
+                  </ul> 
+              </div>
+           </div>
+
+
       </div>
       <textInput @answerEvent="receiveInfo"></textInput>
     </div>
@@ -255,12 +295,45 @@ export default {
     border-radius: 20px;
 }
 .small-box-userpic{
-  width: 80px;
-  height:80px;
+  width: 72px;
+  height:72px;
 }
 .small-box-userpic img{
   width: 100%;
   height:100%;
+}
+.page-small-box-head{
+  height:340px;
+  margin-bottom: 4px;
+  position: relative;
+}
+.page-small-box-head h1{
+  position: absolute;
+  bottom: 20px;
+  display: block;
+  width: 100%;
+  text-align: center;
+  font-size:40px;
+  color:#F44336;
+}
+.page-small-box-head img{
+  width:100%;
+  height: 100%;
+  opacity: 0.8;
+  border-radius: 20px 20px 0 0;
+}
+.page-small-box-content{
+  width: 400px;
+  margin: 0 auto;
+}
+.page-small-box-foot{
+  height:200px;
+}
+.small-box-userpic{
+  margin:20px 10px;
+}
+.small-box-fix{
+  border:4px solid #F44336;
 }
 .upper {
   width: 200px;
@@ -316,10 +389,16 @@ export default {
   width: 30px;
   height: 30px;
 }
-
-.upper img {
-  width: 100%;
-  height: 100%;
+.small-box-item{
+  width: 100px;
+  height:140px;
+  font-size:20px;
+  text-align: center;
+  margin: 0 auto;
+}
+.upper img,.small-box-item img {
+  width: 100px;
+  height: 100px;
 }
 
 .wolfroom-userlist ul {
@@ -395,7 +474,25 @@ export default {
   background-size: 100%;
   opacity: 0.6;
 }
-
+.box-btn-group{
+  width:400px;
+  margin:20px 0; 
+}
+.box-btn-group .btn{
+   font-size:40px; 
+   border:none;
+   outline: none;
+   width:180px;
+   border-radius: 10px;
+   color:#ffffff;
+   margin: 0 8px;
+}
+.box-btn-group .btn-col3{
+  background:#66bb6a;
+}
+.box-btn-group .btn-col4{
+  background:#F44336;
+}
 .btn-group {
   position: absolute;
   left: 50%;
