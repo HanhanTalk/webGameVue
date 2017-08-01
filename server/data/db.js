@@ -35,7 +35,7 @@ var Room = mongoose.model('Room', {
   player: Array,                                        // 所有本房间的玩家
   drawPlayerUid: String,                                // 画画玩家的uid
   drawWord: {type: Schema.Types.Mixed, default: null},  // 玩家选的词对象，包含词，词提示，和长度
-  drawData: {type: Schema.Types.Mixed, default: null},  // 画的数据
+  drawData: {type: Schema.Types.Mixed, default: {}},  // 画的数据
   winPlayerUid: String,                                 // 猜对玩家的uid
 });
 

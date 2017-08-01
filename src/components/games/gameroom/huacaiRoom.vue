@@ -16,7 +16,12 @@
             </div>
         </div>
         <!--canvas组件 -->
-        <gameCanvas id="gameCanvas" class="canvas-ex" :paintSize="paint_Size" :paintCol="paint_Col" ref="myCanvas">
+        <gameCanvas id="gameCanvas" class="canvas-ex"  
+            :serverDrawData="serverDrawData" 
+            :paintSize="paint_Size" 
+            :paintCol="paint_Col"
+            :isPainer="currentUser.painer"
+             ref="myCanvas">
         </gameCanvas>
         <div class="canvas-mask" v-if="!currentUser.painer">
         </div>
@@ -235,8 +240,10 @@ export default {
             //游戏状态
             gameStatus: 0,
             //1代表游戏开始 2代表玩家选词 3代表画画阶段 4代表结束作画 5公布答案 6代表游戏结束 
-            gameround: 1
+            gameround: 1,
             //游戏回合
+            roomData: {},
+            serverDrawData: {}
         }
     },
     mounted() {
@@ -267,6 +274,7 @@ export default {
                     }
                     self.playerEach();
                     self.dispatchRoomStatus(response);
+                    self.roomData = response;
                 }).catch((err) => {
                     alert('请求出错' + err);
                     self.stopFetchRoomInfo();
@@ -431,6 +439,12 @@ export default {
             //     }, 1000);
             // });
             // _timer(80);
+            if (!this.currentUser.painer && this.roomData.drawData) {
+                this.serverDrawData = this.roomData.drawData;
+                setTimeout(() => {
+                    this.$refs.myCanvas.reDraw();
+                }, 500);
+            }
         },
         //玩家结束作画
         gameFlowStatus_drawover() {

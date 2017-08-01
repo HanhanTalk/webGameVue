@@ -68,6 +68,10 @@ const postDrawguessRoomWord = (param) => {
   return _post('/room/drawguess/chooise/words', param);
 }
 
+const postDrawguessRoomData = (param) => {
+  return _post('/room/drawguess/drawdata', param);
+} 
+
 export default {
   signUp,
   signIn,
@@ -76,5 +80,6 @@ export default {
   joinDrawguessRoom,
   getDrawguessRoomInfo,
   getDrawguessRoomWord,
-  postDrawguessRoomWord
+  postDrawguessRoomWord,
+  postDrawguessRoomData
 }
