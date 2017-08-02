@@ -2,16 +2,18 @@
   <div class="page-warp">
     <div class="room-warp">
       <!--游戏提示 -->
-      <div class="game-sys-tips">
+      <div class="game-sys-tips" v-if="flowStatus !== 0">
         <h1>
-          <span class="fa fa-sun-o"></span>
+          <span class="fa" :class="[onNight ? 'fa-moon-o' : 'fa-sun-o']"></span>
+          {{sysTips.title}}(第{{gameRound}}天)
         </h1>
-        <p></p>
-        <span class="time"></span>
+        <p class="txt-2">{{sysTips.content}}</p>
+        <div class="time">{{sysTips.time}} S</div>
       </div>
+  
       <!--身份信息-->
       <div class="game-msg-head">
-        <p class="font-middle">你的身份：村民</p>
+        <p class="font-middle">你的身份：{{currentObj.name}}</p>
       </div>
       <!--玩家列表-->
       <div class="wolfroom-userlist">
@@ -33,68 +35,99 @@
               </div>
             </div>
             <div v-if="item == 'nobody'">
-               <img src="../../../assets/userpic/anonym.jpg">
-            </div>  
+              <img src="../../../assets/userpic/anonym.jpg">
+            </div>
           </li>
         </ul>
       </div>
-      <!--游戏中途选项-->
-      <!--狼人操作栏-->
-      <div class="page-warp page-mask">
-         <div class="page-small-box " v-if="false">
-            <div class="page-small-box-head">
-              <img src="../../../assets/game-img/wolfkill.jpeg">
-               <h1>请选择你要杀掉的玩家,嘿嘿～</h1>
-            </div>
-            <div class="page-small-box-content">
-                <ul>
-                  <li class="small-box-userpic" :class="{'small-box-fix':false}" v-for="item in 6" :key="item.id">
-                    <img src="../../../assets/userpic/anonym.jpg">
-                  </li>
-                </ul>
-            </div>
-         </div>
+      <!--技能玩家操作栏-->
+      <div class="page-warp" v-if="flowStatus !== 0">
+        <!--狼人操作栏-->
+        <div class="page-small-box " v-if="flowStatus === 1 && currentUser.idCard === 4">
+          <div class="page-small-box-head">
+            <img src="../../../assets/game-img/wolfkill.jpeg">
+            <h1>嘿嘿～请选择你要杀掉的玩家</h1>
+          </div>
+          <div class="page-small-box-content">
+            <ul>
+              <li @click="Kill(item.seat)" class="small-box-userpic" :class="{'small-box-fix':false}" v-for="(item,index) in playerlist" :key="item.id" v-if="item.alive == true">
+                <span>{{item.seat}}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
         <!--女巫操作栏 -->
-           <div class="page-small-box" v-if="false">
-              <div class="page-small-box-head">
-                <img src="../../../assets/game-img/lvwu.jpeg">
-                <!-- <h1>你是否要救他？</h1> -->
-                 <h1>你要对谁使用毒药吗？</h1> 
-              </div>
-              <div class="page-small-box-content">
-                   <!-- <div class="small-box-item">
-                      <img class="small-deach-play" src="../../../assets/userpic/anonym.jpg">
-                      <span>1号玩家</span>
-                   </div>   
-                    <div class="box-btn-group">
-                          <button type="button" class="btn btn-col3">救</button>
-                          <button type="button" class="btn btn-col4">不救</button>
-                    </div> -->
-                   <ul>
-                    <li class="small-box-userpic" v-for="item in 7" :key="item.id">
-                      <img src="../../../assets/userpic/anonym.jpg">
-                    </li>
-                  </ul> 
-              </div>
-           </div>
-           <div class="page-small-box" v-if="true">
-              <div class="page-small-box-head">
-                  <img src="../../../assets/game-img/yuyan.jpeg">
-                  <h1>你要查看谁的身份？</h1>
-              </div>
-              <div class="page-small-box-content">
-                  <ul>
-                    <li class="small-box-userpic" v-for="item in 7" :key="item.id">
-                      <img src="../../../assets/userpic/anonym.jpg">
-                    </li>
-                  </ul> 
-              </div>
-           </div>
-
-
+        <div class="page-small-box" v-if="flowStatus === 2 && currentUser.idCard === 2">
+          <div class="page-small-box-head">
+            <img src="../../../assets/game-img/lvwu.jpeg">
+             <h1 v-if="rescue">今天晚上他死了，你要救他吗？</h1> 
+            <h1 v-if="!rescue">你有一瓶毒药，你要毒死谁？</h1>
+          </div>
+          <div class="page-small-box-content">
+             <div class="small-box-item" v-if="rescue">
+                    <span>{{killsb[0]}}</span>
+             </div>
+              <div class="box-btn-group">
+                    <button type="button" class="btn btn-col3">救</button>
+                    <button type="button" class="btn btn-col4">不救</button>
+              </div> 
+            </div>
+            <ul v-if="!rescue">
+              <li class="small-box-userpic" v-for="item in 7" :key="item.id">
+                <img src="../../../assets/userpic/anonym.jpg">
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!--预言家操作栏 -->
+        <div class="page-small-box" v-if="flowStatus === 3 && currentUser.idCard === 1">
+          <div class="page-small-box-head">
+            <img src="../../../assets/game-img/yuyan.jpeg">
+             <h1 v-if ="!look">你要查看谁的身份？</h1> 
+            <h1 v-if="look">他的身份是...</h1>
+          </div>
+          <div class="page-small-box-content">
+             <ul v-if="!look">
+                  <li class="small-box-userpic" v-for="item in playerlist" :key="item.id" v-if="(item.looked == false) && (item.alive == true)">
+                      <span>{{item.seat}}</span>
+                  </li>
+              </ul>  
+            <div class="small-box-item" v-if="look">
+              <span class="font-small"></span>
+            </div>
+          </div>
+  
+        </div>
+      </div>
+      <!--猎人操作栏-->
+      <div class="page-warp page-mask" v-if="false">
+        <div class="page-small-box">
+          <div class="page-small-box-head">
+            <img src="../../../assets/game-img/lieren.jpeg">
+            <h1>选择你要带走的玩家</h1>
+          </div>
+          <div class="page-small-box-content">
+            <ul>
+              <li class="small-box-userpic" :class="{'small-box-fix':false}" v-for="item in 6" :key="item.id">
+                <img src="../../../assets/userpic/anonym.jpg">
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!--身份牌-->
+      <div class="page-warp page-mask" v-if="flowStatus === 0">
+        <div class="rotate-item">
+          <div class="idcardShow animated flip">
+            <img :src="currentObj.url">
+          </div>
+        </div>
+      </div>
+      <div class="upper-top">
+        <img :src="currentObj.url">
       </div>
       <textInput @answerEvent="receiveInfo"></textInput>
-    </div>
+      <button type="button" @click="next" class="test">下一步</button>
   </div>
 </template>
  <script type="text/ecmascript6">
@@ -102,164 +135,332 @@ import wolf from '../../../api/game/wolf'
 import textInput from '../../public/input.vue'
 export default {
   name: 'wolfRoom',
-  components:{ textInput },
+  components: { textInput },
   data() {
     return {
-      playerlist:[],
-      playerlist_1:[],
-      playerlist_2:[],
-      flowStatus:0
+      playerlist: [],
+      playerlist_1: [],
+      playerlist_2: [],
+      flowStatus: 0,
+      title: '狼人杀123号房间',
+      currentUser: {},        //当前玩家
+      gameRound: 1,           //游戏回合数
+      //系统提示
+      sysTips: {
+        title: '',
+        content: '',
+        time: null
+      },
+      //夜晚／白天
+      onNight: null,
+      //身份
+      currentObj: {
+        name: '',
+        url: null
+      },
+      rescue: true,
+      //可以操作玩家对象
+      playerObj: {
+        wolf: [],
+        watich: [],
+        hunter: [],
+        prophesy: []
+      },
+      killsb:[],
+      look:false,
+      rescue:true
+
     }
   },
-  mounted(){
+  mounted() {
+    this.setTitle();
     this.getPlayerData();
     this.setPlayGroup();
+    this.gameFlowCtrl();
   },
   methods: {
-    getPlayerData(){
+    setTitle() {
+      this.$store.commit('updateTitle', this.title);
+    },
+    getPlayerData() {
       //模拟用户数据
-    this.playerlist=[
-      {    
-        uid:'10001',
-        nick:'死侍',
-        portrait:'./src/assets/userpic/user-01.jpg',
-        idCard:'',
-        survival:true
+      this.playerlist = [
+        {
+          uid: '10001',
+          seat: 1,
+          nick: '死侍',
+          portrait: './src/assets/userpic/user-01.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        },
+        {
+          uid: '10002',
+          seat: 2,
+          nick: '雷神',
+          portrait: './src/assets/userpic/user-02.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        },
+        {
+          uid: '10003',
+          seat: 3,
+          nick: '超人',
+          portrait: './src/assets/userpic/user-03.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        },
+        {
+          uid: '10004',
+          seat: 4,
+          nick: '蝙蝠侠',
+          portrait: './src/assets/userpic/user-04.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        },
+        {
+          uid: '10005',
+          seat: 5,
+          nick: '钢铁侠',
+          portrait: './src/assets/userpic/user-05.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        },
+        {
+          uid: '10006',
+          seat: 6,
+          nick: '蜘蛛侠',
+          portrait: './src/assets/userpic/user-06.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        },
+        {
+          uid: '10007',
+          seat: 7,
+          nick: 'Rookie',
+          portrait: './src/assets/userpic/user-07.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        },
+        {
+          uid: '10008',
+          seat: 8,
+          nick: 'Hansir',
+          portrait: './src/assets/userpic/user-08.jpg',
+          idCard: '',
+          alive: true,
+          looked:false
+        }]
     },
-    {    
-        uid:'10002',
-        nick:'雷神',
-        portrait:'./src/assets/userpic/user-02.jpg',
-        idCard:'',
-        survival:true
+    //模拟下一步
+    next() {
+      this.flowStatus = this.flowStatus + 1;
+      this.gameFlowCtrl();
     },
-    {    
-        uid:'10003',
-        nick:'超人',
-        portrait:'./src/assets/userpic/user-03.jpg',
-        idCard:'',
-        survival:true
+    //狼人选择要杀的人
+    Kill(_i) {
+      this.killsb.push(_i);
+      //暂时性 接收一个人的值
     },
-   {    
-        uid:'10004',
-        nick:'蝙蝠侠',
-        portrait:'./src/assets/userpic/user-04.jpg',
-        idCard:'',
-        survival:true
-    },
-  {    
-        uid:'10005',
-        nick:'钢铁侠',
-        portrait:'./src/assets/userpic/user-05.jpg',
-        idCard:'',
-        survival:true
-    },
-   {    
-        uid:'10006',
-        nick:'蜘蛛侠',
-        portrait:'./src/assets/userpic/user-06.jpg',
-        idCard:'',
-        survival:true
-    },
-     {    
-        uid:'10007',
-        nick:'Rookie',
-        portrait:'./src/assets/userpic/user-07.jpg',
-        idCard:'',
-        survival:true
-    },
-     {   
-        uid:'10008',
-        nick:'Hansir',
-        portrait:'./src/assets/userpic/user-08.jpg',
-        idCard:'',
-        survival:true
-    }]
+    //获取当前玩家
+    getCurrentUser() {
+      this.playerlist.forEach(function (element, index) {
+        //假装第一位玩家就是我们的当前玩家
+        if (index == 0) {
+          this.currentUser = element;
+        }
+      }.bind(this));
+      this.getIdCard(this.currentUser.idCard);
+
     },
     //给用户分组
-    setPlayGroup(){
+    setPlayGroup() {
       let len = this.playerlist.length;
       let subArr = [];
-      for(var i = 0;i< 14-len;i++){
-          subArr[i]= "nobody";
+      for (var i = 0; i < 14 - len; i++) {
+        subArr[i] = "nobody";
       }
       let Arr = this.playerlist.concat(subArr);
 
-      this.playerlist_1 = Arr.slice(0,7);
-      this.playerlist_2 = Arr.slice(7,14);
-     },
+      this.playerlist_1 = Arr.slice(0, 7);
+      this.playerlist_2 = Arr.slice(7, 14);
+    },
 
     receiveInfo(info) {
       //info 为input组件输入内容
     },
     //游戏流程控制
-    gameFlowCtrl(){
-
+    gameFlowCtrl() {
+      this.gameFlowStatus(this.flowStatus);
+      console.log(this.flowStatus);
     },
     //游戏流程
-    gameFlowStatus(_status){
-        switch(_status){
-          //天黑时 狼人操作
-          case 0:{
-           
-          }
-          //天黑时 女巫操作
-          case 1:{
+    gameFlowStatus(_status) {
+      switch (_status) {
+        //游戏开始 分发身份
+        case 0: {
+          this.gameFlowStatus_start();
+          break;
+        }
+        //天黑时 狼人操作
+        case 1: {
+          this.gameFlowStatus_wolf();
+          break;
+        }
+        //天黑时 女巫操作
+        case 2: {
+          this.gameFlowStatus_witch();
 
-          }
-          //天黑时 预言家操作
-          case 2:{
+          break;
+        }
+        //天黑时 预言家操作
+        case 3: {
+          this.gameFlowStatus_prophesy();
+          break;
+        }
 
-          }
-        }
-        
-    },
-    //游戏开始 分发身份牌
-    gameStart(){
-      //判断有几个玩家
-      var len = this.playerlist.length;
-      switch (len){
-        case 8:{
-          //3神+3平+2狼
-
-        }
-        case 10:{
-          //3神+4平+3狼
-        }
-        default:{
-          //暂时不用12人
-        }
       }
 
     },
+    //游戏开始 分发身份牌
+    //身份：1:预言家 ,2:女巫 , 3:猎人 , 4:狼人 , 5:平民 
+    gameFlowStatus_start() {
+      //判断有几个玩家
+      var len = this.playerlist.length;
+      var setIdCard = (_arr) => {
+        for (var i = 0; i < len; i++) {
+          var rand = parseInt(Math.random() * len);
+          var temp = _arr[rand];
+          _arr[rand] = _arr[i];
+          _arr[i] = temp;
+        };
+        for (var i = 0; i < len; i++) {
+          this.playerlist[i].idCard = _arr[i];
+        }
+        //当前玩家获取身份
+        this.getCurrentUser();
+      }
+      switch (len) {
+        case 8: {
+          //3神+3平+2狼
+          var arr = [1, 2, 3, 4, 4, 5, 5, 5];
+          setIdCard(arr);
+          break;
+        }
+        case 10: {
+          //3神+4平+3狼
+          var arr = [1, 2, 3, 4, 4, 4, 5, 5, 5, 5];
+        }
+        default: {
+          //暂时不用12人
+        }
+      }
+    },
+    getIdCard(idCard) {
+      switch (idCard) {
+        case 1: {
+          this.currentObj = {
+            name: '预言家',
+            url: './src/assets/game-info-img/001.jpeg'
+          }
+          break;
+        }
+        case 2: {
+          this.currentObj = {
+            name: '女巫',
+            url: './src/assets/game-info-img/002.jpeg'
+          }
+          break;
+        }
+        case 3: {
+          this.currentObj = {
+            name: '猎人',
+            url: './src/assets/game-info-img/003.jpeg'
+          }
+          break;
+        }
+        case 4: {
+          this.currentObj = {
+            name: '狼人',
+            url: './src/assets/game-info-img/005.jpeg'
+          }
+          break;
+        }
+        case 5: {
+          this.currentObj = {
+            name: '村民',
+            url: './src/assets/game-info-img/006.jpeg'
+          }
+        }
+        default: {
+          //
+        }
+      }
+    },
     //天黑时 ：
     //1 狼人操作：选择要杀掉的玩家
-    gameFlowStatus_wolf(){
-
+    gameFlowStatus_wolf() {
+      //游戏提示
+      this.onNight = true;
+      this.sysTips = {
+        title: '天黑请闭眼',
+        content: '狼人请睁眼，请选择要杀的玩家',
+        time: 20
+      };
+      var _arr = this.playerlist;
+      _arr.forEach(function (element, index) {
+        if (element.alive == false) {
+          _arr.splice(index, 1);
+        }
+      })
+      this.playerObj.wolf = _arr;
     },
     //2 女巫操作：救人／不救 ，毒人／不毒
-    gameFlowStatus_witch(){
+    gameFlowStatus_witch() {
+      this.sysTips = {
+        title: '天黑请闭眼',
+        content: '女巫请睁眼，你要使用解药吗？',
+        time: 20
+      }
+
 
     },
     //3 预言家操作：选择要查看玩家
-    gameFlowStatus_prophesy(){
-
-    }
+    gameFlowStatus_prophesy() {
+      this.sysTips = {
+        title: '天黑请闭眼',
+        content: '预言家请睁眼,请选择你要查验的身份',
+        time: 20
+      }
+    },
     //清算结果
     //天亮时：
     //1（判断天数）前两天死掉的人有遗言
+    gameFlowStatus_nightEnd() {
 
+    }
     //2 从死亡玩家下一位玩家开始发言，每个人有1分半发言时间，可以跳过
     //3 玩家投票
-
-    
-
-
 
   }
 }
 </script>
 <style>
+.test {
+  width: 200px;
+  height: 100px;
+  position: absolute;
+  bottom: 0px;
+  background: #ffffff;
+  z-index: 2000;
+}
+
 .room-warp {
   right: 0;
   left: 0;
@@ -269,72 +470,86 @@ export default {
   background: url(../../../assets/game-bg/langrensha-bg.jpeg) no-repeat;
   background-size: 100%;
 }
+
 .page-mask {
-    background: rgba(0, 0, 0, .4);
-    z-index: 1000;
+  background: rgba(0, 0, 0, .4);
+  z-index: 1000;
 }
+
 .page-middle-box {
-    width: 600px;
-    height: 700px;
-    position: absolute;
-    top: 200px;
-    left: 50%;
-    background: #ffffff;
-    margin-left: -300px;
-    border-radius: 20px;
-    text-align: center;
+  width: 600px;
+  height: 700px;
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  background: #ffffff;
+  margin-left: -300px;
+  border-radius: 20px;
+  text-align: center;
 }
+
 .page-small-box {
-    width: 600px;
-    height: 600px;
-    position: absolute;
-    left: 50%;
-    margin-left: -300px;
-    top: 200px;
-    background: #ffffff;
-    border-radius: 20px;
+  width: 600px;
+  height: 600px;
+  position: absolute;
+  left: 50%;
+  margin-left: -300px;
+  top: 200px;
+  background: #ffffff;
+  border-radius: 20px;
+  z-index: 1000;
 }
-.small-box-userpic{
+
+.small-box-userpic {
   width: 72px;
-  height:72px;
+  height: 72px;
 }
-.small-box-userpic img{
+
+.small-box-userpic img {
   width: 100%;
-  height:100%;
+  height: 100%;
 }
-.page-small-box-head{
-  height:340px;
+
+.page-small-box-head {
+  height: 340px;
   margin-bottom: 4px;
   position: relative;
 }
-.page-small-box-head h1{
+
+.page-small-box-head h1 {
   position: absolute;
   bottom: 20px;
   display: block;
   width: 100%;
   text-align: center;
-  font-size:40px;
-  color:#F44336;
+  font-size: 40px;
+  color: #F44336;
 }
-.page-small-box-head img{
-  width:100%;
+
+.page-small-box-head img {
+  width: 100%;
   height: 100%;
   opacity: 0.8;
   border-radius: 20px 20px 0 0;
 }
-.page-small-box-content{
+
+.page-small-box-content {
   width: 400px;
   margin: 0 auto;
 }
-.page-small-box-foot{
-  height:200px;
+
+.page-small-box-foot {
+  height: 200px;
 }
-.small-box-userpic{
-  margin:20px 10px;
+
+.small-box-userpic {
+  margin: 20px 10px;
 }
-.small-box-fix{
-  border:4px solid #F44336;
+
+.small-box-fix {
+  border: 4px solid #F44336;
 }
+
 .upper {
   width: 200px;
   height: 200px;
@@ -347,6 +562,7 @@ export default {
 
 .game-sys-tips {
   width: 480px;
+  height: 300px;
   position: absolute;
   left: 50%;
   top: 80px;
@@ -359,44 +575,83 @@ export default {
   z-index: 100;
 }
 
-.game-sys-tips h1 {
+.game-sys-tips .time {
+  position: absolute;
+  bottom: 10px;
+  width: 100%;
   font-size: 40px;
-  margin-bottom: 10px;
+}
+
+.game-sys-tips h1 {
+  font-size: 50px;
+  margin: 20px 0;
 }
 
 .game-sys-tips span {
   font-size: 35px;
 }
 
+.rotate-item {
+  position: absolute;
+  top: 200px;
+  left: 50%;
+  height: 450px;
+  width: 450px;
+  margin-left: -225px;
+  animation: myMove 2s linear 2s 1 normal;
+}
+
+.idcardShow {
+  width: 100%;
+  height: 100%;
+}
+
+.idcardShow img {
+  width: 100%;
+  height: 100%;
+}
+
 @keyframes myMove {
   from {
-    top: 30%;
+    top: 200px;
     left: 50%;
-    width: 200px;
-    height: 200px;
+    margin-left: -225px;
+    width: 450px;
+    height: 450px;
   }
   to {
-    top: 65px;
-    left: 100%;
-    width: 30px;
-    height: 30px;
+    top: 20px;
+    left: 550px;
+    width: 50px;
+    height: 50px;
+    margin-left: 0;
   }
 }
 
 .upper-top {
-  top: 65px;
-  left: 100%;
-  width: 30px;
-  height: 30px;
+  width: 50px;
+  height: 50px;
+  top: 20px;
+  left: 550px;
+  position: absolute;
+  margin-left: 0;
 }
-.small-box-item{
+
+.upper-top img {
+  width: 100%;
+  height: 100%;
+}
+
+.small-box-item {
   width: 100px;
-  height:140px;
-  font-size:20px;
+  height: 140px;
+  font-size: 20px;
   text-align: center;
   margin: 0 auto;
 }
-.upper img,.small-box-item img {
+
+.upper img,
+.small-box-item img {
   width: 100px;
   height: 100px;
 }
@@ -474,25 +729,30 @@ export default {
   background-size: 100%;
   opacity: 0.6;
 }
-.box-btn-group{
-  width:400px;
-  margin:20px 0; 
+
+.box-btn-group {
+  width: 400px;
+  margin: 20px 0;
 }
-.box-btn-group .btn{
-   font-size:40px; 
-   border:none;
-   outline: none;
-   width:180px;
-   border-radius: 10px;
-   color:#ffffff;
-   margin: 0 8px;
+
+.box-btn-group .btn {
+  font-size: 40px;
+  border: none;
+  outline: none;
+  width: 180px;
+  border-radius: 10px;
+  color: #ffffff;
+  margin: 0 8px;
 }
-.box-btn-group .btn-col3{
-  background:#66bb6a;
+
+.box-btn-group .btn-col3 {
+  background: #66bb6a;
 }
-.box-btn-group .btn-col4{
-  background:#F44336;
+
+.box-btn-group .btn-col4 {
+  background: #F44336;
 }
+
 .btn-group {
   position: absolute;
   left: 50%;
