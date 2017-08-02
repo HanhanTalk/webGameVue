@@ -114,6 +114,18 @@ router.get('/drawguess/info',  function(req, res, next) {
       _gRoomInfo.player.forEach(function(item, index) {
         _gRoomInfo.player[index].portrait = userInfos[index].portrait;
       });
+
+      // 如果已经开始游戏了
+      if (_gRoomInfo.gameStartDate) {
+        var now = new Date();
+        var gameStartDate = new Date(_gRoomInfo.gameStartDate);
+        _gRoomInfo.gameCountDown = 80 - Math.floor((now.getTime() - gameStartDate.getTime()) / 1000);
+        if (_gRoomInfo.gameCountDown < 0) {
+          _gRoomInfo.gameCountDown = 0;
+          _gRoomInfo.status = 3;
+          _gRoomInfo.save();
+        }
+      }
       return util.resJson(res, null, _gRoomInfo);
     })
     .catch((err) => {
@@ -169,7 +181,7 @@ router.get('/drawguess/words', function(req, res) {
 router.post('/drawguess/chooise/words', function(req, res) {
   var wordObject = req.body.word;
   var roomId = req.body.roomId;
-
+  var now = new Date();
   // TODO 验证参数
 
   // 更新当前房间的状态和词语
@@ -178,7 +190,8 @@ router.post('/drawguess/chooise/words', function(req, res) {
   }, {
     $set: {
       drawWord: wordObject,
-      status: 2
+      status: 2,
+      gameStartDate: now, 
     }
   }).then((response) => {
     util.resJson(res, null, response);
@@ -213,6 +226,31 @@ router.post('/drawguess/drawdata', function(req, res) {
       util.resJson(res, err.toString());
     }
   });
+});
+
+/**
+ * 提交用户答案到服务器
+ */
+router.post('/drawguess/answer', function(req, res) {
+  var word = req.body.word;
+  var roomId = req.body.roomId;
+  db.Room.findOne({
+    roomId: roomId
+  }).then((doc) => {
+    if (word == doc.drawWord.name) {
+      doc.status = 3;
+      doc.winPlayerUid = req.session.userId;
+    }
+    doc.save(function(err) {
+      util.resJson(res, err, doc);
+    });
+  }).catch((err) => {
+    if (typeof err === 'string') {
+      util.resJson(res, err);
+    } else {
+      util.resJson(res, err.toString());
+    }
+  })
 });
 
 

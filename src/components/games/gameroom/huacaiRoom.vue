@@ -275,6 +275,15 @@ export default {
                     self.playerEach();
                     self.dispatchRoomStatus(response);
                     self.roomData = response;
+
+                    // 这里判断如果游戏已经有赢家了，就赋值bingo
+                    if (response.winPlayerUid) {
+                        response.player.forEach((item) => {
+                            if (item.uid == response.winPlayerUid) {
+                                item.bingo = true;
+                            }
+                        });
+                    }
                 }).catch((err) => {
                     alert('请求出错' + err);
                     self.stopFetchRoomInfo();
@@ -307,6 +316,11 @@ export default {
                 }
                 case 2: {
                     this.gameFlowStatus(3);
+                    break;
+                }
+                case 3: {
+                    this.gameFlowStatus(4);
+                    break;
                 }
             }
         },
@@ -425,6 +439,9 @@ export default {
         //画画阶段
         gameFlowStatus_drawing() {
             this.gameStatus = 3;
+            if (this.roomData.gameStartDate) {
+                this.time.tipsTime = this.roomData.gameCountDown;
+            }
             // this.time.tipsTime = 80;
             // //开始倒计时
             // var _timer = ((_time) => {
@@ -446,18 +463,23 @@ export default {
                 }, 500);
             }
         },
-        //玩家结束作画
+        // 游戏结束
         gameFlowStatus_drawover() {
+            // if (this.time.tipsTime > 50) {
+            //     alert("作画时间没有30秒，不能结束")
+            // } else {
+            this.gameStatus = 4;
+            this.gameFlowStatus(5);
+            this.trash();
+            this.stopFetchRoomInfo();
+            // }
+        },
+        // 玩家结束作画
+        painerStopDraw() {
             if (this.time.tipsTime > 50) {
                 alert("作画时间没有30秒，不能结束")
-            } else {
-                this.gameStatus = 4;
-                clearInterval(this.drawTime);
-                this.gameFlowStatus(5);
-                this.trash();
             }
         },
-
         //公布答案阶段
         gameFlowStatus_anAnswer() {
             this.gameStatus = 5;
@@ -467,7 +489,8 @@ export default {
                 this.answerTimer = setInterval(() => {
                     if (_time == 1) {
                         clearInterval(this.answerTimer);
-                        this.gameFlowStatus_judge();
+                        // this.gameFlowStatus_judge();
+                        this.gameFlowStatus_end();
                     }
                     _time--;
                     this.time.answerTime = _time;
@@ -540,6 +563,11 @@ export default {
                             this.currentUser.bingo = true;
                             this.currentUser.addscore = true;
                             this.close_answer = false;
+                            api.postDrawguessRoomAnswer({
+                                roomId: this.$route.params.id,
+                                word: this.currentUser.inputText
+                            });
+                            this.stopFetchRoomInfo();
                             //加分
                         } else {
                             alert("你已提交正确答案!")
