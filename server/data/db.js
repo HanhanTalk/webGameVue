@@ -30,12 +30,14 @@ var Friend = mongoose.model('friend', {
 var Room = mongoose.model('Room', {
   // _id为房间号
   roomId: Schema.Types.ObjectId,                        // 房间号
+  gameStartDate: {type: Date, default: null},                                  // 游戏开始的时间
+  gameCountDown: Number,                                // 游戏结束倒计时
   type: String,                                         // 房间类型 'drawGuess'  'wolfKill'
   status: Number,                                       // 0 为等待  1 选题状态 2 正在游戏  3 游戏结束
   player: Array,                                        // 所有本房间的玩家
   drawPlayerUid: String,                                // 画画玩家的uid
   drawWord: {type: Schema.Types.Mixed, default: null},  // 玩家选的词对象，包含词，词提示，和长度
-  drawData: {type: Schema.Types.Mixed, default: {}},  // 画的数据
+  drawData: {type: Schema.Types.Mixed, default: {}},    // 画的数据
   winPlayerUid: String,                                 // 猜对玩家的uid
 });
 
