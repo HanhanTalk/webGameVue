@@ -10,7 +10,23 @@
         <p class="txt-2">{{sysTips.content}}</p>
         <div class="time">{{sysTips.time}} S</div>
       </div>
-  
+      <!--玩家投票 -->
+      <div class="page-warp page-mask" v-if="flowStatus === 7">
+          <div class="page-small-box">
+            <div class="page-small-box-head">
+              <img src="../../../assets/game-img/vote.jpeg">
+              <h1>你要投给谁？</h1>
+            </div>
+            <div class="page-small-box-content">
+              <ul>
+                <li class="small-box-userpic" v-for="(item,index) in playerlist" :key="item.id" v-if="item.alive === true">
+                  <span>{{item.seat}}</span>
+                </li>
+              </ul>
+            </div>
+
+          </div>
+      </div>  
       <!--身份信息-->
       <div class="game-msg-head">
         <p class="font-middle">你的身份：{{currentObj.name}}</p>
@@ -41,9 +57,9 @@
         </ul>
       </div>
       <!--技能玩家操作栏-->
-      <div class="page-warp" v-if="flowStatus !== 0">
+      <div class="page-warp page-mask" v-if="flowStatus === 1">
         <!--狼人操作栏-->
-        <div class="page-small-box " v-if="flowStatus === 1 && currentUser.idCard === 4">
+        <div class="page-small-box ">
           <div class="page-small-box-head">
             <img src="../../../assets/game-img/wolfkill.jpeg">
             <h1>嘿嘿～请选择你要杀掉的玩家</h1>
@@ -56,65 +72,80 @@
             </ul>
           </div>
         </div>
-        <!--女巫操作栏 -->
-        <div class="page-small-box" v-if="flowStatus === 2 && currentUser.idCard === 2">
+      </div>
+      <!--女巫操作栏 -->
+      <div class="page-warp page-mask" v-if="flowStatus === 2">
+        <div class="page-small-box">
           <div class="page-small-box-head">
             <img src="../../../assets/game-img/lvwu.jpeg">
-             <h1 v-if="rescue">今天晚上他死了，你要救他吗？</h1> 
-            <h1 v-if="!rescue">你有一瓶毒药，你要毒死谁？</h1>
+            <h1>今天晚上他死了，你要救他吗？</h1>
           </div>
           <div class="page-small-box-content">
-             <div class="small-box-item" v-if="rescue">
-                    <span>{{killsb[0]}}</span>
-             </div>
-              <div class="box-btn-group">
-                    <button type="button" class="btn btn-col3">救</button>
-                    <button type="button" class="btn btn-col4">不救</button>
-              </div> 
+            <div class="small-box-item">
+              <span class="small-box-item-border">{{killsb[0]}}</span>
             </div>
-            <ul v-if="!rescue">
-              <li class="small-box-userpic" v-for="item in 7" :key="item.id">
-                <img src="../../../assets/userpic/anonym.jpg">
+            <div class="box-btn-group">
+              <button @click="save(killsb[0])" type="button" class="btn btn-col3" v-if="witch.save">救</button>
+              <button type="button" class="btn btn-col4">不救</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="page-warp page-mask" v-if="flowStatus === 3">
+        <div class="page-small-box">
+          <div class="page-small-box-head">
+            <img src="../../../assets/game-img/lvwu.jpeg">
+            <h1>你有一瓶毒药，你要毒死谁？</h1>
+  
+          </div>
+          <div class="page-small-box-content">
+            <ul>
+              <li @click="Kill(item.seat)" class="small-box-userpic" v-for="item in playerlist" :key="item.id" v-if="item.alive == true">
+                <span>{{item.seat}}</span>
               </li>
             </ul>
           </div>
         </div>
-        <!--预言家操作栏 -->
-        <div class="page-small-box" v-if="flowStatus === 3 && currentUser.idCard === 1">
+      </div>
+      <!--预言家操作栏 -->
+      <div class="page-warp page-mask" v-if="flowStatus === 4">
+        <div class="page-small-box">
           <div class="page-small-box-head">
             <img src="../../../assets/game-img/yuyan.jpeg">
-             <h1 v-if ="!look">你要查看谁的身份？</h1> 
+            <h1 v-if="!look">你要查看谁的身份？</h1>
             <h1 v-if="look">他的身份是...</h1>
           </div>
           <div class="page-small-box-content">
-             <ul v-if="!look">
-                  <li class="small-box-userpic" v-for="item in playerlist" :key="item.id" v-if="(item.looked == false) && (item.alive == true)">
-                      <span>{{item.seat}}</span>
-                  </li>
-              </ul>  
+            <ul v-if="!look">
+              <li @click="LookIdCard(item)" class="small-box-userpic" v-for="item in playerlist" :key="item.id" v-if="item.sign == false">
+                <span>{{item.seat}}</span>
+              </li>
+            </ul>
             <div class="small-box-item" v-if="look">
-              <span class="font-small"></span>
+              <span class="font-small" v-if="playerIdCard !== 4">好人</span>
+              <span class="font-small" v-if="playerIdCard == 4">狼人</span>
+
             </div>
           </div>
   
         </div>
       </div>
       <!--猎人操作栏-->
-      <div class="page-warp page-mask" v-if="false">
-        <div class="page-small-box">
-          <div class="page-small-box-head">
-            <img src="../../../assets/game-img/lieren.jpeg">
-            <h1>选择你要带走的玩家</h1>
-          </div>
-          <div class="page-small-box-content">
-            <ul>
-              <li class="small-box-userpic" :class="{'small-box-fix':false}" v-for="item in 6" :key="item.id">
-                <img src="../../../assets/userpic/anonym.jpg">
-              </li>
-            </ul>
+        <div class="page-warp page-mask" v-if="false">
+          <div class="page-small-box">
+            <div class="page-small-box-head">
+              <img src="../../../assets/game-img/lieren.jpeg">
+              <h1>选择你要带走的玩家</h1>
+            </div>
+            <div class="page-small-box-content">
+              <ul>
+                <li class="small-box-userpic" :class="{'small-box-fix':false}" v-for="item in 6" :key="item.id">
+                  <img src="../../../assets/userpic/anonym.jpg">
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
-      </div>
       <!--身份牌-->
       <div class="page-warp page-mask" v-if="flowStatus === 0">
         <div class="rotate-item">
@@ -128,6 +159,7 @@
       </div>
       <textInput @answerEvent="receiveInfo"></textInput>
       <button type="button" @click="next" class="test">下一步</button>
+    </div>
   </div>
 </template>
  <script type="text/ecmascript6">
@@ -145,6 +177,7 @@ export default {
       title: '狼人杀123号房间',
       currentUser: {},        //当前玩家
       gameRound: 1,           //游戏回合数
+      playerIdCard:null,
       //系统提示
       sysTips: {
         title: '',
@@ -158,18 +191,16 @@ export default {
         name: '',
         url: null
       },
-      rescue: true,
-      //可以操作玩家对象
-      playerObj: {
-        wolf: [],
-        watich: [],
-        hunter: [],
-        prophesy: []
+      witch:{
+         save: true,
+         kill: true
       },
-      killsb:[],
+      //要死的人
+      killsb: [],
+      //说话玩家
+      speakPlayer:null,
       look:false,
-      rescue:true
-
+      next_speak:{}
     }
   },
   mounted() {
@@ -192,7 +223,7 @@ export default {
           portrait: './src/assets/userpic/user-01.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         },
         {
           uid: '10002',
@@ -201,7 +232,7 @@ export default {
           portrait: './src/assets/userpic/user-02.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         },
         {
           uid: '10003',
@@ -210,7 +241,7 @@ export default {
           portrait: './src/assets/userpic/user-03.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         },
         {
           uid: '10004',
@@ -219,7 +250,7 @@ export default {
           portrait: './src/assets/userpic/user-04.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         },
         {
           uid: '10005',
@@ -228,7 +259,7 @@ export default {
           portrait: './src/assets/userpic/user-05.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         },
         {
           uid: '10006',
@@ -237,7 +268,7 @@ export default {
           portrait: './src/assets/userpic/user-06.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         },
         {
           uid: '10007',
@@ -246,7 +277,7 @@ export default {
           portrait: './src/assets/userpic/user-07.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         },
         {
           uid: '10008',
@@ -255,18 +286,31 @@ export default {
           portrait: './src/assets/userpic/user-08.jpg',
           idCard: '',
           alive: true,
-          looked:false
+          sign:false
         }]
     },
     //模拟下一步
     next() {
       this.flowStatus = this.flowStatus + 1;
       this.gameFlowCtrl();
+        console.log(this.flowStatus);
     },
-    //狼人选择要杀的人
+    //狼人、女巫选择要杀的人
     Kill(_i) {
       this.killsb.push(_i);
+      this.playerlist[_i-1].alive = false;
       //暂时性 接收一个人的值
+    },
+    //女巫救人
+    save(_i) {
+      this.killsb.pop();
+      this.playerlist[_i-1].alive = true;
+      this.witch.save = false;
+    },
+    LookIdCard(_item){
+       this.look = true;
+       this.playerIdCard = (_item.idCard);
+       this.playerlist[_item.seat-1].sign = true;
     },
     //获取当前玩家
     getCurrentUser() {
@@ -277,7 +321,13 @@ export default {
         }
       }.bind(this));
       this.getIdCard(this.currentUser.idCard);
-
+    },
+    getUserInfo(_seat) {
+      this.playerlist.forEach(function (element, index) {
+        if (_seat === element.seat) {
+          return element
+        }
+      })
     },
     //给用户分组
     setPlayGroup() {
@@ -298,7 +348,6 @@ export default {
     //游戏流程控制
     gameFlowCtrl() {
       this.gameFlowStatus(this.flowStatus);
-      console.log(this.flowStatus);
     },
     //游戏流程
     gameFlowStatus(_status) {
@@ -313,18 +362,36 @@ export default {
           this.gameFlowStatus_wolf();
           break;
         }
-        //天黑时 女巫操作
+        //天黑时 女巫救人
         case 2: {
-          this.gameFlowStatus_witch();
-
+          this.gameFlowStatus_witchSave();
+          break;
+        }
+        //女巫杀人
+        case 3:{
+          this.gameFlowStatus_witchKill();
           break;
         }
         //天黑时 预言家操作
-        case 3: {
+        case 4: {
           this.gameFlowStatus_prophesy();
           break;
         }
-
+        //天亮
+        case 5:{
+          this.gameFlowStatus_nightEnd();
+          break;
+        }
+        //玩家发言
+        case 6:{
+          this.gameFlowStatus_Speak();
+          break;
+        }
+        //玩家投票
+        case 7:{
+          this.gameFlowStatus_vote();
+          break;
+        }
       }
 
     },
@@ -412,26 +479,25 @@ export default {
         title: '天黑请闭眼',
         content: '狼人请睁眼，请选择要杀的玩家',
         time: 20
-      };
-      var _arr = this.playerlist;
-      _arr.forEach(function (element, index) {
-        if (element.alive == false) {
-          _arr.splice(index, 1);
-        }
-      })
-      this.playerObj.wolf = _arr;
+      }
     },
-    //2 女巫操作：救人／不救 ，毒人／不毒
-    gameFlowStatus_witch() {
+    //2 女巫操作：救人／不救 
+    gameFlowStatus_witchSave() {
       this.sysTips = {
         title: '天黑请闭眼',
         content: '女巫请睁眼，你要使用解药吗？',
         time: 20
       }
-
-
     },
-    //3 预言家操作：选择要查看玩家
+    //3 女巫操作：毒／不毒
+    gameFlowStatus_witchKill(){
+       this.sysTips = {
+        title: '天黑请闭眼',
+        content: '你要使用毒药吗？',
+        time: 20
+      }
+    }, 
+    //4 预言家操作：选择要查看玩家
     gameFlowStatus_prophesy() {
       this.sysTips = {
         title: '天黑请闭眼',
@@ -441,13 +507,105 @@ export default {
     },
     //清算结果
     //天亮时：
-    //1（判断天数）前两天死掉的人有遗言
+    //5（判断天数）前两天死掉的人有遗言
     gameFlowStatus_nightEnd() {
-
+      var _content = ''
+      if(this.killsb.length == 0){
+        _content = '昨晚是平安夜';
+      } else{
+         var deathPlayerNum = this.killsb.join(',');
+        _content = '昨晚['+deathPlayerNum+']号玩家死亡';
+      }
+      this.sysTips = {
+        title: '天亮了',
+        content: _content,
+        time: 20
+      }
+      var max = 0;
+      for(var i=0;i<this.killsb.length;i++){
+         var max = this.killsb[0];
+         if(this.killsb[i] > max){
+           max = this.killsb[i];
+         } 
+      }
+      if (max === this.playerlist.length ){
+            max = 0;
+      }
+       this.speakPlayer = max;
+      //  this.gameFlowStatus_jugle()
+    },
+    //6 从死亡玩家下一位玩家开始发言，每个人有1分半发言时间，可以跳过
+    gameFlowStatus_Speak(){
+        var _arr = [];
+        var _speakPlayer;
+        var _index;
+        this.playerlist.forEach(function(element){
+          if(element.alive == true){
+            _arr.push(element.seat);
+          }
+        });
+        
+        for(var i = 0 ; i<_arr.length;i++){
+            if(_arr[i] > this.speakPlayer){
+                _index = i;
+                return;
+            }else{
+                _index = 0;
+            }
+        };
+        function loop(){
+            this.sysTips = {
+              title:'白天',
+              content:'现在由['+_index+']开始发言',
+              time:20
+            }
+        }
+        setInterval(function(){
+            loop();
+        },5000);
+    },
+    //7 玩家投票
+    gameFlowStatus_vote(){
+        this.sysTips ={
+          title:'白天',
+          content:'现在开始投票',
+          time:20
+        }
+        //投票数据上传服务器，服务器返回投票数据
+        //票数最多的玩家死亡，票数最多但持平，没有人死亡
+        this.gameFlowStatus_jugle();
+    },
+    //游戏轮回判断
+    gameFlowStatus_jugle(){
+      //狼人和好人数持平时，狼人获胜
+      //狼人团灭,好人获胜
+      var _aliveNum = 0 ,_alivewolf = 0;
+      this.playerlist.forEach(function(element){
+        //存活人数
+        if(element.alive){
+          _aliveNum ++;
+        }
+        //存活狼人
+        if(element.alive && element.idCard === 4){
+          _alivewolf ++;
+        }
+      });
+      if(_aliveNum === _alivewolf*2){
+          //游戏结束狼人获胜
+          this.gameEnd(0);
+      }
+      if (_alivewolf === 0){
+        //游戏结束好人获胜
+        this.gameEnd(1);
+      }
+    },
+    gameEnd(_status){
+        if(_status){
+          alert('游戏结束，好人获胜');
+        } else{
+          alert('游戏结束，狼人获胜');
+        }
     }
-    //2 从死亡玩家下一位玩家开始发言，每个人有1分半发言时间，可以跳过
-    //3 玩家投票
-
   }
 }
 </script>
@@ -503,8 +661,11 @@ export default {
 .small-box-userpic {
   width: 72px;
   height: 72px;
+  border: 4px solid;
+  text-align: center;
+  line-height: 72px;
+  font-size: 30px;
 }
-
 .small-box-userpic img {
   width: 100%;
   height: 100%;
@@ -649,7 +810,14 @@ export default {
   text-align: center;
   margin: 0 auto;
 }
-
+.small-box-item-border{
+    display: block;
+    width: 70px;
+    height: 70px;
+    border: 4px solid;
+    line-height: 70px;
+    font-size: 30px;
+}
 .upper img,
 .small-box-item img {
   width: 100px;
