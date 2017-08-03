@@ -72,7 +72,7 @@
                     <span class="player-score">
                         {{item.score}}
                     </span>
-                    <span class="fa img-circle fa-pencil current-mask" v-if="(index == currentPainer) && (gameStatus == 2 || gameStatus == 3)"></span>
+                    <span class="fa img-circle fa-pencil current-mask" v-if="(item.uid == roomData.drawPlayerUid) && (gameStatus == 2 || gameStatus == 3)"></span>
                     <img class="bingo-mask  animated jackInTheBox" src="../../../assets/bingo_meitu_1.png" v-if="item.bingo">
                     <div class="add-score-mask" v-if="item.addscore">
                         <span>+15分</span>
@@ -551,6 +551,8 @@ export default {
             }.bind(this));
             if (this.$store.state.drawGuessRoom.drawPlayerUid == this.$store.state.userInfo.uid) {
                 this.currentUser.painer = true;
+            } else {
+                this.currentUser.painer = false;
             }
         },
         //验证玩家提交答案是否正确
@@ -567,7 +569,7 @@ export default {
                                 roomId: this.$route.params.id,
                                 word: this.currentUser.inputText
                             });
-                            this.stopFetchRoomInfo();
+                            // this.stopFetchRoomInfo();
                             //加分
                         } else {
                             alert("你已提交正确答案!")

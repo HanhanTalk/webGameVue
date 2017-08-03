@@ -121,8 +121,8 @@ router.get('/drawguess/info',  function(req, res, next) {
         var gameStartDate = new Date(_gRoomInfo.gameStartDate);
         _gRoomInfo.gameCountDown = 80 - Math.floor((now.getTime() - gameStartDate.getTime()) / 1000);
         if (_gRoomInfo.gameCountDown < 0) {
-          _gRoomInfo.gameCountDown = 0;
-          _gRoomInfo.status = 3;
+          // 如果这里还没到最后一个玩家 就开始轮转 游戏还是第二阶段，只是当前玩家轮转
+          isRoomGameDone(_gRoomInfo);
           _gRoomInfo.save();
         }
       }
@@ -238,8 +238,18 @@ router.post('/drawguess/answer', function(req, res) {
     roomId: roomId
   }).then((doc) => {
     if (word == doc.drawWord.name) {
-      doc.status = 3;
-      doc.winPlayerUid = req.session.userId;
+      // TODO 这里要给当前答对的人加分
+      // isRoomGameDone(doc);
+      // doc.winPlayerUid = req.session.userId;
+
+      // 当前答对用户bingo 在下一轮开始是需要清空
+      doc.player.forEach((item, index) => {
+        if (item.uid == req.session.userId) {
+          doc.player[index].bingo = true;
+          doc.player[index].addscore = true;
+        }
+      });
+      doc.markModified('player');
     }
     doc.save(function(err) {
       util.resJson(res, err, doc);
@@ -252,6 +262,31 @@ router.post('/drawguess/answer', function(req, res) {
     }
   })
 });
+
+
+/**
+ * 判断是否是循环
+ * @param {*} doc 
+ */
+function isRoomGameDone(doc) {
+  var _index = 0;
+  doc.player.forEach((item, index) => {
+    if (item.uid === doc.drawPlayerUid) {
+      _index = index;
+    }
+    doc.player[index].bingo = false;
+  });
+  if ((_index + 1) != doc.player.length) {
+    doc.drawPlayerUid = doc.player[_index + 1].uid;
+    doc.gameStartDate = null;
+    doc.status = 1;
+  } else {
+    // 不然就游戏结束
+    doc.gameCountDown = 0;
+    doc.status = 3;
+  }
+  doc.markModified('player');
+}
 
 
 /**
