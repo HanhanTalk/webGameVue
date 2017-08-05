@@ -58,10 +58,10 @@ router.post('/drawguess/join', function(req, res, next) {
     .then((joinRoom) => {
       if (!joinRoom) {
         // 没有房间，就创建一个房间
-        return createJoinRoom('drawGuess', req.session.userId);
+        return createJoinRoom('drawGuess', req.session.userId, req.session.nick);
       } else {
         // 存在房间,直接返回房间id
-        return joinOneExistRoom(joinRoom, req.session.userId);
+        return joinOneExistRoom(joinRoom, req.session.userId, req.session.nick);
       }
     })
     .then((room) => {
@@ -245,8 +245,20 @@ router.post('/drawguess/answer', function(req, res) {
       // 当前答对用户bingo 在下一轮开始是需要清空
       doc.player.forEach((item, index) => {
         if (item.uid == req.session.userId) {
+          // 这里有一个逻辑是，第一个答对的人加15分，
+          // 第二个答对的人加10分
+          // 第三个答对的人加5分
+          var bingoScore = 15;
+          doc.player.forEach((item) => {
+            if (item.bingo) {
+              bingoScore -= 5;
+            }
+          });
+          if (bingoScore < 0) {
+            bingoScore = 5;
+          }
           doc.player[index].bingo = true;
-          doc.player[index].addscore = true;
+          doc.player[index].addscore += bingoScore;
         }
       });
       doc.markModified('player');
@@ -282,10 +294,31 @@ function isRoomGameDone(doc) {
     doc.status = 1;
   } else {
     // 不然就游戏结束
+    // 这里需要把玩家的得分加到用户表里
     doc.gameCountDown = 0;
     doc.status = 3;
+    addScoreInUser(doc);
   }
   doc.markModified('player');
+}
+
+
+/**
+ * 把用户在房间里的得分加到用户表里了
+ * @param {*} doc 
+ */
+function addScoreInUser(roomDoc) {
+  roomDoc.player.forEach((item) => {
+    db.User.findOne({
+      _id: item.uid
+    }).then((userDoc) => {
+      userDoc.gold += item.addscore;
+      return userDoc.save();
+    }).catch((err) => {
+      console.log(err);
+    });
+    //.addscore;
+  });
 }
 
 
@@ -339,7 +372,7 @@ function findCanJoinRoom(type, userId) {
  * @param {*} type 
  * @param {*} userId 
  */
-function createJoinRoom(type, userId) {
+function createJoinRoom(type, userId, nick) {
   return new Promise((resolve, reject) => {
     var _room = new db.Room({
       roomId: new mongoose.Types.ObjectId,
@@ -351,7 +384,8 @@ function createJoinRoom(type, userId) {
         painer: true,
         inputText: '',
         bingo: false,
-        addscore: false,
+        addscore: 0,
+        nick: nick
       }],
       drawPlayerUid: userId
     });
@@ -369,7 +403,7 @@ function createJoinRoom(type, userId) {
  * @param {*} roomId 
  * @param {*} userId 
  */
-function joinOneExistRoom(room, userId) {
+function joinOneExistRoom(room, userId, nick) {
   // return new Promise((resolve, reject) => {
   room.player.push({
     uid: userId,
@@ -377,7 +411,8 @@ function joinOneExistRoom(room, userId) {
     painer: false,
     inputText: '',
     bingo: false,
-    addscore: false,
+    addscore: 0,
+    nick: nick
   });
   
   // 这里有一个开始逻辑，如果玩家数大于等于2，就更改status

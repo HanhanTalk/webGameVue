@@ -57,7 +57,8 @@ router.post('/signup', function(req, res) {
       }
       var _user = new db.User({
         name: name,
-        password: password
+        password: password,
+        nick: name + '^_^'
       });
       return _user.save();
     })
@@ -117,6 +118,7 @@ router.post('/signin', function(req, res) {
     }
     req.session.userName = name;
     req.session.userId = response._id;
+    req.session.nick = response.nick;
     return util.resJson(res, null, _response.userInfo(response));
   })
   .catch(function(err) {
