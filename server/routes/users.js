@@ -58,7 +58,8 @@ router.post('/signup', function(req, res) {
       var _user = new db.User({
         name: name,
         password: password,
-        nick: name + '^_^'
+        nick: name + '^_^',
+        portrait: util.getDefaultPortrait()
       });
       return _user.save();
     })

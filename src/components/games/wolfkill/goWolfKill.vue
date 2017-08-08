@@ -85,7 +85,10 @@ export default {
         goRoom(e){
             switch(e.people){
                 case 8:
-                    client.peopleNum(8)
+                    // 先跳转到狼人杀房间
+                    // TODO 这里房间号应该是服务器返回
+                    this.$router.push({name: 'wolfRoom', params:{id: 123}});
+                    //client.peopleNum(8)
                     break;
                 case 10:
                     client.peopleNum(10)
@@ -93,7 +96,7 @@ export default {
                 default:
                     client.peopleNum(12)
             }
-            this.$router.push({name:'wolfRoom',params:{ Id:123}});
+            this.$router.push({name:'wolfRoom',params:{ id:123}});
         }
     }
 }

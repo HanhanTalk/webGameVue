@@ -221,6 +221,7 @@ export default {
           seat: 1,
           nick: '死侍',
           portrait: './src/assets/userpic/user-01.jpg',
+          //portrait: 'https://raw.githubusercontent.com/HanhanTalk/webGameVue/master/src/assets/10.png',
           idCard: '',
           alive: true,
           sign:false
@@ -293,7 +294,7 @@ export default {
     next() {
       this.flowStatus = this.flowStatus + 1;
       this.gameFlowCtrl();
-        console.log(this.flowStatus);
+      console.log(this.flowStatus);
     },
     //狼人、女巫选择要杀的人
     Kill(_i) {
