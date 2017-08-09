@@ -28,9 +28,8 @@ var Friend = mongoose.model('friend', {
 
 
 var Room = mongoose.model('Room', {
-  // _id为房间号
   roomId: Schema.Types.ObjectId,                        // 房间号
-  gameStartDate: {type: Date, default: null},                                  // 游戏开始的时间
+  gameStartDate: {type: Date, default: null},           // 游戏开始的时间
   gameCountDown: Number,                                // 游戏结束倒计时
   type: String,                                         // 房间类型 'drawGuess'  'wolfKill'
   status: Number,                                       // 0 为等待  1 选题状态 2 正在游戏  3 游戏结束
@@ -42,8 +41,20 @@ var Room = mongoose.model('Room', {
 });
 
 
+var WolfRoom = mongoose.model('WolfRoom', {
+  roomId: Schema.Types.ObjectId,                        // 房间号
+  gameStartDate: {type: Date, default: null},           // 游戏开始的时间
+  gameCountDown: Number,                                // 游戏结束倒计时
+  waitOutOfTime: Number,                                // 等待超时，时间戳
+  status: Number,                                       // 0 为等待  1 确定身份 2 黑夜  3 白天
+  player: Array,                                        // 所有本房间的玩家
+  memberCount: Number                                   // 多少人局 8人局 10人局
+});
+
+
 module.exports = {
   User: User,
   Friend: Friend,
-  Room: Room
+  Room: Room,
+  WolfRoom: WolfRoom
 }
