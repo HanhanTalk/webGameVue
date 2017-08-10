@@ -16,22 +16,17 @@ var router = express.Router();
 
 router.use('/', util.needAuth);
 
-/* 8人局 */
-router.post('/join/8', function(req, res) {
+/* 8人局或10人局 */
+router.post('/join/:count', function(req, res) {
+  var count = req.params.count;
+  if (count != 8) {
+    count = 10;
+  }
   // 先找到能不能加入的房间，如果能加入
-  var maxCount = 8;
-  var gUserInfo = {};
+  var maxCount = count;
   userFunc.getUserInfoByUid(req.session.userId)
     .then((userInfo) => {
-      gUserInfo = userInfo
-       return wolfFunc.findCanJoinRoom(userInfo.uid);
-    })
-    .then((room) => {
-      if (!room) {
-        return wolfFunc.createJoinRoom(gUserInfo, maxCount);
-      } else {
-        return wolfFunc.joinOneExistRoom(room, gUserInfo);
-      }
+      return wolfFunc.joinOneRoom(userInfo, maxCount);
     })
     .then((room) => {
       return util.resJson(res, null, room);
@@ -46,12 +41,5 @@ router.post('/join/8', function(req, res) {
     })
 });
 
-
-/**
- * 10人局
- */
-router.get('/join/10', function(req, res) {
-
-});
 
 module.exports = router;
