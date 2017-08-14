@@ -15,6 +15,16 @@ function needAuth(req, res, next) {
   }
 }
 
+function resErrorHandle(res) {
+  return (err) => {
+    if (typeof err === 'string') {
+      util.resJson(res, err);
+    } else {
+      util.resJson(res, err.toString());
+    }
+  }
+}
+
 
 /**
  * 返回用户默认头像，使用github上的静态文件
@@ -43,5 +53,6 @@ function getDefaultPortrait() {
 module.exports = {
   resJson: resJson,
   needAuth: needAuth,
-  getDefaultPortrait: getDefaultPortrait
+  getDefaultPortrait: getDefaultPortrait,
+  resErrorHandle: resErrorHandle
 }

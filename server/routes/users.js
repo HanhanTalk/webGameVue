@@ -1,8 +1,9 @@
 var express = require('express');
 
 var util = require('../util');
-var _response = require('../util/response');
+var responseFormat = require('../util/response');
 var db = require('../data/db');
+var userModel = require('../model/user');
 
 var router = express.Router();
 
@@ -40,39 +41,15 @@ router.post('/signup', function(req, res) {
   var name = req.body.name;
   var password = req.body.password;
 
-  if (!name || !password) {
-    return util.resJson(res, '账号或密码不能为空');
+  var userInfo = {
+    name: name,
+    password: password
   }
-
-  if (password.length < 6) {
-    return util.resJson(res, '密码不能少于6位');
-  }
-  
-  // 先判断用户名是否已经被注册，如果没有，就新建一个用户
-  db.User.findOne({name: name})
-    .then(function(response) {
-      console.log(response)
-      if (response) {
-        throw '此账号已经存在，请使用其他用户名';
-      }
-      var _user = new db.User({
-        name: name,
-        password: password,
-        nick: name + '^_^',
-        portrait: util.getDefaultPortrait()
-      });
-      return _user.save();
-    })
-    .then(function() {
+  userModel.signupUser(userInfo)
+    .then(() => {
       return util.resJson(res, null, true);
     })
-    .catch(function(err) {
-      if (typeof err === 'string') {
-        util.resJson(res, err);
-      } else {
-        util.resJson(res, err.toString());
-      }
-    })
+    .catch(util.resErrorHandle(res));
 });
 
 
@@ -104,31 +81,17 @@ router.post('/signin', function(req, res) {
   var name = req.body.name;
   var password = req.body.password;
 
-  if (!name || !password) {
-    return util.resJson(res, '账号密码不能为空');
-  }
-
-  // 查询用户输入的账号密码是否正确
-  db.User.findOne({
+  userModel.signinUser({
     name: name,
     password: password
   })
-  .then(function(response) {
-    if (!response) {
-      throw '账号或密码错误'; 
-    }
+  .then((response) => {
     req.session.userName = name;
     req.session.userId = response._id;
     req.session.nick = response.nick;
-    return util.resJson(res, null, _response.userInfo(response));
+    return util.resJson(res, null, responseFormat.userInfo(response));
   })
-  .catch(function(err) {
-    if (typeof err === 'string') {
-      util.resJson(res, err);
-    } else {
-      util.resJson(res, err.toString());
-    }
-  });
+  .catch(util.resErrorHandle(res));
 });
 
 
@@ -168,7 +131,7 @@ router.get('/info', function(req, res) {
     db.User.findOne({
       name: req.session.userName
     }).then(function(response) {
-      util.resJson(res, null, _response.userInfo(response));
+      util.resJson(res, null, responseFormat.userInfo(response));
     }).catch(function(err) {
       console.dir(err);
       if (typeof err === 'string') {
