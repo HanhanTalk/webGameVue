@@ -74,11 +74,73 @@ function joinOneExistRoom(room, userInfo) {
     room.status = 1; // 进入开始阶段，大家确定身份
     randomRole(room);
   }
-
   return room.save();
 }
 
 
+/**
+ * 加入函数
+ * @param {*} userInfo 
+ * @param {*} maxCount 
+ */
+function joinOneRoom(userInfo, maxCount) {
+  return findCanJoinRoom(userInfo.uid)
+    .then((room) => {
+      if (!room) {
+        return createJoinRoom(userInfo, maxCount);
+      } else {
+        return joinOneExistRoom(room, userInfo);
+      }
+    });
+}
+
+
+/**
+ * 获得房间信息
+ * @param {*} roomId 
+ */
+function getRoomInfo(roomId) {
+  return db.WolfRoom.findOne({
+    roomId: roomId
+  });
+}
+
+
+/**
+ * 杀死某个人，狼人和猎人都可以杀死某个人
+ * @param {*} userId 
+ * @param {*} roomId 
+ * @param {*} killedId 
+ */
+function killPerson(roomId, killedId) {
+  
+}
+
+
+/**
+ * 拯救某人
+ * @param {*} roomId 
+ * @param {*} personId 
+ */
+function savePerson(roomId, personId) {
+
+}
+
+
+/**
+ * 毒死某人
+ * @param {*} roomId 
+ * @param {*} personId 
+ */
+function poisonPerson(roomId, personId) {
+
+}
+
+
+/**
+ * 随机身份的函数
+ * @param {*} room 
+ */
 function randomRole(room) {
   var member8 = ['1', '2', '3', '0', '0', '0', 'k', 'k'];
   var member10 = ['1', '2', '3', '0', '0', '0', '0', 'k', 'k', 'k'];
@@ -116,26 +178,10 @@ function randomRole(room) {
 }
 
 
-/**
- * 加入函数
- * @param {*} userInfo 
- * @param {*} maxCount 
- */
-function joinOneRoom(userInfo, maxCount) {
-  return findCanJoinRoom(userInfo.uid)
-    .then((room) => {
-      if (!room) {
-        return createJoinRoom(userInfo, maxCount);
-      } else {
-        return joinOneExistRoom(room, userInfo);
-      }
-    });
-}
-
-
 module.exports = {
   findCanJoinRoom: findCanJoinRoom,
   createJoinRoom: createJoinRoom,
   joinOneExistRoom: joinOneExistRoom,
-  joinOneRoom: joinOneRoom
+  joinOneRoom: joinOneRoom,
+  getRoomInfo: getRoomInfo
 }

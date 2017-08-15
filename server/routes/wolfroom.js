@@ -31,14 +31,16 @@ router.post('/join/:count', function(req, res) {
     .then((room) => {
       return util.resJson(res, null, room);
     })
-    .catch((err) => {
-      console.log(err);
-      if (typeof err === 'string') {
-        util.resJson(res, err);
-      } else {
-        util.resJson(res, err.toString());
-      }
-    })
+    .catch(util.resErrorHandle(res))
+});
+
+
+/**
+ * 客户端一直访问这个接口 获取新的数据
+ * id 是房间信息
+ */
+router.get('/info/:id', function(req, res) {
+  
 });
 
 
