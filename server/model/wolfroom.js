@@ -32,7 +32,7 @@ function createJoinRoom(userInfo, maxCount) {
       roomId: new mongoose.Types.ObjectId,
       status: 0,
       player: [{
-        uid: userInfo.uid,
+        uid: userInfo._id,
         seat: 1,            // 座位号
         nick: userInfo.nick,
         portrait: userInfo.portrait,
@@ -60,7 +60,7 @@ function createJoinRoom(userInfo, maxCount) {
  */
 function joinOneExistRoom(room, userInfo) {
   room.player.push({
-    uid: userInfo.uid,
+    uid: userInfo._id,
     seat: room.player.length + 1,            // 座位号
     nick: userInfo.nick,
     portrait: userInfo.portrait,

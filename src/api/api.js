@@ -38,6 +38,18 @@ const _post = (url, data) => {
   }).then(checkStatus);
 }
 
+const makeGet = (url) => {
+  return (param) => {
+    return _get(url, param);
+  }
+}
+
+const makePost = (url) => {
+  return (param) => {
+    return _post(url, param);
+  }
+}
+
 const signUp = (param) => {
   return _post('/users/signup', param);
 }
@@ -72,10 +84,15 @@ const postDrawguessRoomData = (param) => {
   return _post('/room/drawguess/drawdata', param);
 } 
 
-
 const postDrawguessRoomAnswer = (param) => {
   return _post('/room/drawguess/answer', param);
 }
+
+// 加入或者创建一个房间
+const newWolfRoom8 = makePost('/wolfroom/join/8');
+
+// 获取房间的信息
+const getWolfRoomInfo = makeGet('/wolfroom/info');
 
 export default {
   signUp,
@@ -87,5 +104,7 @@ export default {
   getDrawguessRoomWord,
   postDrawguessRoomWord,
   postDrawguessRoomData,
-  postDrawguessRoomAnswer
+  postDrawguessRoomAnswer,
+  newWolfRoom8,
+  getWolfRoomInfo
 }
