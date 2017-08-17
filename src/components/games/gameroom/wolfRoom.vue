@@ -1,5 +1,12 @@
 <template>
   <div class="page-warp">
+    <div class="game-page-warp" v-if="sysInfoShow">
+      <div class="game-sys-info">
+          <h1>{{sysInfo.title}}</h1>
+          <p>{{sysInfo.content}}</p>
+          <span class="fa fa-spinner txt rotate"></span>
+      </div>
+    </div>
     <div class="room-warp">
       <!--游戏提示 -->
       <div class="game-sys-tips" v-if="flowStatus !== 0">
@@ -165,11 +172,14 @@
  <script type="text/ecmascript6">
 import wolf from '../../../api/game/wolf'
 import textInput from '../../public/input.vue'
+import api from '../../../api/api'
 export default {
   name: 'wolfRoom',
   components: { textInput },
   data() {
     return {
+      sysInfoShow: false,
+      sysInfo: {},
       playerlist: [],
       playerlist_1: [],
       playerlist_2: [],
@@ -200,14 +210,34 @@ export default {
       //说话玩家
       speakPlayer:null,
       look:false,
-      next_speak:{}
+      next_speak:{},
+      infoLoopTimer: null,
+      roomInfo: null
     }
   },
   mounted() {
-    this.setTitle();
-    this.getPlayerData();
-    this.setPlayGroup();
-    this.gameFlowCtrl();
+    var self = this;
+    // this.setTitle();
+    // this.getPlayerData();
+    // this.setPlayGroup();
+    // this.gameFlowCtrl();
+    function _loop() {
+      api.getWolfRoomInfo({roomId: self.$route.params.id})
+        .then((response) => {
+          self.playerlist = response.player;
+          self.roomInfo = response;
+          self.setPlayGroup();
+          self.gameFlowStatus(response.status);
+          self.gameFlowCtrl();
+          self.infoLoopTimer = setTimeout(() => {
+            _loop();
+          }, 1000);
+        })
+        .catch((err) => {
+          alert(err);
+        });
+    }
+    _loop();
   },
   methods: {
     setTitle() {
@@ -215,80 +245,80 @@ export default {
     },
     getPlayerData() {
       //模拟用户数据
-      this.playerlist = [
-        {
-          uid: '10001',
-          seat: 1,
-          nick: '死侍',
-          portrait: './src/assets/userpic/user-01.jpg',
-          //portrait: 'https://raw.githubusercontent.com/HanhanTalk/webGameVue/master/src/assets/10.png',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10002',
-          seat: 2,
-          nick: '雷神',
-          portrait: './src/assets/userpic/user-02.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10003',
-          seat: 3,
-          nick: '超人',
-          portrait: './src/assets/userpic/user-03.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10004',
-          seat: 4,
-          nick: '蝙蝠侠',
-          portrait: './src/assets/userpic/user-04.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10005',
-          seat: 5,
-          nick: '钢铁侠',
-          portrait: './src/assets/userpic/user-05.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10006',
-          seat: 6,
-          nick: '蜘蛛侠',
-          portrait: './src/assets/userpic/user-06.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10007',
-          seat: 7,
-          nick: 'Rookie',
-          portrait: './src/assets/userpic/user-07.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10008',
-          seat: 8,
-          nick: 'Hansir',
-          portrait: './src/assets/userpic/user-08.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        }]
+      // this.playerlist = [
+      //   {
+      //     uid: '10001',
+      //     seat: 1,
+      //     nick: '死侍',
+      //     portrait: './src/assets/userpic/user-01.jpg',
+      //     //portrait: 'https://raw.githubusercontent.com/HanhanTalk/webGameVue/master/src/assets/10.png',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   },
+      //   {
+      //     uid: '10002',
+      //     seat: 2,
+      //     nick: '雷神',
+      //     portrait: './src/assets/userpic/user-02.jpg',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   },
+      //   {
+      //     uid: '10003',
+      //     seat: 3,
+      //     nick: '超人',
+      //     portrait: './src/assets/userpic/user-03.jpg',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   },
+      //   {
+      //     uid: '10004',
+      //     seat: 4,
+      //     nick: '蝙蝠侠',
+      //     portrait: './src/assets/userpic/user-04.jpg',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   },
+      //   {
+      //     uid: '10005',
+      //     seat: 5,
+      //     nick: '钢铁侠',
+      //     portrait: './src/assets/userpic/user-05.jpg',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   },
+      //   {
+      //     uid: '10006',
+      //     seat: 6,
+      //     nick: '蜘蛛侠',
+      //     portrait: './src/assets/userpic/user-06.jpg',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   },
+      //   {
+      //     uid: '10007',
+      //     seat: 7,
+      //     nick: 'Rookie',
+      //     portrait: './src/assets/userpic/user-07.jpg',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   },
+      //   {
+      //     uid: '10008',
+      //     seat: 8,
+      //     nick: 'Hansir',
+      //     portrait: './src/assets/userpic/user-08.jpg',
+      //     idCard: '',
+      //     alive: true,
+      //     sign:false
+      //   }]
     },
     //模拟下一步
     next() {
@@ -353,9 +383,10 @@ export default {
     //游戏流程
     gameFlowStatus(_status) {
       switch (_status) {
-        //游戏开始 分发身份
+        // 等待玩家进入游戏
         case 0: {
-          this.gameFlowStatus_start();
+          this.writePlayer();
+          // this.gameFlowStatus_start();
           break;
         }
         //天黑时 狼人操作
@@ -395,6 +426,11 @@ export default {
         }
       }
 
+    },
+    writePlayer() {
+      this.sysInfoShow = true;
+      this.sysInfo.title = '等待其他玩家加入';
+      this.sysInfo.content = this.roomInfo.player.length +  '/' + this.roomInfo.memberCount;
     },
     //游戏开始 分发身份牌
     //身份：1:预言家 ,2:女巫 , 3:猎人 , 4:狼人 , 5:平民 
@@ -611,6 +647,37 @@ export default {
 }
 </script>
 <style>
+.game-page-warp {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: 1200;
+}
+.game-sys-info {
+    width: 400px;
+    height: 300px;
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    margin-left: -200px;
+    background: #ffffff;
+    border-radius: 20px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.game-sys-info h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.game-sys-info p {
+    font-size: 30px;
+    margin-bottom: 40px;
+}
 .test {
   width: 200px;
   height: 100px;
