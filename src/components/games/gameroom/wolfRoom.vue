@@ -319,9 +319,10 @@ export default {
         }
         //天黑时 狼人操作
         case 1: {
-          if (!this.isShowCard) {
+          if (!this.showIdCard) {
+            this.sysInfoShow = false;
             this.getIdCard(this.currentUser.idCard);
-            this.isShowCard = true;
+            this.showIdCard = true;
           }
           this.gameFlowStatus_wolf();
           break;
@@ -759,7 +760,7 @@ export default {
   height: 450px;
   width: 450px;
   margin-left: -225px;
-  animation: myMove 2s linear 2s 1 normal;
+  animation: myMove 2s linear 2s 1 normal forwards;
 }
 
 .idcardShow {
