@@ -24,24 +24,34 @@ router.post('/join/:count', function(req, res) {
   }
   // 先找到能不能加入的房间，如果能加入
   
+  function makeNew() {
+    var maxCount = count;
+    userFunc.getUserInfoByUid(req.session.userId)
+      .then((userInfo) => {
+        return wolfFunc.joinOneRoom(userInfo, maxCount);
+      })
+      .then((room) => {
+        req.session.wolfRoomId = room.roomId;
+        // console.log(room);
+        return util.resJson(res, null, room);
+      })
+      .catch(util.resErrorHandle(res))
+  }
+
   if (req.session.wolfRoomId) {
     return wolfFunc.getRoomInfo(req.session.wolfRoomId)
       .then((roomInfo) => {
+        if (!roomInfo) {
+          req.session.wolfRoomId = null;
+          return makeNew();
+        }
         util.resJson(res, null, roomInfo);
       })
       .catch(util.resErrorHandle(res));
-  }
+  } 
 
-  var maxCount = count;
-  userFunc.getUserInfoByUid(req.session.userId)
-    .then((userInfo) => {
-      return wolfFunc.joinOneRoom(userInfo, maxCount);
-    })
-    .then((room) => {
-      req.session.wolfRoomId = room.roomId;
-      return util.resJson(res, null, room);
-    })
-    .catch(util.resErrorHandle(res))
+  makeNew();
+
 });
 
 

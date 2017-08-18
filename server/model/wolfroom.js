@@ -74,6 +74,10 @@ function joinOneExistRoom(room, userInfo) {
     room.status = 1; // 进入开始阶段，大家确定身份
     randomRole(room);
   }
+  for (var i = 0; i < room.memberCount; i++) {
+    room.markModified('player.' + i);
+  }
+  // console.log(room.player);
   return room.save();
 }
 
@@ -158,7 +162,7 @@ function randomRole(room) {
     for (var i = 0; i < len; i++) {
       room.player[i].idCard = _arr[i];
     }
-    return room.markModified('player');
+    return room;
   }
   switch (room.memberCount) {
     case 8: {

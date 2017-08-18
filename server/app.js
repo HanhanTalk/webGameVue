@@ -36,7 +36,7 @@ app.use(session({
   resave: false,
   store: new MongoStore({url: 'mongodb://localhost/webgame'}),
   saveUninitialized: false,
-  cookie: {path: '/', httpOnly: true, secure: false, maxAge: 1000 * 60 * 60 * 24}
+  cookie: {path: '/', httpOnly: true, secure: false, maxAge: 1000 * 60 * 60 * 24 * 7}
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 

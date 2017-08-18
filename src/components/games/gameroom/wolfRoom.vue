@@ -154,7 +154,7 @@
           </div>
         </div>
       <!--身份牌-->
-      <div class="page-warp page-mask" v-if="flowStatus === 0">
+      <div class="page-warp page-mask" v-if="showIdCard">
         <div class="rotate-item">
           <div class="idcardShow animated flip">
             <img :src="currentObj.url">
@@ -179,6 +179,8 @@ export default {
   data() {
     return {
       sysInfoShow: false,
+      showIdCard: false,
+      isShowCard: false,
       sysInfo: {},
       playerlist: [],
       playerlist_1: [],
@@ -226,6 +228,7 @@ export default {
         .then((response) => {
           self.playerlist = response.player;
           self.roomInfo = response;
+          self.getCurrentUser();
           self.setPlayGroup();
           self.gameFlowStatus(response.status);
           self.gameFlowCtrl();
@@ -244,81 +247,6 @@ export default {
       this.$store.commit('updateTitle', this.title);
     },
     getPlayerData() {
-      //模拟用户数据
-      // this.playerlist = [
-      //   {
-      //     uid: '10001',
-      //     seat: 1,
-      //     nick: '死侍',
-      //     portrait: './src/assets/userpic/user-01.jpg',
-      //     //portrait: 'https://raw.githubusercontent.com/HanhanTalk/webGameVue/master/src/assets/10.png',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   },
-      //   {
-      //     uid: '10002',
-      //     seat: 2,
-      //     nick: '雷神',
-      //     portrait: './src/assets/userpic/user-02.jpg',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   },
-      //   {
-      //     uid: '10003',
-      //     seat: 3,
-      //     nick: '超人',
-      //     portrait: './src/assets/userpic/user-03.jpg',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   },
-      //   {
-      //     uid: '10004',
-      //     seat: 4,
-      //     nick: '蝙蝠侠',
-      //     portrait: './src/assets/userpic/user-04.jpg',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   },
-      //   {
-      //     uid: '10005',
-      //     seat: 5,
-      //     nick: '钢铁侠',
-      //     portrait: './src/assets/userpic/user-05.jpg',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   },
-      //   {
-      //     uid: '10006',
-      //     seat: 6,
-      //     nick: '蜘蛛侠',
-      //     portrait: './src/assets/userpic/user-06.jpg',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   },
-      //   {
-      //     uid: '10007',
-      //     seat: 7,
-      //     nick: 'Rookie',
-      //     portrait: './src/assets/userpic/user-07.jpg',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   },
-      //   {
-      //     uid: '10008',
-      //     seat: 8,
-      //     nick: 'Hansir',
-      //     portrait: './src/assets/userpic/user-08.jpg',
-      //     idCard: '',
-      //     alive: true,
-      //     sign:false
-      //   }]
     },
     //模拟下一步
     next() {
@@ -345,13 +273,13 @@ export default {
     },
     //获取当前玩家
     getCurrentUser() {
-      this.playerlist.forEach(function (element, index) {
-        //假装第一位玩家就是我们的当前玩家
-        if (index == 0) {
-          this.currentUser = element;
+      var self = this;
+      this.roomInfo.player.forEach(function(item) {
+        if (item.uid === self.$store.state.userInfo.uid) {
+          self.currentUser = item;
         }
-      }.bind(this));
-      this.getIdCard(this.currentUser.idCard);
+      });
+      // this.getIdCard(this.currentUser.idCard);
     },
     getUserInfo(_seat) {
       this.playerlist.forEach(function (element, index) {
@@ -391,6 +319,10 @@ export default {
         }
         //天黑时 狼人操作
         case 1: {
+          if (!this.isShowCard) {
+            this.getIdCard(this.currentUser.idCard);
+            this.isShowCard = true;
+          }
           this.gameFlowStatus_wolf();
           break;
         }
@@ -468,35 +400,35 @@ export default {
     },
     getIdCard(idCard) {
       switch (idCard) {
-        case 1: {
+        case '1': {
           this.currentObj = {
             name: '预言家',
             url: './src/assets/game-info-img/001.jpeg'
           }
           break;
         }
-        case 2: {
+        case '2': {
           this.currentObj = {
             name: '女巫',
             url: './src/assets/game-info-img/002.jpeg'
           }
           break;
         }
-        case 3: {
+        case '3': {
           this.currentObj = {
             name: '猎人',
             url: './src/assets/game-info-img/003.jpeg'
           }
           break;
         }
-        case 4: {
+        case 'k': {
           this.currentObj = {
             name: '狼人',
             url: './src/assets/game-info-img/005.jpeg'
           }
           break;
         }
-        case 5: {
+        case '0': {
           this.currentObj = {
             name: '村民',
             url: './src/assets/game-info-img/006.jpeg'

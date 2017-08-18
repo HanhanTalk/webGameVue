@@ -18,9 +18,9 @@ function needAuth(req, res, next) {
 function resErrorHandle(res) {
   return (err) => {
     if (typeof err === 'string') {
-      util.resJson(res, err);
+      resJson(res, err);
     } else {
-      util.resJson(res, err.toString());
+      resJson(res, err.toString());
     }
   }
 }
