@@ -224,6 +224,11 @@ export default {
     // this.setPlayGroup();
     // this.gameFlowCtrl();
     function _loop() {
+      if (!self.$store.state.userInfo.uid) {
+        return setTimeout(() => {
+          _loop();
+        }, 500);
+      }
       api.getWolfRoomInfo({roomId: self.$route.params.id})
         .then((response) => {
           self.playerlist = response.player;
@@ -231,7 +236,6 @@ export default {
           self.getCurrentUser();
           self.setPlayGroup();
           self.gameFlowStatus(response.status);
-          self.gameFlowCtrl();
           self.infoLoopTimer = setTimeout(() => {
             _loop();
           }, 1000);
@@ -319,12 +323,12 @@ export default {
         }
         //天黑时 狼人操作
         case 1: {
+          this.sysInfoShow = false;
           if (!this.showIdCard) {
-            this.sysInfoShow = false;
             this.getIdCard(this.currentUser.idCard);
             this.showIdCard = true;
           }
-          this.gameFlowStatus_wolf();
+          // this.gameFlowStatus_wolf();
           break;
         }
         //天黑时 女巫救人
@@ -631,7 +635,7 @@ export default {
 }
 
 .page-mask {
-  background: rgba(0, 0, 0, .4);
+  /*background: rgba(0, 0, 0, .4);*/
   z-index: 1000;
 }
 
