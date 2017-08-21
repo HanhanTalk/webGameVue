@@ -9,7 +9,7 @@
     </div>
     <div class="room-warp">
       <!--游戏提示 -->
-      <div class="game-sys-tips" v-if="flowStatus !== 0">
+      <div class="game-sys-tips" v-if="showGameTips">
         <h1>
           <span class="fa" :class="[onNight ? 'fa-moon-o' : 'fa-sun-o']"></span>
           {{sysTips.title}}(第{{gameRound}}天)
@@ -178,6 +178,7 @@ export default {
   components: { textInput },
   data() {
     return {
+      showGameTips: false,
       sysInfoShow: false,
       showIdCard: false,
       isShowCard: false,
@@ -218,35 +219,41 @@ export default {
     }
   },
   mounted() {
-    var self = this;
-    // this.setTitle();
-    // this.getPlayerData();
-    // this.setPlayGroup();
-    // this.gameFlowCtrl();
-    function _loop() {
-      if (!self.$store.state.userInfo.uid) {
-        return setTimeout(() => {
-          _loop();
-        }, 500);
-      }
-      api.getWolfRoomInfo({roomId: self.$route.params.id})
-        .then((response) => {
-          self.playerlist = response.player;
-          self.roomInfo = response;
-          self.getCurrentUser();
-          self.setPlayGroup();
-          self.gameFlowStatus(response.status);
-          self.infoLoopTimer = setTimeout(() => {
-            _loop();
-          }, 1000);
-        })
-        .catch((err) => {
-          alert(err);
-        });
-    }
-    _loop();
+    this.startLoop();
   },
   methods: {
+    startLoop() {
+      var self = this;
+      // this.setTitle();
+      // this.getPlayerData();
+      // this.setPlayGroup();
+      // this.gameFlowCtrl();
+      function _loop() {
+        if (!self.$store.state.userInfo.uid) {
+          return setTimeout(() => {
+            _loop();
+          }, 500);
+        }
+        api.getWolfRoomInfo({roomId: self.$route.params.id})
+          .then((response) => {
+            self.playerlist = response.player;
+            self.roomInfo = response;
+            self.getCurrentUser();
+            self.setPlayGroup();
+            self.gameFlowStatus(response.status);
+            self.infoLoopTimer = setTimeout(() => {
+              _loop();
+            }, 1000);
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
+      _loop();
+    },
+    stopLoop() {
+      clearTimeout(this.infoLoopTimer);
+    },
     setTitle() {
       this.$store.commit('updateTitle', this.title);
     },
@@ -323,12 +330,16 @@ export default {
         }
         //天黑时 狼人操作
         case 1: {
+          var self = this;
           this.sysInfoShow = false;
           if (!this.showIdCard) {
             this.getIdCard(this.currentUser.idCard);
             this.showIdCard = true;
           }
-          // this.gameFlowStatus_wolf();
+          this.stopLoop();
+          setTimeout(function() {
+            self.gameFlowStatus_wolf();
+          }, 2000);
           break;
         }
         //天黑时 女巫救人
@@ -371,38 +382,6 @@ export default {
     },
     //游戏开始 分发身份牌
     //身份：1:预言家 ,2:女巫 , 3:猎人 , 4:狼人 , 5:平民 
-    gameFlowStatus_start() {
-      //判断有几个玩家
-      var len = this.playerlist.length;
-      var setIdCard = (_arr) => {
-        for (var i = 0; i < len; i++) {
-          var rand = parseInt(Math.random() * len);
-          var temp = _arr[rand];
-          _arr[rand] = _arr[i];
-          _arr[i] = temp;
-        };
-        for (var i = 0; i < len; i++) {
-          this.playerlist[i].idCard = _arr[i];
-        }
-        //当前玩家获取身份
-        this.getCurrentUser();
-      }
-      switch (len) {
-        case 8: {
-          //3神+3平+2狼
-          var arr = [1, 2, 3, 4, 4, 5, 5, 5];
-          setIdCard(arr);
-          break;
-        }
-        case 10: {
-          //3神+4平+3狼
-          var arr = [1, 2, 3, 4, 4, 4, 5, 5, 5, 5];
-        }
-        default: {
-          //暂时不用12人
-        }
-      }
-    },
     getIdCard(idCard) {
       switch (idCard) {
         case '1': {
@@ -448,12 +427,26 @@ export default {
     //1 狼人操作：选择要杀掉的玩家
     gameFlowStatus_wolf() {
       //游戏提示
-      this.onNight = true;
-      this.sysTips = {
-        title: '天黑请闭眼',
-        content: '狼人请睁眼，请选择要杀的玩家',
-        time: 20
+      // 这里要进行判断，如果当前玩家是狼人（在list排行最靠前的狼人），则通知杀人，如果不是，就显示弹窗
+      var player = this.roomInfo.player;
+      for (var  i = 0; i < player.length; i++) {
+        if (player[i].idCard === 'k' && player[i].alive) {
+          break;
+        }
       }
+      if (i < player.length && player[i].uid === this.currentUser.uid) {
+        this.flowStatus = 1;
+        this.stopLoop();
+      } else {
+        this.startLoop();
+      }
+      this.showGameTips = true;
+        this.onNight = true;
+        this.sysTips = {
+          title: '天黑请闭眼',
+          content: '狼人请睁眼，请选择要杀的玩家',
+          time: 20
+      };
     },
     //2 女巫操作：救人／不救 
     gameFlowStatus_witchSave() {
@@ -749,8 +742,8 @@ export default {
 }
 
 .game-sys-tips h1 {
-  font-size: 50px;
-  margin: 20px 0;
+  font-size: 42px;
+  margin: 30px 0;
 }
 
 .game-sys-tips span {
