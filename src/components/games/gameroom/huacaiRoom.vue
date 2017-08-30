@@ -151,12 +151,13 @@
                             <div class="rank-tag">{{index+1}}</div>
                             <div class="rank-userinfo">
                                 <div class="rank-userinfo-pic">
-                                    <img src="../../../assets/userpic/anonym.jpg">
+                                    <img v-if="item.portrait" :src="item.portrait">
+                                    <img v-else src="../../../assets/userpic/anonym.jpg">
                                 </div>
                                 <div class="rank-userinfo-item">
-                                    <p>{{item.uid}}</p>
+                                    <p>{{item.nick}}</p>
                                     <span class="rank-score">
-                                        +{{item.score}}分
+                                        +{{item.addscore}}分
                                     </span>
                                 </div>
                             </div>

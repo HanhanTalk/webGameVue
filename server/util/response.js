@@ -5,6 +5,9 @@ var _ = require('lodash');
  * @param {*} userInfo 
  */
 function userInfo(userInfo) {
+  if (!userInfo) {
+    return {};
+  }
   var _userInfo = {};
   _userInfo.name = userInfo.name;
   _userInfo.nick = '';

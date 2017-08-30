@@ -1,8 +1,15 @@
 <template>
   <div class="page-warp">
+    <div class="game-page-warp" v-if="sysInfoShow">
+      <div class="game-sys-info">
+          <h1>{{sysInfo.title}}</h1>
+          <p>{{sysInfo.content}}</p>
+          <span class="fa fa-spinner txt rotate"></span>
+      </div>
+    </div>
     <div class="room-warp">
       <!--游戏提示 -->
-      <div class="game-sys-tips" v-if="flowStatus !== 0">
+      <div class="game-sys-tips" v-if="showGameTips">
         <h1>
           <span class="fa" :class="[onNight ? 'fa-moon-o' : 'fa-sun-o']"></span>
           {{sysTips.title}}(第{{gameRound}}天)
@@ -147,7 +154,7 @@
           </div>
         </div>
       <!--身份牌-->
-      <div class="page-warp page-mask" v-if="flowStatus === 0">
+      <div class="page-warp page-mask" v-if="showIdCard">
         <div class="rotate-item">
           <div class="idcardShow animated flip">
             <img :src="currentObj.url">
@@ -165,11 +172,17 @@
  <script type="text/ecmascript6">
 import wolf from '../../../api/game/wolf'
 import textInput from '../../public/input.vue'
+import api from '../../../api/api'
 export default {
   name: 'wolfRoom',
   components: { textInput },
   data() {
     return {
+      showGameTips: false,
+      sysInfoShow: false,
+      showIdCard: false,
+      isShowCard: false,
+      sysInfo: {},
       playerlist: [],
       playerlist_1: [],
       playerlist_2: [],
@@ -200,100 +213,57 @@ export default {
       //说话玩家
       speakPlayer:null,
       look:false,
-      next_speak:{}
+      next_speak:{},
+      infoLoopTimer: null,
+      roomInfo: null
     }
   },
   mounted() {
-    this.setTitle();
-    this.getPlayerData();
-    this.setPlayGroup();
-    this.gameFlowCtrl();
+    this.startLoop();
   },
   methods: {
+    startLoop() {
+      var self = this;
+      // this.setTitle();
+      // this.getPlayerData();
+      // this.setPlayGroup();
+      // this.gameFlowCtrl();
+      function _loop() {
+        if (!self.$store.state.userInfo.uid) {
+          return setTimeout(() => {
+            _loop();
+          }, 500);
+        }
+        api.getWolfRoomInfo({roomId: self.$route.params.id})
+          .then((response) => {
+            self.playerlist = response.player;
+            self.roomInfo = response;
+            self.getCurrentUser();
+            self.setPlayGroup();
+            self.gameFlowStatus(response.status);
+            self.infoLoopTimer = setTimeout(() => {
+              _loop();
+            }, 1000);
+          })
+          .catch((err) => {
+            alert(err);
+          });
+      }
+      _loop();
+    },
+    stopLoop() {
+      clearTimeout(this.infoLoopTimer);
+    },
     setTitle() {
       this.$store.commit('updateTitle', this.title);
     },
     getPlayerData() {
-      //模拟用户数据
-      this.playerlist = [
-        {
-          uid: '10001',
-          seat: 1,
-          nick: '死侍',
-          portrait: './src/assets/userpic/user-01.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10002',
-          seat: 2,
-          nick: '雷神',
-          portrait: './src/assets/userpic/user-02.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10003',
-          seat: 3,
-          nick: '超人',
-          portrait: './src/assets/userpic/user-03.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10004',
-          seat: 4,
-          nick: '蝙蝠侠',
-          portrait: './src/assets/userpic/user-04.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10005',
-          seat: 5,
-          nick: '钢铁侠',
-          portrait: './src/assets/userpic/user-05.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10006',
-          seat: 6,
-          nick: '蜘蛛侠',
-          portrait: './src/assets/userpic/user-06.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10007',
-          seat: 7,
-          nick: 'Rookie',
-          portrait: './src/assets/userpic/user-07.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        },
-        {
-          uid: '10008',
-          seat: 8,
-          nick: 'Hansir',
-          portrait: './src/assets/userpic/user-08.jpg',
-          idCard: '',
-          alive: true,
-          sign:false
-        }]
     },
     //模拟下一步
     next() {
       this.flowStatus = this.flowStatus + 1;
       this.gameFlowCtrl();
-        console.log(this.flowStatus);
+      console.log(this.flowStatus);
     },
     //狼人、女巫选择要杀的人
     Kill(_i) {
@@ -314,13 +284,13 @@ export default {
     },
     //获取当前玩家
     getCurrentUser() {
-      this.playerlist.forEach(function (element, index) {
-        //假装第一位玩家就是我们的当前玩家
-        if (index == 0) {
-          this.currentUser = element;
+      var self = this;
+      this.roomInfo.player.forEach(function(item) {
+        if (item.uid === self.$store.state.userInfo.uid) {
+          self.currentUser = item;
         }
-      }.bind(this));
-      this.getIdCard(this.currentUser.idCard);
+      });
+      // this.getIdCard(this.currentUser.idCard);
     },
     getUserInfo(_seat) {
       this.playerlist.forEach(function (element, index) {
@@ -352,14 +322,24 @@ export default {
     //游戏流程
     gameFlowStatus(_status) {
       switch (_status) {
-        //游戏开始 分发身份
+        // 等待玩家进入游戏
         case 0: {
-          this.gameFlowStatus_start();
+          this.writePlayer();
+          // this.gameFlowStatus_start();
           break;
         }
         //天黑时 狼人操作
         case 1: {
-          this.gameFlowStatus_wolf();
+          var self = this;
+          this.sysInfoShow = false;
+          if (!this.showIdCard) {
+            this.getIdCard(this.currentUser.idCard);
+            this.showIdCard = true;
+          }
+          this.stopLoop();
+          setTimeout(function() {
+            self.gameFlowStatus_wolf();
+          }, 2000);
           break;
         }
         //天黑时 女巫救人
@@ -395,71 +375,44 @@ export default {
       }
 
     },
+    writePlayer() {
+      this.sysInfoShow = true;
+      this.sysInfo.title = '等待其他玩家加入';
+      this.sysInfo.content = this.roomInfo.player.length +  '/' + this.roomInfo.memberCount;
+    },
     //游戏开始 分发身份牌
     //身份：1:预言家 ,2:女巫 , 3:猎人 , 4:狼人 , 5:平民 
-    gameFlowStatus_start() {
-      //判断有几个玩家
-      var len = this.playerlist.length;
-      var setIdCard = (_arr) => {
-        for (var i = 0; i < len; i++) {
-          var rand = parseInt(Math.random() * len);
-          var temp = _arr[rand];
-          _arr[rand] = _arr[i];
-          _arr[i] = temp;
-        };
-        for (var i = 0; i < len; i++) {
-          this.playerlist[i].idCard = _arr[i];
-        }
-        //当前玩家获取身份
-        this.getCurrentUser();
-      }
-      switch (len) {
-        case 8: {
-          //3神+3平+2狼
-          var arr = [1, 2, 3, 4, 4, 5, 5, 5];
-          setIdCard(arr);
-          break;
-        }
-        case 10: {
-          //3神+4平+3狼
-          var arr = [1, 2, 3, 4, 4, 4, 5, 5, 5, 5];
-        }
-        default: {
-          //暂时不用12人
-        }
-      }
-    },
     getIdCard(idCard) {
       switch (idCard) {
-        case 1: {
+        case '1': {
           this.currentObj = {
             name: '预言家',
             url: './src/assets/game-info-img/001.jpeg'
           }
           break;
         }
-        case 2: {
+        case '2': {
           this.currentObj = {
             name: '女巫',
             url: './src/assets/game-info-img/002.jpeg'
           }
           break;
         }
-        case 3: {
+        case '3': {
           this.currentObj = {
             name: '猎人',
             url: './src/assets/game-info-img/003.jpeg'
           }
           break;
         }
-        case 4: {
+        case 'k': {
           this.currentObj = {
             name: '狼人',
             url: './src/assets/game-info-img/005.jpeg'
           }
           break;
         }
-        case 5: {
+        case '0': {
           this.currentObj = {
             name: '村民',
             url: './src/assets/game-info-img/006.jpeg'
@@ -474,12 +427,26 @@ export default {
     //1 狼人操作：选择要杀掉的玩家
     gameFlowStatus_wolf() {
       //游戏提示
-      this.onNight = true;
-      this.sysTips = {
-        title: '天黑请闭眼',
-        content: '狼人请睁眼，请选择要杀的玩家',
-        time: 20
+      // 这里要进行判断，如果当前玩家是狼人（在list排行最靠前的狼人），则通知杀人，如果不是，就显示弹窗
+      var player = this.roomInfo.player;
+      for (var  i = 0; i < player.length; i++) {
+        if (player[i].idCard === 'k' && player[i].alive) {
+          break;
+        }
       }
+      if (i < player.length && player[i].uid === this.currentUser.uid) {
+        this.flowStatus = 1;
+        this.stopLoop();
+      } else {
+        this.startLoop();
+      }
+      this.showGameTips = true;
+        this.onNight = true;
+        this.sysTips = {
+          title: '天黑请闭眼',
+          content: '狼人请睁眼，请选择要杀的玩家',
+          time: 20
+      };
     },
     //2 女巫操作：救人／不救 
     gameFlowStatus_witchSave() {
@@ -607,6 +574,37 @@ export default {
 }
 </script>
 <style>
+.game-page-warp {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    z-index: 1200;
+}
+.game-sys-info {
+    width: 400px;
+    height: 300px;
+    position: absolute;
+    left: 50%;
+    top: 30%;
+    margin-left: -200px;
+    background: #ffffff;
+    border-radius: 20px;
+    text-align: center;
+    box-sizing: border-box;
+    padding: 20px;
+}
+
+.game-sys-info h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.game-sys-info p {
+    font-size: 30px;
+    margin-bottom: 40px;
+}
 .test {
   width: 200px;
   height: 100px;
@@ -627,7 +625,7 @@ export default {
 }
 
 .page-mask {
-  background: rgba(0, 0, 0, .4);
+  /*background: rgba(0, 0, 0, .4);*/
   z-index: 1000;
 }
 
@@ -741,8 +739,8 @@ export default {
 }
 
 .game-sys-tips h1 {
-  font-size: 50px;
-  margin: 20px 0;
+  font-size: 42px;
+  margin: 30px 0;
 }
 
 .game-sys-tips span {
@@ -756,7 +754,7 @@ export default {
   height: 450px;
   width: 450px;
   margin-left: -225px;
-  animation: myMove 2s linear 2s 1 normal;
+  animation: myMove 2s linear 2s 1 normal forwards;
 }
 
 .idcardShow {

@@ -36,7 +36,7 @@ app.use(session({
   resave: false,
   store: new MongoStore({url: 'mongodb://localhost/webgame'}),
   saveUninitialized: false,
-  cookie: {path: '/', httpOnly: true, secure: false, maxAge: 1000 * 60 * 60 * 24}
+  cookie: {path: '/', httpOnly: true, secure: false, maxAge: 1000 * 60 * 60 * 24 * 7}
 }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -44,6 +44,7 @@ app.use('/', index);
 app.use('/users', users);
 app.use('/friend', require('./routes/friend'));
 app.use('/room', require('./routes/room'));
+app.use('/wolfroom', require('./routes/wolfroom'));
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
