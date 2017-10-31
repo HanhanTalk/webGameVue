@@ -527,9 +527,6 @@ export default {
               time:20
             }
         }
-        setInterval(function(){
-            loop();
-        },5000);
     },
     //7 玩家投票
     gameFlowStatus_vote(){
