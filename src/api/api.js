@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-axios.defaults.baseURL = 'http://localhost:3000';
+axios.defaults.baseURL = '/';
 axios.defaults.withCredentials = true;
 axios.defaults.crossDomain = true;
 
@@ -62,7 +62,7 @@ const signOut = (param) => {
   return _post('/users/signout', param);
 }
 const info = (param) => {
-   return _get('/users/info',param);
+   return _get('/users/info.json',param);
 }
 const joinDrawguessRoom = (param) =>{
     return _post('/room/drawguess/join',param);
